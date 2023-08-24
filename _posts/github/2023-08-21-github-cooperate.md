@@ -4,7 +4,7 @@ date: 2023-08-21 00:00:00 +0900
 last_modified_at: 2023-08-21 00:00:00 +0900
 categories: [GitHub]
 tags: [github, git]
-img_path: /assets/img/posts/230821
+img_path: /assets/img/posts/2023/08/230821
 ---
 
 GitHub에서 작업 브랜치를 나누고, 브랜치를 보호하고, Pull Request와 Review, Merge를 이용해 협업하는 방법에 대해 알아보겠습니다.

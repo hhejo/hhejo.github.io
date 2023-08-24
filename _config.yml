@@ -18,9 +18,9 @@ timezone: Asia/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Hhejo의 개발 블로그 # the main title
+title: Hhejo's Dev Blog # the main title
 
-tagline: 더 열심히 하겠습니다 😎 # it will display as the sub-title
+tagline: 매일 꾸준히 합시다 # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
   Hhejo의 개발 블로그입니다. 공부한 것들을 정리합니다. 웹 개발에 관심이 많습니다.

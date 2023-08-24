@@ -4,6 +4,7 @@ date: 2023-07-17 00:00:00 +0900
 last_modified_at: 2023-07-17 00:00:00 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, http, fs]
+img_path: /assets/img/posts/230717
 ---
 
 Express.js 없이 Node.js로 웹 서버를 실행하고 접속해보는 예제입니다.
@@ -47,11 +48,11 @@ server.listen(port, hostname, () => {
 
 터미널에 `node server.js`를 입력해 서버를 실행합니다.
 
-![chrome](/assets/img/posts/230717/chrome.png)
+![chrome](chrome.png)
 
 해당 주소로 접속하면 Hello World가 잘 출력됩니다.
 
-![header](/assets/img/posts/230717/header.png)
+![header](header.png)
 
 코드에 입력했었던 상태 코드와 Content-Type이 잘 나오고 있습니다.
 
@@ -99,7 +100,7 @@ node.js의 파일 입출력 모듈 `fs`를 이용합니다.
 
 간단한 예제이기 때문에 에러 처리는 따로 하지 않았습니다.
 
-![chrome 2](/assets/img/posts/230717/chrome_2.png)
+![chrome 2](chrome_2.png)
 
 HTML 파일이 잘 출력되는 것을 확인할 수 있습니다.
 

@@ -4,7 +4,7 @@ date: 2023-07-17 00:00:00 +0900
 last_modified_at: 2023-07-17 00:00:00 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, http, fs]
-img_path: /assets/img/posts/230717
+img_path: /assets/img/posts/2023/07/230717
 ---
 
 Express.js 없이 Node.js로 웹 서버를 실행하고 접속해보는 예제입니다.

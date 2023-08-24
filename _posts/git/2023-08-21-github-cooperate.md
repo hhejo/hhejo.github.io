@@ -4,6 +4,7 @@ date: 2023-08-21 00:00:00 +0900
 last_modified_at: 2023-08-21 00:00:00 +0900
 categories: [Git]
 tags: [git, github]
+img_path: /assets/img/posts/230821
 ---
 
 GitHub에서 작업 브랜치를 나누고, 브랜치를 보호하고, Pull Request와 Review, Merge를 이용해 협업하는 방법에 대해 알아보겠습니다.
@@ -22,21 +23,21 @@ GitHub에서 본인이 진행하는 프로젝트의 Repository로 들어갑니�
 
 좌측 메뉴에서 `Access`의 `Collaborators`를 클릭합니다.
 
-![Collaborators](/assets/img/posts/230821/01-collaborators.png)
+![Collaborators](01-collaborators.png)
 
 `Manage access` 아래 `Add people` 버튼을 클릭합니다.
 
-![Add people](/assets/img/posts/230821/02-add-people.png)
+![Add people](02-add-people.png)
 
 초대할 팀원의 닉네임이나 이메일 등을 작성해 초대합니다.
 
-![Search](/assets/img/posts/230821/03-search.png)
+![Search](03-search.png)
 
-![Add](/assets/img/posts/230821/04-add.png)
+![Add](04-add.png)
 
 이제 팀원은 초대를 수락하면 됩니다.
 
-![Accept](/assets/img/posts/230821/05-accept.png)
+![Accept](05-accept.png)
 
 ## 2. master branch 에서 develop branch 나누기
 
@@ -50,11 +51,11 @@ GitHub에서 본인이 진행하는 프로젝트의 Repository로 들어갑니�
 
 Repository 화면에서 좌측의 `master` 버튼을 누르고 `develop` 이름의 브랜치를 생성합니다.
 
-![Create](/assets/img/posts/230821/06-create.png)
+![Create](06-create.png)
 
 `develop` 브랜치가 생성과 함께 선택되었습니다.
 
-![Develop](/assets/img/posts/230821/07-develop.png)
+![Develop](07-develop.png)
 
 ## 3. master branch 보호하기
 
@@ -62,15 +63,15 @@ Repository 화면에서 좌측의 `master` 버튼을 누르고 `develop` 이름�
 
 `Settings`의 `Code and automation`의 `Branches`를 클릭하고 브랜치 보호 규칙을 추가합니다.
 
-![Branches](/assets/img/posts/230821/08-branches.png)
+![Branches](08-branches.png)
 
 `Require a pull request before merging`의 `Require approvals`,
 
 그리고 `Lock branch`만 체크하고 생성합니다.
 
-![Rule 1](/assets/img/posts/230821/09-rule-1.png)
+![Rule 1](09-rule-1.png)
 
-![Rule 2](/assets/img/posts/230821/10-rule-2.png)
+![Rule 2](10-rule-2.png)
 
 ## 4. Local에서 remote branch 가져오기
 
@@ -131,29 +132,29 @@ git push origin feature
 
 만약 뜨지 않는다면, 직접 Pull Request를 생성합니다.
 
-![Push](/assets/img/posts/230821/11-push.png)
+![Push](11-push.png)
 
 `base: develop`과 `compare: feature`가 될 수 있도록 주의 깊게 설정합니다.
 
-![Create pull request 1](/assets/img/posts/230821/12-create-pull-request-1.png)
+![Create pull request 1](12-create-pull-request-1.png)
 
-![Create pull request 2](/assets/img/posts/230821/13-create-pull-request-2.png)
+![Create pull request 2](13-create-pull-request-2.png)
 
 버튼을 눌러 Pull Request가 생성됐습니다.
 
-![Pull request](/assets/img/posts/230821/14-pull-request.png)
+![Pull request](14-pull-request.png)
 
 ## 7. Review 작성하기
 
 팀원이 해당 Pull Request의 Review를 작성합니다.
 
-![Review 1](/assets/img/posts/230821/15-review-1.png)
+![Review 1](15-review-1.png)
 
-![Review 2](/assets/img/posts/230821/16-review-2.png)
+![Review 2](16-review-2.png)
 
-![Review 3](/assets/img/posts/230821/17-review-3.png)
+![Review 3](17-review-3.png)
 
-![Review 4](/assets/img/posts/230821/18-review-4.png)
+![Review 4](18-review-4.png)
 
 ## 8. Merge 수행하기
 
@@ -161,11 +162,11 @@ git push origin feature
 
 Merge 완료된 `feature` 브랜치 삭제도 가능하고, Merge를 되돌릴(Revert) 수도 있습니다.
 
-![Merge 1](/assets/img/posts/230821/19-merge-1.png)
+![Merge 1](19-merge-1.png)
 
-![Merge 2](/assets/img/posts/230821/20-merge-2.png)
+![Merge 2](20-merge-2.png)
 
-![Merge 3](/assets/img/posts/230821/21-merge-3.png)
+![Merge 3](21-merge-3.png)
 
 ## 9. 결과 그래프 확인하기
 
@@ -173,4 +174,4 @@ Merge 완료된 `feature` 브랜치 삭제도 가능하고, Merge를 되돌릴(R
 
 `Insights`을 클릭하고 `Network`를 클릭합니다.
 
-![Graph](/assets/img/posts/230821/22-graph.png)
+![Graph](22-graph.png)

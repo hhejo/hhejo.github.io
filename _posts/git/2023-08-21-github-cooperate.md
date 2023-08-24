@@ -2,8 +2,8 @@
 title: GitHub에서 Pull Request와 Merge를 이용해 협업하기
 date: 2023-08-21 00:00:00 +0900
 last_modified_at: 2023-08-21 00:00:00 +0900
-categories: [Git]
-tags: [git, github]
+categories: [GitHub]
+tags: [github, git]
 img_path: /assets/img/posts/230821
 ---
 

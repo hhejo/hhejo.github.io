@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://hhejo.github.io/sitemap.xml

@@ -1,7 +1,7 @@
 ---
 title: React, Vite, Node.js, Express를 이용해 게시판 만들기 09
 date: 2023-09-03 22:41:17 +0900
-last_modified_at: 2023-09-03 22:41:17 +0900
+last_modified_at: 2023-09-28 14:14:29 +0900
 categories: [BulletinBoardPjt]
 tags: [bulletin-board-pjt, javascript, nodejs, express, react]
 ---
@@ -14,7 +14,7 @@ Client 부분 코드 리팩토링
 
 ## Client
 
-...
+Board 부분을..
 
 ## 느낀점
 

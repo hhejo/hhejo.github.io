@@ -6,7 +6,7 @@ categories: [JavaScript]
 tags: [javascript]
 ---
 
-dddfjkasdlfjlasdfjdslafjadlsfjlasdfjadslfjasdlfjadsklfjasdlkfj1j2312312le1311892je
+변수, 상수, 자료형, 브라우저 상호작용, 형 변환, 연산자, 반복문, switch문, 함수
 
 ## 변수
 
@@ -252,7 +252,9 @@ alert(height ?? 100); // 0
 
 - 높이처럼 `0`이 할당될 수 있는 변수를 사용해 기능을 개발할 땐 `||`보다 `??`이 적합
 
-## 'do...while' 반복문
+## 반복문
+
+### 'do...while' 반복문
 
 ```javascript
 do {
@@ -260,7 +262,7 @@ do {
 } while (condition);
 ```
 
-## 'for' 반복문
+### 'for' 반복문
 
 ```javascript
 for (begin; condition; step) {

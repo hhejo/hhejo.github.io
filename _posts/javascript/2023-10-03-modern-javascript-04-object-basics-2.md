@@ -6,7 +6,7 @@ categories: [JavaScript]
 tags: [javascript]
 ---
 
-here ;
+new 연산자, 생성자 함수, new.target, 메서드, 옵셔널 체이닝 ?., 심볼, 객체를 원시형으로 변환하기, toString, valueOf
 
 ## new 연산자와 생성자 함수
 

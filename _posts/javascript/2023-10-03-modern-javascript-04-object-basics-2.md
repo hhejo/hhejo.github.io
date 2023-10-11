@@ -495,7 +495,7 @@ alert(user); // toString -> John
 alert(user + 500); // toString -> John500
 ```
 
-### 반환 타임
+### 반환 타입
 
 위에서 소개한 세 개의 메서드는 hint에 명시된 자료형으로의 형 변환을 보장해주지 않음
 

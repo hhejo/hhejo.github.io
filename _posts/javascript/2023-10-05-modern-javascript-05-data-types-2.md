@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 2
 date: 2023-10-05 08:19:33 +0900
-last_modified_at: 2023-10-05 08:19:33 +0900
+last_modified_at: 2023-10-13 19:27:52 +0900
 categories: [JavaScript]
 tags: [javascript]
 ---
@@ -12,6 +12,8 @@ tags: [javascript]
 
 순서가 있는 컬렉션을 저장할 때 사용
 
+객체는 순서를 고려하지 않고 만들어진 자료구조로 새로운 프로퍼티를 기존 프로퍼티 사이에 끼워넣기 불가능
+
 ### 배열 선언
 
 ```javascript
@@ -19,17 +21,37 @@ let arr = new Array();
 let arr = [];
 ```
 
-- 대괄호 안에 배열 내 특정 요소를 얻거나, 수정할 수 있음
-- 새로운 요소를 배열에 추가할 수도 있음
-- `length`는 배열의 요소 개수 반환
-- 배열의 요소의 자료형에 제약은 없음
+대괄호 안에 인덱스를 넣어 배열 내 특정 요소를 얻거나, 수정할 수 있음
+
+새로운 요소를 배열에 추가할 수도 있음
+
+`length`
+
+- 배열의 요소 개수 반환
+
+배열의 요소의 자료형에 제약은 없음
 
 ```javascript
 let fruits = ["사과", "오렌지", "자두"];
 fruits[2] = "배"; // 수정
 fruits[3] = "레몬"; // 추가
 alert(fruits.length); // 4
+let arr = [
+  "사과",
+  { name: "이보라" },
+  true,
+  function () {
+    alert("안녕하세요.");
+  }
+];
+alert(arr[1].name); // 이보라
+arr[3](); // 안녕하세요.
 ```
+
+trailing 쉼표
+
+- 배열의 마지막 요소는 객체와 마찬가지로 쉼표로 끝날 수 있음
+- 모든 줄의 생김새가 유사해지기 때문에 요소를 넣거나 빼기 쉬워짐
 
 ### pop·push와 shift·unshift
 
@@ -37,6 +59,7 @@ alert(fruits.length); // 4
 
 - 배열 맨 끝에 요소 추가
 - 여러 개를 한번에 추가 가능
+- `arr.push(...)`는 `arr.[arr.length] = ...`와 같은 효과
 
 `pop`
 
@@ -79,30 +102,45 @@ alert(fruits.length); // 4
 
 ### 'length' 프로퍼티
 
-- 배열에 조작을 가하면 `length` 프로퍼티 자동 갱신
-- 배열 내 요소의 개수가 아니라 가장 큰 인덱스에 1을 더한 값
-- 수동으로 조작해 값을 감소시키면 배열이 잘릴 수 있음
-- `arr.length = 0;`을 사용해 간단히 배열을 비울 수 있음
+배열에 조작을 가하면 `length` 프로퍼티 자동 갱신
+
+`length` 프로퍼티는 배열 내 요소의 개수가 아니라 가장 큰 인덱스에 1을 더한 값
+
+수동으로 조작해 값을 감소시키면 배열이 잘릴 수 있음
+
+```javascript
+let arr = [1, 2, 3, 4, 5];
+arr.length = 9;
+alert(arr); // 1,2,3,4,5,,,, -> [1, 2, 3, 4, 5, 비어 있음 × 4]
+arr.length = 2;
+alert(arr); // 1,2
+arr.length = 5; // 원래 길이 복구
+alert(arr[3]); // undefined
+arr.length = 0; // 배열 비우기
+```
 
 ### new Array()
 
-- 숫자형 인수 하나를 넣어 `new Array()`를 호출하면 배열이 만들어지는데, 이 배열에는 요소가 없는 반면 길이는 인수와 같아짐
-- ```javascript
-  let arr = new Array(2);
-  alert(arr[0]); // undefined
-  alert(arr.length); // 2
-  ```
-- 대괄호로 배열을 생성하는 것을 추천
+숫자형 인수 하나를 넣어 `new Array()`를 호출하면 배열이 만들어지는데, 이 배열에는 요소가 없는 반면 길이는 인수와 같아짐
 
-### 다차원 배열
+```javascript
+let arr = new Array(2);
+alert(arr[0]); // undefined
+alert(arr.length); // 2
+arr = new Array("사과", "배", "오렌지");
+```
 
-- multidimensional array
-- 배열의 요소가 배열
+대괄호로 배열을 생성하는 것을 추천
+
+### 다차원 배열(Multidimensional array)
+
+배열의 요소가 배열
 
 ### toString
 
-- 요소를 쉼표로 구분한 문자열 반환
-- 배열엔 `Symbol.toPrimitive`나 `valueOf` 메서드가 없음
+요소를 쉼표로 구분한 문자열 반환
+
+배열엔 `Symbol.toPrimitive`나 `valueOf` 메서드가 없음
 
 ```javascript
 let arr = [1, 2, 3];
@@ -117,7 +155,10 @@ alert([1, 2] + 1); // 1,21
 
 ### 요소 추가·제거 메서드
 
-- 객체형에 속하기 때문에 `delete`를 사용할 수 있으나 배열의 길이는 변하지 않음
+객체형에 속하기 때문에 `delete`를 사용할 수 있으나 배열의 길이는 변하지 않음
+
+- 해당 키에 상응하는 값을 지우기 때문
+- 빈 공간을 채우지는 않음
 
 ```javascript
 let arr = ["I", "go", "home"];
@@ -128,12 +169,37 @@ alert(arr.length); // 3
 
 `arr.splice(index[, deleteCount, elem1, ..., elemN])`
 
+- 요소 추가, 삭제, 교체 가능
 - `index`: 조작을 가할 첫 번째 요소를 가리키는 인덱스
 - `deleteCount`: 제거할 요소의 개수
 - `elem1, ..., elemN`: 배열에 추가할 요소
 - 삭제된 요소로 구성된 배열 반환
 - `deleteCount`를 `0`으로 설정하면 요소를 제거하지 않으면서 새로운 요소 추가 가능
 - 음수 인덱스 가능(배열 끝에서부터 셈)
+
+```javascript
+let arr = ["I", "study", "JavaScript"];
+arr.splice(1, 1); // ["study"]
+arr; // ["I", "JavaScript"]
+```
+
+```javascript
+let arr = ["I", "study", "JavaScript", "right", "now"];
+arr.splice(0, 3, "Let's", "dance"); // ["I", "study", "JavaScript"]
+arr; // ["Let's", "dance", "right", "now"]
+```
+
+```javascript
+let arr = ["I", "study", "JavaScript"];
+arr.splice(2, 0, "complex", "language"); // []
+arr; // ["I", "study", "complex", "language", "JavaScript"]
+```
+
+```javascript
+let arr = [1, 2, 5];
+arr.splice(-1, 0, 3, 4); // []
+alert(arr); // 1,2,3,4,5
+```
 
 `arr.slice([start], [end])`
 
@@ -142,6 +208,26 @@ alert(arr.length); // 3
 - `str.slice`와 다르게 서브 문자열 대신 서브 배열을 반환
 - `arr.slice()`로 인수를 하나도 넘기지 않고 호출해 `arr`의 복사본 생성 가능
 
+```javascript
+let arr = ["t", "e", "s", "t"];
+alert(arr.slice(1, 3));
+alert(arr.slice(-2));
+```
+
+```javascript
+let arr = [1, 2, 3];
+let arr2 = arr.slice(); // [1, 2, 3]
+alert(arr2); // 1,2,3
+arr2.push(4);
+alert(arr); // 1,2,3
+```
+
+```javascript
+let arr = [1, 2, 3];
+arr.splice(); // []
+arr.slice(); // [1, 2, 3]
+```
+
 `arr.concat(arg1, arg2...)`
 
 - 기존 배열의 요소를 사용해 새로운 배열을 만들거나 기존 배열에 요소 추가
@@ -149,33 +235,51 @@ alert(arr.length); // 3
 - `arr`에 속한 모든 요소와 `arg1`, `arg2` 등에 속한 모든 요소를 한데 모은 새로운 배열 반환
 - 인수 `argN`이 배열일 경우 배열의 모든 요소가 복사됨
 - 객체가 인자로 넘어오면(배열처럼 보이는 유사 배열 객체라도) 객체는 분해되지 않고 통으로 복사
-- ```javascript
-  let arr = [1, 2, 3];
-  let arrayLike = { 0: "something", length: 1 };
-  alert(arr.concat(arrayLike)); // 1,2,[object Object]
-  ```
-  - 인자로 받은 유사 배열 객체에 특수한 프로퍼티 `Symbol.isConcatSpreadable`이 있으면 이 객체를 배열처럼 취급해서 객체 전체가 아닌 객체 프로퍼티의 값이 더해짐
-- ```javascript
-  let arr = [1, 2];
-  let arrayLike = {
-    0: "a",
-    1: "b",
-    [Symbol.isConcatSpreadable]: true,
-    length: 2
-  };
-  alert(arr.concat(arrayLike)); // 1,2,a,b
-  ```
+- 인자로 받은 유사 배열 객체에 특수한 프로퍼티 `Symbol.isConcatSpreadable`이 있으면 이 객체를 배열처럼 취급해서 객체 전체가 아닌 객체 프로퍼티의 값이 더해짐
+
+```javascript
+let arr = [1, 2];
+arr.concat(3, 4); // [1, 2, 3, 4]
+arr.concat([5, 6], 7, [8, 9]); // [1, 2, 5, 6, 7, 8, 9]
+arr; // [1, 2]
+```
+
+```javascript
+let arr = [1, 2, 3];
+let arrayLike = { 0: "something", length: 1 };
+alert(arr.concat(arrayLike)); // 1,2,[object Object]
+```
+
+```javascript
+let arr = [1, 2];
+let arrayLike = {
+  0: "a",
+  1: "b",
+  [Symbol.isConcatSpreadable]: true,
+  length: 2
+};
+alert(arr.concat(arrayLike)); // 1,2,a,b
+```
 
 ### forEach로 반복 작업하기
 
 `arr.forEach`
 
 - 주어진 함수를 배열 요소 각각에 대해 실행
+- 인수로 넘겨준 함수의 반환값은 무시됨
 
 ```javascript
-arr.forEach(function (item, index, array) {
-  // 요소에 무언가를 함
+arr.forEach(function (item, index, array) {...});
+```
+
+```javascript
+["Bilbo", "Gandalf", "Nazgul"].forEach(alert); // Bilbo, Gandalf, Nazgul
+["Bilbo", "Gandalf", "Nazgul"].forEach((item, index, array) => {
+  alert(`${item} is at index ${index} in ${array}`);
 });
+// Bilbo is at index 0 in Bilbo,Gandalf,Nazgul
+// Gandalf is at index 1 in Bilbo,Gandalf,Nazgul
+// Nazgul is at index 2 in Bilbo,Gandalf,Nazgul
 ```
 
 ### 배열 탐색하기
@@ -194,17 +298,19 @@ arr.forEach(function (item, index, array) {
 `arr.includes(item, from)`
 
 - 해당하는 요소를 발견하면 `true` 반환
-- `NaN`도 제대로 처리하기 때문에, 정확한 위치가 아닌 배열 내 존재하는지 여부만 알고 싶다면 사용
-- ```javascript
-  const arr = [NaN];
-  alert(arr.indexOf(NaN)); // -1 (NaN === NaN 이므로)
-  alert(arr.includes(NaN)); // true
-  ```
+- `NaN`도 제대로 처리하기 때문에, 정확한 위치가 아닌 배열 내 존재하는지 여부만 알고 싶을 때 좋음
+
+```javascript
+const arr = [NaN];
+alert(arr.indexOf(NaN)); // -1 (NaN === NaN 이라서 동작하지 않음)
+alert(arr.includes(NaN)); // true
+```
 
 `arr.find(fn)`
 
 - 객체로 이루어진 배열에서, 특정 조건에 부합하는 객체를 찾는 데 유용
 - `arr.findIndex`도 동일한 일을 하지만, 요소를 반환하지 않고 인덱스를 반환
+- 실무에선 객체로 구성된 배열을 많이 다루기 때문에 유용
 
 ```javascript
 let result = arr.find(function (item, index, array) {
@@ -231,6 +337,7 @@ alert(user.name); // John
 
 - 조건을 충족하는 요소가 여러 개일 때 사용
 - 조건에 맞는 요소 전체를 담은 배열을 반환
+- `find`는 하나, `filter`는 여러 개 탐색
 
 ```javascript
 let results = arr.filter(function (item, index, array) {
@@ -291,23 +398,31 @@ alert(arr); // 1,2,15
 ```
 
 - 정렬 함수의 반환 값에는 제약이 없음. 반환 값이 양수인 경우 첫 번째 인수가 두 번째 인수보다 '크다'를 나타내고, 음수인 경우 첫 번째 인수가 두 번째 인수보다 '작다'를 나타내기만 하면 됨
-- ```javascript
-  let arr = [1, 2, 15];
-  arr.sort((a, b) => a - b);
-  alert(arr); // 1,2,15
-  ```
+
+```javascript
+let arr = [1, 2, 15];
+arr.sort((a, b) => a - b);
+alert(arr); // 1,2,15
+```
 
 - 문자열엔 `localeCompare`를 사용하는 것을 권장
-- ```javascript
-  let countries = ["Österreich", "Andorra", "Vietnam"];
-  alert(countries.sort((a, b) => (a > b ? 1 : -1))); // Andorra, Vietnam, Österreich (제대로 정렬이 되지 않았습니다.)
-  alert(countries.sort((a, b) => a.localeCompare(b))); // Andorra,Österreich,Vietnam (제대로 정렬되었네요!)
-  ```
+
+```javascript
+let countries = ["Österreich", "Andorra", "Vietnam"];
+alert(countries.sort((a, b) => (a > b ? 1 : -1))); // Andorra, Vietnam, Österreich (제대로 정렬이 되지 않았습니다.)
+alert(countries.sort((a, b) => a.localeCompare(b))); // Andorra,Österreich,Vietnam (제대로 정렬되었네요!)
+```
 
 `arr.reverse()`
 
 - 요소를 역순으로 정렬
 - 반환 값은 재정렬된 배열
+
+```javascript
+let arr = [1, 2, 3, 4, 5];
+arr.reverse(); // [5, 4, 3, 2, 1]
+alert(arr); // 5,4,3,2,1
+```
 
 `str.split(delim)`
 
@@ -356,8 +471,14 @@ let value = arr.reduce(
 
 ```javascript
 let arr = [1, 2, 3, 4, 5];
-let result = arr.reduce((sum, current) => sum + current, 0);
+let result = arr.reduce((acc, cur) => acc + cur, 0);
 alert(result); // 15
+```
+
+```javascript
+let arr = [];
+arr.reduce((acc, cur) => acc + cur); // TypeError: Reduce of empty array with no initial value
+arr.reduce((acc, cur) => acc + cur, 0); // 15
 ```
 
 `arr.reduceRight(fn)`
@@ -366,28 +487,52 @@ alert(result); // 15
 
 ### Array.isArray로 배열 여부 알아내기
 
-- 자바스크립트에서 배열은 독립된 자료형으로 취급하지 않고 객체형에 속함
-- `typeof`로는 일반 객체와 배열을 구분할 수 없음
-- ```javascript
-  alert(typeof {}); // object
-  alert(typeof []); // object
-  ```
-- `Array.isArray(value)`로 감별 가능
-- ```javascript
-  alert(Array.isArray({})); // false
-  alert(Array.isArray([])); // true
-  ```
+자바스크립트에서 배열은 독립된 자료형으로 취급하지 않고 객체형에 속함
+
+`typeof`로는 일반 객체와 배열을 구분할 수 없음
+
+```javascript
+alert(typeof {}); // object
+alert(typeof []); // object
+```
+
+`Array.isArray(value)`로 감별 가능
+
+```javascript
+alert(Array.isArray({})); // false
+alert(Array.isArray([])); // true
+```
 
 ### 배열 메서드와 'thisArg'
 
-- 함수를 호출하는 대부분의 배열 메서드(find, filter, map 등. sort는 제외)는 `thisArg`라는 매개변수를 옵션으로 받을 수 있음
-- `thisArg`는 `func`의 `this`가 됨
+함수를 호출하는 대부분의 배열 메서드(find, filter, map 등. sort는 제외)는 `thisArg`라는 매개변수를 옵션으로 받을 수 있음
+
+`thisArg`는 `func`의 `this`가 됨
 
 ```javascript
 arr.find(func, thisArg);
 arr.filter(func, thisArg);
 arr.map(func, thisArg);
 ```
+
+```javascript
+let army = {
+  minAge: 18,
+  maxAge: 27,
+  canJoin(user) {
+    return user.age >= this.minAge && user.age < this.maxAge;
+  }
+};
+let users = [{ age: 16 }, { age: 20 }, { age: 23 }, { age: 30 }];
+// army.canJoin 호출 시 참을 반환해주는 user를 찾음
+let soldiers = users.filter(army.canJoin, army);
+alert(soldiers.length); // 2
+alert(soldiers[0].age); // 20
+alert(soldiers[1].age); // 23
+```
+
+- `thisArg`에 `army`를 지정하지 않고 단순히 `users.filter(army.canJoin)`을 사용했다면 `army.canJoin`은 단독 함수처럼 취급되고, 함수 본문 내 `this`는 `undefined`가 되어 에러가 발생했을 것
+- `users.filter(user => army.canJoin(user))`를 사용하면 `users.filter(army.canJoin, army)`를 대체할 수 있지만 `thisArg`를 사용하는 방식이 좀 더 이해하기 쉬워 더 자주 사용됨
 
 ## iterable 객체
 

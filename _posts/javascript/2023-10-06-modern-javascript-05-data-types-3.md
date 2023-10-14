@@ -1,27 +1,56 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 3
 date: 2023-10-06 08:23:28 +0900
-last_modified_at: 2023-10-06 08:23:28 +0900
+last_modified_at: 2023-10-14 08:36:16 +0900
 categories: [JavaScript]
 tags: [javascript]
 ---
 
-맵, 셋, aaaaaaaaa
+맵, 셋, 위크맵, 위크셋, Object.keys, values, entries
 
 ## 맵과 셋
 
-- 객체: 키가 있는 컬렉션을 저장
-- 배열: 순서가 있는 컬렉션을 저장
+객체
+
+- 키가 있는 컬렉션을 저장
+
+배열
+
+- 순서가 있는 컬렉션을 저장
 
 ### 맵(Map)
 
-- 키가 있는 데이터를 저장(객체와 유사)
-- 키에 다양한 자료형을 허용(객체와 차이)
-- 객체도 키로 혀용
-- 객체는 키를 문자형으로 자동 변환하지만 맵은 키의 타입을 변환하지 않고 그대로 유지
-- `SameValueZero`라 불리는 알고리즘을 사용해 값의 등가 여부를 확인
-  - 이 알고리즘은 일치 연산자 `===`와 거의 유사하지만 `NaN`과 `NaN`을 같다고 취급하기 때문에 일치 연산자와 차이가 있음
-  - 따라서 `NaN`도 키로 쓸 수 있음
+키가 있는 데이터를 저장(객체와 유사)
+
+키에 다양한 자료형을 허용(객체와 차이)
+
+- 객체: 키를 문자형으로 자동 변환
+- 맵: 키의 타입을 변환하지 않고 그대로 유지(객체도 키로 허용)
+
+맵은 `SameValueZero`라 불리는 알고리즘을 사용해 값의 등가 여부를 확인
+
+- 일치 연산자 `===`와 거의 유사하지만 `NaN`과 `NaN`을 같다고 취급하는 것이 차이
+- 따라서 `NaN`도 키로 쓸 수 있음
+
+```javascript
+let map = new Map();
+map.set("1", "str1");
+map.set(1, "num1");
+map.set(true, "bool1");
+map.get(1); // 'num1'
+map.get("1"); // 'str1'
+map.size; // 3
+```
+
+```javascript
+let john = { name: "John" };
+let visitsCountMap = new Map();
+let visitsCountObj = {};
+visitsCountMap.set(john, 123);
+visitsCountObj[john] = 123;
+visitsCountMap.get(john); // 123
+visitsCountObj["[object Object]"]; // 123
+```
 
 `new Map()`
 
@@ -30,16 +59,25 @@ tags: [javascript]
 `map.set(key, value)`
 
 - `key`를 이용해 `value`를 저장
-- 호출할 때마다 맵 자신을 반환하기 때문에 체이닝(chaining)할 수 있음
-- ```javascript
-  map.set("1", "str1").set(1, "num1").set(true, "bool1");
-  ```
+- 호출할 때마다 맵 자신을 반환하기 때문에 체이닝(chaining) 가능
+
+```javascript
+map.set("1", "str1").set(1, "num1").set(true, "bool1");
+```
 
 `map.get(key)`
 
 - `key`에 해당하는 값을 반환
 - `key`가 존재하지 않으면 `undefined`를 반환
-- `[]`(`map[key]`)를 사용해 접근할 키의 값에 접근하게 되면 `map`이 일반 객체로 취급되기 때문에 좋지 않음
+
+`[]`(`map[key]`)를 사용해 접근할 키의 값에 접근하게 되면 `map`이 일반 객체로 취급되기 때문에 여러 제약 발생
+
+```javascript
+map[key] = 2; // X
+map.set(key, value); // O
+map[key]; // X
+map.get(key); // O
+```
 
 `map.has(key)`
 
@@ -57,26 +95,6 @@ tags: [javascript]
 `map.size`
 
 - 요소의 개수를 반환
-
-```javascript
-let map = new Map();
-map.set("1", "str1");
-map.set(1, "num1");
-map.set(true, "bool1");
-alert(map.get(1)); // num1
-alert(map.get("1")); // str1
-alert(map.size); // 3
-```
-
-```javascript
-let john = { name: "John" };
-let visitsCountMap = new Map();
-let visitsCountObj = {};
-visitsCountMap.set(john, 123);
-visitsCountObj[john] = 123;
-alert(visitsCountMap.get(john)); // 123
-alert(visitsCountObj["[object Object]"]); // 123
-```
 
 ### 맵 요소에 반복 작업하기
 
@@ -126,7 +144,7 @@ recipeMap.forEach((value, key, map) => {
 
 ### Object.entries: 객체를 맵으로 바꾸기
 
-- 각 요소가 키-값 쌍인 배열이나 이터러블 객체를 초기화 용도로 맵에 전달해 새로운 맵 생성 가능
+각 요소가 키-값 쌍인 배열이나 이터러블 객체를 초기화 용도로 맵에 전달해 새로운 맵 생성 가능
 
 ```javascript
 let map = new Map([
@@ -137,24 +155,23 @@ let map = new Map([
 alert(map.get("1")); // str1
 ```
 
-`Object.entries(obj)`
+`Object.entries()`
 
-- 객체를 맵으로 변경
 - 객체의 키-값 쌍을 요소(`[key, value]`)로 갖는 배열 반환
 - 반환 값을 `Object.fromEntries()`의 인수로 사용하면 좋음
 
 ```javascript
 let obj = { name: "John", age: 30 };
-let map = new Map(Object.entries(obj)); // [["name", "John"], ["age", 30]]
+Object.entries(obj); // [["name", "John"], ["age", 30]]
+let map = new Map(Object.entries(obj)); // {'name' => 'John', 'age' => 30}
 alert(map.get("name"));
+Object.entries([1, 2, 3]); // [['0', 1], ['1', 2], ['2', 3]]
 ```
 
 `Object.fromEntries()`
 
-- 맵을 객체로 변경
 - 각 요소가 `[key, value]` 쌍인 배열을 객체로 변환
-- 자료가 맵에 저장되어 있는데 서드파티 코드에서 자료를 객체 형태로 넘겨받길 원할 때 사용
-- 인수로 `Object.entries()`의 반환 값을 사용하면 좋음
+- `Object.fromEntries(Object.entries())`
 - 이터러블 객체를 인수로 받기 때문에 꼭 배열을 인수로 전달할 필요 없음
 
 ```javascript
@@ -163,34 +180,31 @@ let prices = Object.fromEntries([
   ["orange", 2],
   ["meat", 4]
 ]);
-// prices = { banana: 1, orange: 2, meat: 4 }
+prices; // { banana: 1, orange: 2, meat: 4 }
 alert(prices.orange); // 2
 ```
 
 ```javascript
 let map = new Map();
-map.set("banana", 1);
-map.set("orange", 2);
-map.set("meat", 4);
+map.set("banana", 1).set("orange", 2).set("meat", 4);
+// let obj = Object.fromEntries(map);
 let obj = Object.fromEntries(map.entries());
-// obj = { banana: 1, orange: 2, meat: 4 }
+obj; // { banana: 1, orange: 2, meat: 4 }
 alert(obj.orange); // 2
-```
-
-```javascript
-let obj = Object.fromEntries(map); // .entries() 생략해도 동일
 ```
 
 ### 셋(Set)
 
-- 중복을 허용하지 않는 값을 모아놓은 특별한 컬렉션
-- 키가 없는 값이 저장됨
-- 값의 유일무이함을 확인하는 데 최적화되어 있음
+중복을 허용하지 않는 값을 모은 컬렉션
+
+키가 없는 값이 저장됨
+
+값의 유일무이함을 확인하는 데 최적화
 
 `new Set(iterable)`
 
 - 셋 생성
-- 이터러블 객체를 전달받으면(대개 배열을 전달받음) 그 안의 값을 복사해 셋에 넣음
+- 이터러블 객체를 전달받으면(주로 배열) 그 안의 값을 복사해 셋에 넣음
 
 `set.add(value)`
 
@@ -222,8 +236,9 @@ let mary = { name: "Mary" };
 set.add(john);
 set.add(pete);
 set.add(mary);
-set.add(john);
-set.add(mary);
+set.delete(john); // true
+set.delete(john); // false
+set.add(john).add(mary);
 alert(set.size); // 3
 for (let user of set) {
   alert(user.name); // John, Pete, Mary
@@ -264,6 +279,229 @@ set.forEach((value, valueAgain, set) => {
 
 - 셋 내의 각 값을 이용해 만든 `[value, value]` 배열을 포함하는 이터러블 객체를 반환
 - 맵과의 호환성을 위한 메서드
+
+## 위크맵과 위크셋
+
+자바스크립트는 도달 가능한(추후 사용될 가능성이 있는) 값을 메모리에 유지
+
+```javascript
+let john = { name: "John" };
+john = null; // 객체가 도달 가능하지 않게 되어 메모리에서 삭제
+```
+
+객체의 프로퍼티, 배열, 맵, 셋의 요소
+
+- 자신이 속한 자료구조가 메모리에 남아있는 동안 대개 도달 가능한 값으로 취급되어 메모리에 유지
+
+```javascript
+let john = { name: "John" };
+let array = [john];
+john = null;
+// john을 나타내는 객체는 배열의 요소이기 때문에 가비지 컬렉터의 대상에서 제외
+alert(JSON.stringify(array[0])); // {"name":"John"}
+```
+
+```javascript
+let john = { name: "John" };
+let map = new Map();
+map.set(john, "...");
+john = null;
+for (let obj of map.keys()) {
+  alert(JSON.stringify(obj)); // {"name":"John"}
+}
+alert(map.size);
+```
+
+### 위크맵(WeakMap)
+
+키로 쓰인 객체가 가비지 컬렉션의 대상이 됨
+
+위크맵의 키는 반드시 객체
+
+- 원시값은 키로 사용 불가
+
+```javascript
+let weakMap = new WeakMap();
+let obj = {};
+weakMap.set(obj, "ok");
+weakMap.set("test", "whoops"); // TypeError: Invalid value used as weak map key
+```
+
+위크맵의 키로 사용된 객체를 참조하는 것이 아무것도 없다면 해당 객체는 메모리와 위크맵에서 자동으로 삭제됨
+
+```javascript
+let john = { name: "John" };
+let weakMap = new WeakMap();
+weakMap.set(john, "...");
+john = null;
+// john을 나타내는 객체는 이제 메모리에서 지워짐
+```
+
+위크맵은 맵과 다르게 반복 작업과 `keys()`, `values()`, `entries()` 메서드를 지원하지 않음
+
+- 가비지 컬렉션의 동작 방식 때문
+- 객체는 모든 참조를 잃게 되면 자동으로 가비지 컬렉션의 대상이 됨
+  - 가비지 컬렉션의 동작 시점은 정확히 알 수 없음
+- 가비지 컬렉션이 일어나는 시점은 자바스크립트 엔진이 결정
+  - 객체는 모든 참조를 잃었을 때 그 즉시 메모리에서 삭제될 수도 있고, 다른 삭제 작업이 있을 때까지 대기하다가 함께 삭제될 수도 있음
+  - 때문에 현재 위크맵에 요소가 몇 개 있는지 정확히 파악하는 것이 불가능
+  - 가비지 컬렉터가 한번에 메모리 청소를 할 수도 있고, 부분 부분 메모리 청소를 할 수도 있으므로 위크맵의 요소(키/값) 전체를 대상으로 무언가를 하는 메서드는 동작 자체가 불가능
+
+`weakMap.get(key)`
+
+`weakMap.set(key, value)`
+
+`weakMap.delete(key)`
+
+`weakMap.has(key)`
+
+### 유스 케이스: 추가 데이터
+
+위크맵을 사용할 수 있는 경우
+
+- 부차적인 데이터를 저장할 공간이 필요할 때 유용
+
+서드파티 라이브러리와 같은 외부 코드에 속한 객체를 가지고 작업을 할 때, 이 객체에 데이터를 추가해야 하는데 추가할 데이터는 객체가 살아있는 동안에만 유효한 상황일 때 위크맵이 유용
+
+- 위크맵에 원하는 데이터를 저장하고, 이때 키는 객체를 사용
+- 객체가 가비지 컬렉션의 대상이 될 때, 데이터도 함께 사라짐
+
+```javascript
+weakMap.set(john, "비밀문서"); // john이 사망하면, 비밀문서 자동 파기
+```
+
+예시 2
+
+- 맵의 요소의 키에 특정 사용자를 나타내는 객체를, 값엔 해당 사용자의 방문 횟수를 저장
+- 어떤 사용자의 정보를 저장할 필요가 없어지면(가비지 컬렉션의 대상이 되면) 해당 사용자의 방문 횟수도 저장할 필요가 없음
+
+```javascript
+// visitsCount.js
+let visitsCountMap = new Map();
+function countUser(user) {
+  let count = visitsCountMap.get(user) || 0;
+  visitsCountMap.set(user, count + 1);
+}
+// main.js
+let john = { name: "John" };
+countUser(john);
+john = null;
+```
+
+- `john`을 `null`로 덮어쓰면 `john`이 나타내는 객체는 가비지 컬렉션의 대상이 되어야 하는데 `visitsCountMap`의 키로 사용되고 있어 메모리에서 삭제되지 않음
+- 특정 사용자를 나타내는 객체가 메모리에서 사라지면 해당 객체에 대한 정보(방문 횟수)도 손수 지워야 함
+  - 그렇지 않으면 `visitsCountMap`이 차지하는 메모리 공간이 커짐
+  - 애플리케이션 구조가 복잡할 땐 쓸모 없는 데이터를 수동으로 비워주는 것이 까다로움
+  - 이럴 때 위크맵을 사용해 문제를 예방
+
+```javascript
+// visitsCount.js
+let visitsCountMap = new WeakMap();
+function countUser(user) {
+  let count = visitsCountMap.get(user) || 0;
+  visitsCountMap.set(user, count + 1);
+}
+```
+
+- 위크맵을 사용해 사용자 방문 횟수를 저장하면 `visitsCountMap`을 수동으로 청소할 필요 없음
+- `john`을 나타내는 객체가 도달 가능하지 않은 상태가 되면 자동으로 메모리에서 삭제
+- 위크맵의 키에 대응하는 값(방문 횟수)도 자동으로 가비지 컬렉션의 대상이 됨
+
+### 유스 케이스: 캐싱
+
+위크맵은 캐싱(caching)이 필요할 때 유용
+
+캐싱
+
+- 시간이 오래 걸리는 작업의 결과를 저장해서 연산 시간과 비용을 절약해주는 기법
+- 동일한 함수를 여러 번 호출해야 할 때, 최초 호출 시 반환된 값을 어딘가에 저장해 놓았다가 그 다음엔 함수를 호출하는 대신 저장된 값을 사용하는 것이 예
+
+```javascript
+// cache.js
+let cache = new Map();
+function process(obj) {
+  if (!cache.has(obj)) {
+    let result = obj; // 연산 수행
+    cache.set(obj, result);
+  }
+  return cache.get(obj);
+}
+// main.js
+let obj = {...}
+let result1 = process(obj);
+let result2 = process(obj); // 연산을 수행할 필요 없이 맵에 저장된 결과를 가져옴
+obj = null; // 객체가 쓸모 없어지면
+alert(cache.size); // 1 (여전히 객체가 남아 있어 메모리 낭비)
+```
+
+- 캐시를 수동으로 청소해야 함
+- 위크맵으로 교체해 예방할 수 있음
+
+```javascript
+// cache.js
+let cache = new WeakMap();
+```
+
+### 위크셋(WeakSet)
+
+셋과 유사하지만 객체만 저장 할 수 있음
+
+- 원시값 저장 불가
+
+해당 객체가 도달 가능할 때만 메모리에서 유지됨
+
+`size`, `keys()`나 반복 작업 관련 메서드 사용 불가
+
+`weakSet.add()`
+
+`weakSet.delete()`
+
+`weakSet.has()`
+
+위크맵처럼 복잡한 데이터를 저장하지 않고 예, 아니오 같은 간단한 답변을 얻는 용도로 사용
+
+```javascript
+let visitedSet = new WeakSet();
+let john = { name: "John" };
+let pete = { name: "Pete" };
+let mary = { name: "Mary" };
+visitedSet.add(john);
+visitedSet.add(pete);
+visitedSet.add(john);
+alert(visitedSet.has(john)); // true
+alert(visitedSet.has(mary)); // false
+john = null; // visitedSet에 john을 나타내는 객체가 자동으로 삭제됨
+```
+
+## Object.keys, values, entries
+
+순회(iteration)
+
+`keys()`, `values()`, `entries()`를 쓸 수 있는 자료구조
+
+- Map
+- Set
+- Array
+
+일반 객체에도 순회 관련 메서드가 있지만 `keys()`, `values()`, `entries()`와 문법의 차이가 있음
+
+### Object.keys, values, entries
+
+일반 객체에 쓸 수 있는 메서드
+
+`Object.keys(obj)`
+
+- 객체의 키만 담은 배열을 반환
+
+`Object.values(obj)`
+
+- 객체의 값만 담은 배열을 반환
+
+`Object.entries(obj)`
+
+- `[키, 값]` 쌍을 담은 배열을 반환
+
+...
 
 ## 참고
 

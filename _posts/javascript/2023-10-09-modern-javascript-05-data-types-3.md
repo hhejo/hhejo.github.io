@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 3
 date: 2023-10-06 08:23:28 +0900
-last_modified_at: 2023-10-14 08:36:16 +0900
+last_modified_at: 2023-10-15 07:38:57 +0900
 categories: [JavaScript]
 tags: [javascript]
 ---
@@ -501,7 +501,48 @@ john = null; // visitedSet에 john을 나타내는 객체가 자동으로 삭제
 
 - `[키, 값]` 쌍을 담은 배열을 반환
 
-...
+Map, Set, Array 전용 메서드와 일반 객체용 메서드 비교
+
+- `map.keys()`, `set.keys()`, `arr.keys()`
+  - 이터러블 객체 반환
+- `Object.keys(obj)`(`obj.keys()` 아님)
+  - 진짜 배열 반환
+  - 문법이 다른 이유는 유연성 때문
+  - 자바스크립트에선 복잡한 자료구조 전체가 객체에 기반
+  - 객체 `data`에 자체적으로 `data.values()`라는 메서드를 구현해 사용하는 경우가 있을 수 있음
+  - 이렇게 커스텀 메서드를 구현한 상태라도 `Object.values(data)` 같은 형태로 메서드를 호출할 수 있으면 커스텀 메서드와 내장 메서드 둘 다를 사용할 수 있음
+  - 메서드 `Object.*`를 호출하면 이터러블 객체가 아닌 객체의 한 종류를 반환하는데 이는 하위 호환성 때문
+
+```javascript
+let user = { name: "John", age: 30 };
+Object.keys(user); // ["name", "age"]
+Object.values(user); // ["John", 30]
+Object.entries(user); // [["name", "John"], ["age", 30]]
+```
+
+`Object.keys()`, `Object.values()`, `Object.entries()`는 심볼형 프로퍼티 무시
+
+- `for..in` 반복문처럼 심볼형 프로퍼티 무시
+- 심볼형 키가 필요한 경우 `Object.getOwnPropertySymbols` 사용
+- 키 전체를 배열 형태로 반환하는 `Reflect.ownKeys(obj)`를 사용해도 됨
+
+### 객체 변환하기
+
+객체엔 배열 전용 메서드 `map`, `filter` 등을 사용할 수 없음
+
+하지만 `Object.entries`와 `Object.fromEntries`를 순차적으로 적용하면 객체에도 배열 전용 메서드를 사용할 수 있음
+
+1. `Object.entries(obj)`를 사용해 객체의 키-값 쌍인 요소를 얻음
+2. 1.에서 만든 배열에 `map` 등의 배열 전용 메서드를 적용
+3. 2.에서 반환된 배열에 `Object.fromEntries`를 적용해 배열을 다시 객체로 변환
+
+```javascript
+let prices = { banana: 1, orange: 2, meat: 4 };
+let doublePrices = Object.fromEntries(
+  Object.entries(prices).map(([key, value]) => [key, value * 2])
+);
+doublePrices; // { banana: 2, orange: 4, meat: 8 }
+```
 
 ## 참고
 

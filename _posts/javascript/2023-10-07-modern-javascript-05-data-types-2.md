@@ -1,6 +1,6 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 2
-date: 2023-10-05 08:19:33 +0900
+date: 2023-10-07 08:19:33 +0900
 last_modified_at: 2023-10-14 07:55:14 +0900
 categories: [JavaScript]
 tags: [javascript]
@@ -60,6 +60,7 @@ trailing 쉼표
 - 배열 맨 끝에 요소 추가
 - 여러 개를 한번에 추가 가능
 - `arr.push(...)`는 `arr.[arr.length] = ...`와 같은 효과
+- 배열의 새로운 길이 반환
 
 `pop`
 

@@ -2,7 +2,7 @@
 title: 게시판 프로젝트 01 - nvm, npm, express
 date: 2023-07-10 00:00:00 +0900
 last_modified_at: 2023-07-10 00:00:00 +0900
-categories: [BulletinBoardPjt]
+categories: [Bulletin-Board-Pjt]
 tags: [bulletin-board-pjt, nvm, npm, node, express]
 ---
 

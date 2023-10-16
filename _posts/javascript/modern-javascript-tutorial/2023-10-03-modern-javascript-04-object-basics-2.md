@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 2
 date: 2023-10-03 20:13:24 +0900
-last_modified_at: 2023-10-11 20:35:59 +0900
+last_modified_at: 2023-10-16 20:39:33 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,7 +10,7 @@ new 연산자, 생성자 함수, 메서드, 옵셔널 체이닝 ?., 심볼, 숨�
 
 ## new 연산자와 생성자 함수
 
-객체 리터럴 `{...}`은 객체 여러 개 만들기 불편함
+객체 리터럴 `{...}`은 객체 여러 개 생성하기 번거로움
 
 `new` 연산자와 생성자 함수로 유사한 객체를 여러 개 만들 수 있음
 
@@ -32,7 +32,11 @@ function User(name) {
   this.isAdmin = false;
   // return this; (this가 암시적으로 반환됨)
 }
-let user = new User("보라"); // 아래 코드와 동일하게 동작
+let user = new User("보라");
+```
+
+```javascript
+// 위 코드와 동일하게 동작
 let user = { name: "보라", isAdmin: false };
 ```
 
@@ -71,7 +75,7 @@ new User(); // function User { ... }
 
 생성자 함수에는 보통 `return`문이 없음
 
-반환해야 할 것들은 모두 `this`에 저장되고, `this`는 자동으로 반환되기 때문
+- 반환해야 할 것들은 모두 `this`에 저장되고, `this`는 자동으로 반환되기 때문
 
 `return`문이 있으면
 
@@ -128,9 +132,10 @@ bora.sayHi(); // 제 이름은 이보라입니다.
 
 ## 옵셔널 체이닝 '?.'
 
-옵셔널 체이닝(optional chaining) `?.`으로 프로퍼티가 없는 중첩 객체를 에러 없이 안전하게 접근
+옵셔널 체이닝(optional chaining) `?.`
 
-연산자가 아닌 함수나 대괄호와 함께 동작하는 특별한 문법 구조체(syntax construct)
+- 프로퍼티가 없는 중첩 객체를 에러 없이 안전하게 접근
+- 연산자가 아닌 함수나 대괄호와 함께 동작하는 특별한 문법 구조체(syntax construct)
 
 ```javascript
 let user = {}; // 주소 정보 없음
@@ -138,7 +143,8 @@ alert(user.address.street); // TypeError: Cannot read properties of undefined (r
 ```
 
 ```javascript
-let html = document.querySelector(".my-element").innerHTML; // querySelector(...) 호출 결과가 null인 경우 에러 발생
+// querySelector(...) 호출 결과가 null인 경우 에러 발생
+let html = document.querySelector(".my-element").innerHTML;
 ```
 
 ### 옵셔널 체이닝의 등장 이전
@@ -218,14 +224,14 @@ user?.name = "Violet"; // SyntaxError: Invalid left-hand side in assignment
 
 유일한 식별자(unique identifier)를 만들고 싶을 때 사용
 
-유일성을 보장하기 때문에 동일 심볼을 여러 개 만들어도 각 심볼값은 다름
-
 심볼에 붙이는 설명(심볼 이름)은 어떤 것에도 영향을 주지 않는 이름표 역할
 
 ```javascript
 let id = Symbol(); // id는 심볼
 let id = Symbol("id"); // 'id'라는 설명이 붙는 심볼 id
 ```
+
+유일성을 보장하기 때문에 동일 심볼을 여러 개 만들어도 각 심볼값은 다름
 
 ```javascript
 let id1 = Symbol("id");
@@ -256,10 +262,14 @@ alert(user[id]); // 1, 심볼을 키로 사용해 데이터에 접근
 - `user`는 서드파티에서 가져 온 객체이므로 함부로 새로운 프로퍼티를 추가할 수 없음
 - 심볼은 서드파티 코드에서 접근할 수 없기 때문에, 심볼을 사용하면 서드파티 코드가 모르게 `user`에 식별자 부여 가능
 
+심볼로 숨김 프로퍼티를 사용하는 경우
+
 ```javascript
 let id = Symbol("id");
 user[id] = "제 3 스크립트 id 값";
 ```
+
+일반적인 프로퍼티를 사용하는 경우, 의도치 않게 덮어쓸 수 있음
 
 ```javascript
 let user = { name: "John" };
@@ -274,11 +284,10 @@ let id = Symbol("id");
 let user = { name: "John", [id]: 123 };
 ```
 
-심볼은 `for...in`에서 배제됨
-
-`Object.keys()`에서도 키가 심볼인 프로퍼티는 배제됨
-
 심볼형 프로퍼티 숨기기(hiding symbolic property)
+
+- 심볼은 `for...in`에서 배제됨
+- `Object.keys()`, `Object.values()`, `Object.entries()`에서도 키가 심볼인 프로퍼티는 배제됨
 
 ```javascript
 let id = Symbol("id");
@@ -289,10 +298,13 @@ alert(Object.keys(user)); // name,age
 
 `Object.assign`은 키가 심볼인 프로퍼티를 배제하지 않고 객체 내 모든 프로퍼티를 복사
 
+`{...obj}`도 동일
+
 ```javascript
 let id = Symbol("id");
 let user = { [id]: 123 };
 let clone = Object.assign({}, user);
+// let clone = { ...user };
 alert(clone[id]); // 123
 ```
 
@@ -302,9 +314,11 @@ alert(clone[id]); // 123
 
 전역 심볼 레지스트리(global symbol registry)를 이용해 이름이 같은 심볼이 같은 개체를 가리킬 수 있음
 
-`Symbol.for(key)`를 사용해 레지스트리 안에 있는 심볼을 읽거나, 새로운 심볼을 생성
+`Symbol.for(key)`
 
-해당 메서드를 호출하면 이름이 `key`인 심볼을 반환. 조건에 맞는 심볼이 레지스트리 안에 없으면 새로운 심볼 `Symbol(key)`를 만들고 레지스트리 안에 저장
+- 레지스트리 안에 있는 심볼을 읽거나, 새로운 심볼을 생성
+- 이름이 `key`인 심볼을 반환
+- 조건에 맞는 심볼이 레지스트리 안에 없으면 새로운 심볼 `Symbol(key)`를 만들고 레지스트리 안에 저장
 
 ```javascript
 let id = Symbol.for("id");
@@ -312,11 +326,10 @@ let idAgain = Symbol.for("id");
 alert(id === idAgain); // true
 ```
 
-`Symbol.keyFor(sym)`를 사용하면 이름을 얻을 수 있음
+`Symbol.keyFor(sym)`
 
-전역 심볼 레지스트리를 뒤져서 해당 심볼의 이름을 얻어냄
-
-전역 심볼이 아닌 인자가 넘어오면 `undefined`를 반환
+- 전역 심볼 레지스트리에서 해당 전역 심볼의 이름을 반환
+- 전역 심볼이 아닌 인자가 넘어오면 `undefined`를 반환
 
 ```javascript
 // 이름을 이용해 심볼을 찾음
@@ -327,9 +340,10 @@ alert(Symbol.keyFor(sym)); // name
 alert(Symbol.keyFor(sym2)); // id
 ```
 
-전역 심볼이 아닌 모든 심볼은 `description` 프로퍼티가 있음
+`symbol.description`
 
-일반 심볼에서 이름을 얻고 싶으면 `description` 프로퍼티 사용
+- 일반 심볼의 이름을 반환
+- 전역 심볼이 아닌 모든 심볼은 `description` 프로퍼티가 있음
 
 ```javascript
 let globalSymbol = Symbol.for("name");
@@ -349,11 +363,17 @@ alert(localSymbol.description); // name
 
 ## 객체를 원시형으로 변환하기
 
-객체는 논리 평가시 `true`를 반환
+불린형
 
-객체끼리 빼는 연산을 할 때나 수학 관련 함수를 적용할 때 숫자형으로의 형 변환 발생
+- 객체는 논리 평가 시 `true`를 반환
 
-문자형으로의 형 변환은 대개 `alert(obj)` 같이 객체를 출력하려고 할 때 발생
+숫자형
+
+- 객체끼리 빼는 연산을 할 때나 수학 관련 함수를 적용할 때 숫자형으로의 형 변환 발생
+
+문자형
+
+- `alert(obj)` 같이 객체를 출력하려고 할 때 문자형으로의 형 변환 발생
 
 ### ToPrimitive
 
@@ -361,36 +381,40 @@ alert(localSymbol.description); // name
 
 hint(목표로 하는 자료형)라 불리는 값이 객체 형 변환의 세 종류의 기준
 
-`string`
+hint가 `string`
 
-- `alert` 함수 같이 문자열을 기대하는 연산을 수행할 때는 hint가 `string`이 됨
-- ```javascript
-  alert(obj); // 객체를 출력하려고 함
-  anotherObj[obj] = 123; // 객체를 프로퍼티 키로 사용하고 있음
-  ```
+- `alert` 함수 같이 문자열을 기대하는 연산을 수행할 때
 
-`number`
+```javascript
+alert(obj); // 객체를 출력하려고 함
+anotherObj[obj] = 123; // 객체를 프로퍼티 키로 사용하고 있음
+```
 
-- 수학 연산을 적용하려 할 때, hint는 `number`가 됨
-- ```javascript
-  let num = Number(obj); // 명시적 형 변환
-  let n = +obj;
-  let delta = date1 - date2;
-  let greater = user1 > user2;
-  ```
+hint가 `number`
 
-`default`
+- 수학 연산을 적용하려 할 때
 
-- 연산자가 기대하는 자료형이 확실치 않을 때, hint는 `default`가 됨 (아주 드물게 발생)
-- 이항 덧셈 연산자 `+`는 인수가 객체일 때 hint가 `default`가 됨
-- 동등 연산자 `==`를 사용해 객체-문자형, 객체-숫자형, 객체-심볼형끼리 비교할 때도 객체를 어떤 자료형으로 바꿔야 할지 확신이 안 서므로 hint는 `default`가 됨
-- ```javascript
-  let total = obj1 + obj2;
-  if (obj == 1) { ... }
-  ```
-- `<`, `>` 역시 피연산자에 문자형과 숫자형 둘 다를 허용하는데, 이 연산자들은 hint를 `number`로 고정해 hint가 `default`가 되는 일이 없음. 하위 호환성 때문
-- `Date` 객체를 제외한 모든 내장 객체는 hint가 `default`인 경우와 `number`인 경우를 동일하게 처리
+```javascript
+let num = Number(obj); // 명시적 형 변환
+let n = +obj;
+let delta = date1 - date2;
+let greater = user1 > user2;
+```
+
+hint가 `default`
+
+- 연산자가 기대하는 자료형이 확실치 않을 때 (아주 드물게 발생)
+- 이항 덧셈 연산자 `+`의 인수가 객체일 때
+- 동등 연산자 `==`를 사용해 객체-문자형, 객체-숫자형, 객체-심볼형끼리 비교할 때
+  - 객체를 어떤 자료형으로 바꿔야 할지 확신이 안 서므로 hint는 `default`가 됨
+- `<`, `>` 역시 피연산자에 문자형과 숫자형 둘 다를 허용하는데, 이 연산자들은 hint를 `number`로 고정해 hint가 `default`가 되는 일이 없음 (하위 호환성 때문)
 - `boolean` hint는 존재하지 않음. 모든 객체는 `true`로 평가됨
+- `Date` 객체를 제외한 모든 내장 객체는 hint가 `default`인 경우와 `number`인 경우를 동일하게 처리
+
+```javascript
+let total = obj1 + obj2;
+if (obj == 1) { ... }
+```
 
 ```javascript
 alert(!!{}); // true
@@ -399,22 +423,31 @@ alert(!!""); // false
 alert(!!" "); // true
 ```
 
+```javascript
+let obj = { a: 1 };
+let obj2 = { b: 2 };
+obj + obj2; // "[object Object][object Object]"
+```
+
 자바스크립트는 형 변환이 필요할 때, 아래와 같은 알고리즘에 따라 원하는 메서드를 찾고 호출
 
-1. 객체에 `obj[Symbol.toPrimitive](hint)` 메서드가 있는지 찾고, 있다면 호출. `Symbol.toPrimitive`는 시스템 심볼로, 심볼형 키로 사용됨
+1. 객체에 `obj[Symbol.toPrimitive](hint)` 메서드가 있는지 찾고, 있다면 호출
+   - `Symbol.toPrimitive`는 시스템 심볼로, 심볼형 키로 사용됨
 2. 1에 해당하지 않고 hint가 `string`이라면 `obj.toString()`이나 `obj.valueOf()`를 호출 (존재하는 메서드만 실행됨)
 3. 1과 2에 해당하지 않고, hint가 `number`나 `default`라면 `obj.valueOf()`나 `obj.toString()`을 호출 (존재하는 메서드만 실행됨)
 
 ### Symbol.toPrimitive
 
-자바스크립트엔 `Symbol.toPrimitive`라는 내장 심볼 존재
+`Symbol.toPrimitive`
 
-목표로 하는 자료형(hint)을 명명하는 데 사용
+- 내장 심볼
+- 목표로 하는 자료형(hint)을 명명하는 데 사용
+- `[Symbol.toPrimitive](hint) {...}` 메서드 하나로 모든 종류의 형 변환 가능
 
 ```javascript
 obj[Symbol.toPrimitive] = function (hint) {
-  // 반드시 원시값을 반환해야 함
   // hint는 string, number, default 중 하나가 될 수 있음
+  // 반드시 원시값을 반환해야 함
 };
 ```
 
@@ -431,8 +464,6 @@ alert(user); // hint: string -> {name: 'John'}
 alert(+user); // hint: number -> 1000
 alert(user + 500); // hint: default -> 1500
 ```
-
-`[Symbol.toPrimitive](hint) {...}` 메서드 하나로 모든 종류의 형 변환을 다룰 수 있음
 
 ### toString과 valueOf
 
@@ -482,7 +513,7 @@ alert(user + 500); // valueOf -> 1500
 
 모든 형 변환을 한 곳에서 처리해야 하는 경우, `toString`만 구현해주면 됨
 
-객체에 `Symbol.toPrimitive`와 `valueOf`가 없으면, `toString`이 모든 형 변환을 처리
+- 객체에 `Symbol.toPrimitive`와 `valueOf`가 없으면, `toString`이 모든 형 변환을 처리
 
 ```javascript
 let user = {
@@ -499,14 +530,15 @@ alert(user + 500); // toString -> John500
 
 위에서 소개한 세 개의 메서드는 hint에 명시된 자료형으로의 형 변환을 보장해주지 않음
 
-`toString()`이 항상 문자열을 반환하리라는 보장이 없고, `Symbol.toPrimitive`의 hint가 `number`일 때 항상 숫자형 자료가 반환되리라는 보장이 없음
-
-객체가 아닌 원시값을 반환해준다는 것만 확실
+- `toString()`이 항상 문자열을 반환하리라는 보장이 없음
+- `Symbol.toPrimitive`의 hint가 `number`일 때 항상 숫자형 자료가 반환되리라는 보장이 없음
+- 객체가 아닌 원시값을 반환해준다는 것만 확실
 
 과거의 잔재
 
-- `toString`이나 `valueOf`가 객체를 반환해도 에러가 발생하지 않음. 다만 이때는 반환값이 무시되고, 메서드 자체가 존재하지 않았던 것처럼 동작
-- 과거 자바스크립트엔 에러라는 개념이 잘 정립되어 있지 않았기 때문
+- `toString`이나 `valueOf`가 객체를 반환해도 에러가 발생하지 않음
+  - 다만 이때는 반환값이 무시되고, 메서드 자체가 존재하지 않았던 것처럼 동작
+  - 과거 자바스크립트엔 에러라는 개념이 잘 정립되어 있지 않았기 때문
 - 반면에 `Symbol.toPrimitive`는 무조건 원시자료를 반환해야 함. 아니면 에러 발생
 
 ### 추가 형 변환

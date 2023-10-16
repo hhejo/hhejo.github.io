@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 1
 date: 2023-10-02 12:01:57 +0900
-last_modified_at: 2023-10-11 15:11:28 +0900
+last_modified_at: 2023-10-16 15:57:15 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -13,17 +13,17 @@ tags: [javascript]
 프로퍼티(property)
 
 - `키(key): 값(value)` 쌍으로 구성
+- `key`: 문자형만 가능
+- `value`: 모든 자료형(원시형, 객체 등 데이터 집합이나 복잡한 개체(entity)) 가능
 
-키는 문자형만, 값은 모든 자료형(원시형, 객체 등 데이터 집합이나 복잡한 개체(entity)) 가능
+빈 객체를 생성하는 두 가지 방법
 
-빈 객체를 반드는 방법
-
-1. 객체 리터럴(object literal)
-2. 객체 생성자
+1. 객체 리터럴(object literal) `{}`
+2. 객체 생성자 `new Object()`
 
 ```javascript
-let user = {}; // 객체 리터럴 문법
-let user = new Object(); // 객체 생성자 문법
+let user = {};
+let user = new Object();
 ```
 
 ### 리터럴과 프로퍼티
@@ -33,21 +33,18 @@ let user = new Object(); // 객체 생성자 문법
 - 점 표기법(dot notation)
 - 대괄호 표기법(square bracket notation)
 
-프로퍼티 삭제
+프로퍼티 삭제하기
 
 - `delete` 연산자
 
 ```javascript
-let user = {
-  age: 30,
-  "like birds": true // 여러 단어를 조합한 프로퍼티 이름
-};
+let user = { age: 30, "like birds": true };
 user.name = "john"; // 점 표기법으로 프로퍼티 값 읽고 쓰기
 alert(user["like birds"]); // 대괄호 표기법으로 프로퍼티 값 읽기
 delete user.age; // 프로퍼티 삭제
 key = "name";
 alert(user[key]); // john
-alert(user.key); // undefined
+alert(user.key); // undefined, (user["key"]와 같음)
 ```
 
 상수 객체는 수정될 수 있음
@@ -61,26 +58,26 @@ user.name = "Pete";
 
 객체를 만들 때 객체 리터럴 안의 프로퍼티 키를 대괄호로 둘러 쌈
 
+`{ [key]: value }`
+
 ```javascript
 let fruit = prompt("과일 이름", "apple");
-let bag = {
-  [fruit]: 5
-};
+let bag = { [fruit]: 5 };
 alert(bag.apple); // fruit에 'apple'이 할당되었다면 5 출력
 ```
 
 ```javascript
 let fruit = prompt("과일 이름", "apple");
 let bag = {};
-bag[fruit] = 5; // 위 예시와 동일하게 동작
+bag[fruit] = 5;
+alert(bag.apple); // 위 예시와 동일하게 동작하나 더 긺
 ```
 
-복잡한 표현식도 가능
+복잡한 표현식 작성 가능
 
 ```javascript
-let bag = {
-  [fruit + "Computers"]: 5 // bag.appleComputers = 5
-};
+let bag = { [fruit + "Computers"]: 5 };
+alert(bag.appleComputers); // 5
 ```
 
 ### 단축 프로퍼티
@@ -95,7 +92,13 @@ function makeUser(name, age) {
     name: name,
     age: age
   };
-  // return { name, age }; // 단축 구문
+}
+let user = makeUser("John", 30);
+```
+
+```javascript
+function makeUser(name, age) {
+  return { name, age }; // 프로퍼티 값 단축 구문
 }
 let user = makeUser("John", 30);
 ```
@@ -104,14 +107,12 @@ let user = makeUser("John", 30);
 
 예약어를 키로 사용해도 상관 없음(`for`, `let`, `return` 등)
 
-문자형이나 심볼형에 속하지 않은 값은 문자열로 자동 형 변환
-
-객체 프로퍼티 키의 `__proto__`는 특별 취급
-
 ```javascript
 let obj = { for: 1, let: 2, return: 3 };
 alert(obj.for + obj.let + obj.return); // 6
 ```
+
+문자형이나 심볼형에 속하지 않은 값은 문자열로 자동 형 변환
 
 ```javascript
 let obj = { 0: "test" };
@@ -119,19 +120,25 @@ alert(obj["0"]); // test
 alert(obj[0]); // test (동일한 프로퍼티)
 ```
 
+객체 프로퍼티 키의 `__proto__`는 특별 취급
+
 ```javascript
 let obj = {};
 obj.__proto__ = 5;
-alert(obj.__proto__); // [object Object]
+alert(obj.__proto__); // [object Object] (값이 변하지 않았음)
 ```
 
 ### 'in' 연산자로 프로퍼티 존재 여부 확인하기
 
 자바스크립트는 존재하지 않는 프로퍼티에 접근해도 에러가 발생하지 않고 `undefined`를 반환
 
-키가 존재하는지, 존재하지 않는지 아래 비교로 알 수 없음
+`===`
+
+- 키가 존재하는지, 존재하지 않는지 `===` 비교로 알 수 없음
 
 ```javascript
+// 키 noSuchProperty가 존재하고 그 값이 undefined인지,
+// 키 noSuchProperty가 존재하지 않는지 알 수 없음
 let user = {};
 alert(user.noSuchProperty === undefined); // true
 ```
@@ -171,15 +178,15 @@ for (let key in user) {
 정수 프로퍼티
 
 - 변형 없이 정수에서 왔다 갔다 할 수 있는 문자열
-- ```javascript
-  alert(String(Math.trunc(Number("49")))); // 49, 정수 프로퍼티
-  alert(String(Math.trunc(Number("+49")))); // 49, 정수 프로퍼티 x
-  alert(String(Math.trunc(Number("1.2")))); // 1, 정수 프로퍼티 x
-  ```
 
-키가 정수인 경우, 자동 정렬
+```javascript
+alert(String(Math.trunc(Number("49")))); // 49, 정수 프로퍼티
+alert(String(Math.trunc(Number("+49")))); // 49, 정수 프로퍼티 x
+alert(String(Math.trunc(Number("1.2")))); // 1, 정수 프로퍼티 x
+```
 
-키가 정수가 아닌 경우, 작성된 순서대로 프로퍼티 나열
+- 키가 정수인 경우, 자동 정렬
+- 키가 정수가 아닌 경우, 작성된 순서대로 프로퍼티 나열
 
 ## 참조에 의한 객체 복사
 
@@ -336,14 +343,14 @@ user.sayHi(); // 안녕하세요!
 
 점 앞의 `this`는 메서드를 호출할 때 사용된 객체를 나타냄
 
-`this`를 사용하지 않고 외부 변수를 참조해 객체에 접근할 수 있으나 해당 변수가 덮어써지면 원치 않는 값을 참조해 에러가 발생할 수 있음
+`this`를 사용하지 않고 외부 변수를 참조해 객체에 접근할 수 있으나, 해당 변수가 덮어써지면 원치 않는 값을 참조해 에러가 발생할 수 있음
 
 ```javascript
 let user = {
   name: "John",
   age: 30,
   sayHi() {
-    alert(this.name);
+    alert(this.name); // this
   }
 };
 user.sayHi(); // John
@@ -374,6 +381,11 @@ admin["f"](); // Admin (점과 대괄호는 동일하게 동작)
 
 객체가 없어도 함수 호출 가능
 
+엄격 모드가 아닐 때는 `this`가 전역 객체를 참조
+
+- 브라우저에서는 `window` 전역 객체
+- 전역 객체 참조는 대개 실수인 경우가 많음
+
 ```javascript
 function sayHi() {
   alert(this);
@@ -381,21 +393,21 @@ function sayHi() {
 sayHi(); // [object Window] (엄격 모드 x)
 ```
 
+엄격 모드일 때는 `this`가 `undefined`가 됨
+
+- `this`가 `undefined`이기 때문에 `this.name`으로 접근하려고 하면 에러 발생
+
 ```javascript
 "use strict";
 function sayHi() {
   alert(this);
 }
-sayHi(); // undefined (엄격 모드)
+sayHi(); // undefined (엄격 모드 o)
 ```
 
-`this`가 `undefined`이기 때문에 `this.name`으로 접근하려고 하면 에러 발생
+자바스크립트에서 `this`는 런타임에 결정
 
-엄격 모드가 아닐 때는 `this`가 전역 객체를 참조. 브라우저에서는 `window` 전역 객체
-
-- 전역 객체 참조는 대개 실수인 경우가 많음
-
-자바스크립트에서 `this`는 런타임에 결정. 메서드가 어디에서 정의되었는지에 상관 없이, `this`는 점 앞의 객체가 무엇인가에 따라 자유롭게 결정
+- 메서드가 어디에서 정의되었는지에 상관 없이, `this`는 점 앞의 객체가 무엇인가에 따라 자유롭게 결정
 
 ### this가 없는 화살표 함수
 

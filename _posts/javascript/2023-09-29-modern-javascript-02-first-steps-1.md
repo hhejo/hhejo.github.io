@@ -2,7 +2,7 @@
 title: 모던 JavaScript 튜토리얼 02 - 자바스크립트 기본 1
 date: 2023-09-29 12:58:37 +0900
 last_modified_at: 2023-10-11 10:34:08 +0900
-categories: [JavaScript]
+categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
 

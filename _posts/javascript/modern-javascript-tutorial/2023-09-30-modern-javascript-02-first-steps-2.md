@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 02 - 자바스크립트 기본 2
 date: 2023-09-30 09:56:48 +0900
-last_modified_at: 2023-10-11 15:06:26 +0900
+last_modified_at: 2023-10-16 14:55:14 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -14,11 +14,13 @@ tags: [javascript]
 
 `let` 키워드로 변수 생성
 
-`var`는 오래된 방식
+```javascript
+let varName = 1;
+```
 
-`$`, `_`도 변수명으로 사용 가능
-
-같은 변수를 여러 번 선언하면 에러 발생
+- `$`, `_`도 변수명 가능
+- 같은 변수를 여러 번 선언하면 에러 발생
+- `var`는 오래된 방식
 
 ```javascript
 let message = "Hello, world!";
@@ -47,7 +49,9 @@ num = 5; // error: num is not defined
 const pageLoadTime = 0.2;
 ```
 
-하드 코딩한 값의 별칭을 만들 때 대문자 상수를 활용할 수 있음
+대문자 상수
+
+- 하드 코딩한 값의 별칭을 만들 때 대문자 상수를 활용할 수 있음
 
 ```javascript
 const COLOR_ORANGE = "#FF7F00";
@@ -57,22 +61,22 @@ const COLOR_ORANGE = "#FF7F00";
 
 동적 타입(dynamically typed) 언어
 
+- 자바스크립트는 동적 타입 언어
 - 자료의 타입은 있지만 변수에 저장되는 값의 타입은 언제든지 바꿀 수 있는 언어
 - 자바스크립트의 변수는 자료형에 관계 없이 모든 자료형일 수 있음
 
-자바스크립트에는 8가지 기본 자료형이 있음
+자바스크립트에는 8가지 기본 자료형 존재
 
-Number, BigInt, String, Boolean, Null, Undefined, Symbol
-
-Object
+- Number, BigInt, String, Boolean, Null, Undefined, Symbol
+- Object
 
 ### 숫자형(Number)
 
 정수 및 부동소수점 숫자를 나타냄
 
-특수 문자 값(special numeric value) `Infinity`, `-Infinity`, `NaN` 포함
+- 숫자형으로 `-(2^53 - 1)` ~ `2^53 - 1` 표현 가능
 
-숫자형으로 `-(2^53 - 1)` ~ `2^53 - 1`을 나타낼 수 있음
+특수 문자 값(special numeric value) `Infinity`, `-Infinity`, `NaN` 포함
 
 ```javascript
 let num = 123;
@@ -81,15 +85,17 @@ let inf = 1 / 0; // Infinity
 let notNum = "숫자가 아님" - 2; // NaN
 ```
 
-자바스크립트에서는 말이 안 되는 수학 연산을 하더라도 스크립트가 치명적인 에러를 내뿜으며 죽지 않음
+자바스크립트에서는 말이 안 되는 수학 연산을 하더라도 스크립트가 에러를 발생시키지 않고 `NaN`을 반환하며 연산 종료
 
-`NaN`을 반환하며 연산이 종료됨
+```javascript
+alert("Hello" - 2); // NaN
+```
 
 ### BigInt
 
-길이에 상관 없이 정수를 나타낼 수 있음
+길이에 상관 없이 정수 표현 가능
 
-정수 리터를 끝에 `n`을 붙임
+정수 리터럴 끝에 `n`을 붙임
 
 ```javascript
 const bigInt = 1234567890123456789012345678901234567890n;
@@ -99,9 +105,8 @@ const bigInt = 1234567890123456789012345678901234567890n;
 
 큰따옴표, 작은따옴표, 백틱으로 묶음
 
-큰따옴표와 작은따옴표는 차이 없음
-
-백틱으로 묶고 `${...}` 안에 원하는 변수나 표현식을 문자열 안에 쉽게 넣을 수 있음
+- 큰따옴표와 작은따옴표는 차이 없음
+- 백틱으로 묶고 `${...}` 안에 원하는 변수나 표현식을 문자열 안에 삽입 가능
 
 ```javascript
 let name = "John";
@@ -126,7 +131,7 @@ let isGreater = 4 > 1; // true
 
 존재하지 않는(nothing) 값, 비어 있는(empty) 값, 알 수 없는(unknown) 값을 나타냄
 
-다른 언어에서는 존재하지 않는 객체에 대한 참조나 널 포인터(null pointer)를 나타낼 때 사용
+- 자바스크립트가 아닌 다른 언어에서는, 존재하지 않는 객체에 대한 참조나 널 포인터(null pointer)를 나타낼 때 사용
 
 ```javascript
 let age = null; // 나이를 알 수 없거나, 그 값이 비어있음
@@ -136,9 +141,8 @@ let age = null; // 나이를 알 수 없거나, 그 값이 비어있음
 
 값이 할당되지 않은 상태를 나타냄
 
-변수는 선언했지만, 값을 할당하지 않았다면 자동으로 `undefined`가 할당됨
-
-비어있거나 알 수 없는 상태라는 것을 명시적으로 나타내려면 `null` 권장
+- 변수는 선언했지만 값을 할당하지 않았다면 자동으로 `undefined` 할당
+- 비어있거나 알 수 없는 상태라는 것을 명시적으로 나타내려면 `null` 권장
 
 ```javascript
 let age; // undefined
@@ -146,34 +150,43 @@ let age; // undefined
 
 ### 객체와 심볼(Object, Symbol)
 
-객체(object)형을 제외한 다른 자료형은 문자열이든 숫자든 한 가지만 표현할 수 있기 때문에 원시(primitive) 자료형이라 부름
+원시(primitive) 자료형
 
-객체는 데이터 컬렉션이나 복잡한 개체(entity) 표현 가능
+- 객체형을 제외한 다른 자료형
+- 문자열이든 숫자든 한 가지만 표현 가능
 
-심볼(symbol)형은 객체의 고유한 식별자(unique identifier)를 만들 때 사용
+객체(object)형
+
+- 데이터 컬렉션, 복잡한 개체(entity) 표현 가능
+
+심볼(symbol)형
+
+- 객체의 고유한 식별자(unique identifier)를 만들 때 사용
 
 ### typeof 연산자
 
 인수의 자료형을 반환
 
-두 가지 형태의 문법
+두 가지 형태의 문법 존재
 
 - 연산자 형태: `typeof x`
 - 함수 형태: `typeof(x)`
 
 ```javascript
-typeof Math; // object
-typeof null; // object
-typeof alert; // function
+typeof Math; // object (1)
+typeof null; // object (2)
+typeof alert; // function (3)
 ```
 
 1. Math는 수학 연산을 제공하는 내장 객체
 2. null은 고유한 자료형을 가지는 특수 값으로 객체가 아니지만, 하위호환성을 유지하기 위해 오류를 수정하지 않음
-3. typeof는 피연산자가 함수면 function을 반환하는데 함수형은 따로 없고 함수는 객체형에 속함
+3. typeof는 피연산자가 함수면 function을 반환하는데, 함수형은 따로 없고 함수는 객체형에 속함
 
 ## 브라우저 상호작용
 
-브라우저 환경에서 사용되는 최소한의 사용자 인터페이스 기능 `alert`, `prompt`, `confirm`
+브라우저 환경에서 사용되는 최소한의 사용자 인터페이스 기능
+
+- `alert`, `prompt`, `confirm`
 
 ### alert
 
@@ -193,11 +206,9 @@ alert("Hello");
 result = prompt(title, [default]);
 ```
 
-`title`: 사용자에게 보여줄 문자열
-
-`default`: 입력 필드의 초깃값(대괄호는 필수가 아닌 선택값의 의미)
-
-사용자가 입력을 취소한 경우 `null`을 반환
+- `title`: 사용자에게 보여줄 문자열
+- `default`: 입력 필드의 초깃값(대괄호는 필수가 아닌 선택값의 의미)
+- 사용자가 입력을 취소한 경우 `null`을 반환
 
 ### confirm
 
@@ -205,9 +216,8 @@ result = prompt(title, [default]);
 result = confirm(question);
 ```
 
-`question`: 질문 문자열
-
-사용자가 확인 버튼을 누르면 `true`, 그 외의 경우는 `false` 반환
+- `question`: 질문 문자열
+- 사용자가 확인 버튼을 누르면 `true`, 그 외의 경우는 `false` 반환
 
 ## 형 변환 (type conversion)
 
@@ -252,7 +262,7 @@ num = Number("123"); // 123
 
 논리 연산을 수행할 때 발생
 
-`Boolean(value)` 함수
+`Boolean(value)` 함수로 변환 가능
 
 - `0`, `빈 문자열`, `null`, `undefined`, `NaN` -> `false`
 - 이외의 값은 `true`로 변환됨
@@ -322,7 +332,7 @@ alert(+apples + +oranges); // 5
 
 할당(assignment) 연산자 `=`
 
-`x = value`를 호출하면 `value`가 `x`에 쓰이고 `value`가 반환됨
+`x = value`를 호출하면 `value`가 `x`에 쓰이고 `value` 반환
 
 ```javascript
 let a = 1;
@@ -349,7 +359,7 @@ a = b = c = 2 + 2; // a, b, c는 4
 
 증가(increment) 연산자 `++`, 감소(decrement) 연산자 `--`
 
-전위형, 후위형으로 나뉨
+- 전위형, 후위형으로 나뉨
 
 ### 비트 연산자
 
@@ -371,7 +381,7 @@ let a = (1 + 2, 3 + 4); // 7
 
 ### 불린형 반환
 
-비교 연산자 역시 값을 반환하고 그 값은 불린형
+비교 연산자는 불린형 값을 반환
 
 ```javascript
 alert(2 > 1); // true
@@ -416,6 +426,8 @@ alert(a == b); // true
 
 일치 연산자(strict equality operator) `===`는 형 변환 없이 값 비교
 
+- 비교할 때는 일치 연산자 `===` 권장
+
 ```javascript
 alert(0 == false); // true
 alert("" == false); // true
@@ -438,9 +450,9 @@ alert(null == undefined); // true
 ### null vs 0
 
 ```javascript
-alert(null > 0); // false
-alert(null == 0); // false
-alert(null >= 0); // true
+alert(null > 0); // false (1)
+alert(null == 0); // false (2)
+alert(null >= 0); // true (3)
 ```
 
 `==`와 `<`, `>`, `<=`, `>=`의 동작 방식이 다르기 때문
@@ -452,9 +464,9 @@ alert(null >= 0); // true
 ### 비교가 불가능한 undefined
 
 ```javascript
-alert(undefined > 0); // false
-alert(undefined < 0); // false
-alert(undefined == 0); // false
+alert(undefined > 0); // false (1)
+alert(undefined < 0); // false (1)
+alert(undefined == 0); // false (1)
 ```
 
 1. `undefined`가 `NaN`(숫자형)으로 변환되고, `NaN`이 피연산자인 경우 비교 연산자는 항상 `false`를 반환
@@ -477,7 +489,7 @@ if () {
 
 falsy 값
 
-- `0`, `''`, `null`, `undefined`, `NaN`
+- `0`, `""`, `null`, `undefined`, `NaN`
 
 truthy 값
 
@@ -519,19 +531,19 @@ let result = condition ? value1 : value2;
 
 `if`를 `||`나 `&&`로 대체하는 방식도 있음
 
-`!!`을 사용해 값을 불린형으로 변경 가능
-
-단락 평가(short circuit evaluation)
-
 ```javascript
 let x = 1;
 x > 0 && alert("0보다 크다");
 ```
 
+`!!`을 사용해 값을 불린형으로 변경 가능
+
 ```javascript
 alert(!!null); // false
 alert(!!"non-empty string"); // true
 ```
+
+단락 평가(short circuit evaluation)
 
 ## nullish 병합 연산자 '??'
 
@@ -542,8 +554,8 @@ nullish 병합 연산자(nullish coalescing operator) `??`로 여러 피연산�
 - a가 null도 아니고 undefined도 아니면 a. 그 외의 경우는 b
 
 ```javascript
+// x = a !== null && a !== undefined ? a : b;
 x = a ?? b;
-x = a !== null && a !== undefined ? a : b;
 let firstName = null;
 let lastName = null;
 let nickname = "바이올렛";
@@ -557,6 +569,7 @@ alert(firstName ?? lastName ?? nickName ?? "익명의 사용자"); // 바이올�
 `??`는 첫 번째 정의된(defined) 값을 반환
 
 - `null`, `undefined`, `0`을 구분해 다룰 때 중요
+- 높이처럼 `0`이 할당될 수 있는 변수를 사용해 기능을 개발할 땐 `||`보다 `??`이 적합
 
 ```javascript
 height = height ?? 100; // height에 값이 정의되지 않은 경우, 100 할당
@@ -567,8 +580,6 @@ let height = 0;
 alert(height || 100); // 100
 alert(height ?? 100); // 0
 ```
-
-높이처럼 `0`이 할당될 수 있는 변수를 사용해 기능을 개발할 땐 `||`보다 `??`이 적합
 
 ## 반복문
 
@@ -615,6 +626,8 @@ for (condition) {
 
 ## switch문
 
+break문을 만날 때까지 실행함에 주의
+
 ```javascript
 switch (condition) {
   case value1:
@@ -629,11 +642,9 @@ switch (condition) {
 }
 ```
 
-break문을 만날 때까지 실행하기 때문에 잘 써야 함
-
 ## 함수
 
-함수는 프로그램을 구성하는 주요 구성 요소(building block)
+프로그램을 구성하는 주요 구성 요소(building block)
 
 ### 함수 선언(function declaration)
 
@@ -645,7 +656,7 @@ function name(parameter1, ...) {
 
 함수 호출시 매개변수에 인수를 전달하지 않으면 그 값은 `undefined`가 됨
 
-원하지 않는다면 기본값(default value)를 설정하면 됨
+- 원하지 않는다면 기본값(default value)를 설정하면 됨
 
 ```javascript
 function showMessage(text = "no text given") {}
@@ -657,7 +668,7 @@ return문이 없거나 return 지시자만 있는 함수는 `undefined`를 반�
 
 자바스크립트는 함수를 특별한 종류의 값으로 취급(동작을 나타내는 값)
 
-다른 언어에서처럼 특별한 동작을 하는 구조로 취급되지 않음
+- 다른 언어에서처럼 특별한 동작을 하는 구조로 취급되지 않음
 
 함수 선언(function declaration), 함수 표현식(function expression)
 
@@ -673,8 +684,6 @@ let sayHi = function() {
 
 함수를 함수의 인수로 전달하고, 필요하다면 인수로 전달한 그 함수를 나중에 호출(called back)하는 것이 콜백 함수의 개념
 
-이름 없이 선언한 함수는 익명 함수(anonymous function)라 부름
-
 ```javascript
 function ask(question, yes, no) {
   if (confirm(question)) yes();
@@ -689,6 +698,16 @@ function showCancel() {
   alert("취소 버튼을 누르셨습니다.");
 }
 ask("동의하십니까?", showOk, showCancel); // 함수의 인수로 함수를 전달
+```
+
+익명 함수(anonymous function)
+
+- 이름 없이 선언한 함수
+
+```javascript
+function() {
+  // ...
+}
 ```
 
 함수 표현식을 사용할 수 있음
@@ -707,11 +726,15 @@ ask(
 
 ### 함수 표현식 vs 함수 선언문
 
-함수 표현식은 실제 실행 흐름이 해당 함수에 도달했을 때 함수를 생성
+함수 표현식
 
-함수 선언문은 함수 선언문이 정의되기 전에도 호출 가능
+- 실제 실행 흐름이 해당 함수에 도달했을 때 함수를 생성
 
-엄격 모드에서 함수 선언문이 코드 블록 내에 위치하면 해당 함수는 블록 내 어디서든 접근 가능. 블록 밖에서는 접근 불가
+함수 선언문
+
+- 함수 선언문이 정의되기 전에도 호출 가능
+- 엄격 모드에서 함수 선언문이 코드 블록 내에 위치하면 해당 함수는 블록 내 어디서든 접근 가능
+- 블록 밖에서는 접근 불가
 
 ## 화살표 함수(arrow function)
 

@@ -2,7 +2,7 @@
 title: "게시판 프로젝트 02 - React, Vite 초기 설정"
 date: 2023-07-11 00:00:00 +0900
 last_modified_at: 2023-07-11 00:00:00 +0900
-categories: [BulletinBoardPjt]
+categories: [Bulletin-Board-Pjt]
 tags: [bulletin-board-pjt, react, vite, babel, webpack, cra, npm]
 ---
 

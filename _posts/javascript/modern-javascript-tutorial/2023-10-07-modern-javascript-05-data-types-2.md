@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 2
 date: 2023-10-07 08:19:33 +0900
-last_modified_at: 2023-10-14 07:55:14 +0900
+last_modified_at: 2023-10-17 08:45:37 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -29,7 +29,7 @@ let arr = [];
 
 - 배열의 요소 개수 반환
 
-배열의 요소의 자료형에 제약은 없음
+배열의 요소의 자료형에 제약은 없음 (함수도 가능)
 
 ```javascript
 let fruits = ["사과", "오렌지", "자두"];
@@ -94,6 +94,13 @@ trailing 쉼표
 
 - 배열을 순회할 때 쓰는 가장 오래된 방법으로 순회 시에 인덱스 사용
 
+```javascript
+let arr = [1, 2, 3];
+for (let i = 0; i < arr.length; i++) {
+  alert(arr[i]);
+}
+```
+
 `for...of`문
 
 - 현재 요소의 인덱스는 얻을 수 없고 값만 얻을 수 있지만 문법이 간단
@@ -122,7 +129,10 @@ arr.length = 0; // 배열 비우기
 
 ### new Array()
 
-숫자형 인수 하나를 넣어 `new Array()`를 호출하면 배열이 만들어지는데, 이 배열에는 요소가 없는 반면 길이는 인수와 같아짐
+숫자형 인수 하나를 넣어 `new Array()`를 호출하면 배열이 만들어짐
+
+- 이 배열에는 요소가 없으나 길이는 인수와 같아짐
+- 대괄호로 배열을 생성하는 것을 추천
 
 ```javascript
 let arr = new Array(2);
@@ -130,8 +140,6 @@ alert(arr[0]); // undefined
 alert(arr.length); // 2
 arr = new Array("사과", "배", "오렌지");
 ```
-
-대괄호로 배열을 생성하는 것을 추천
 
 ### 다차원 배열(Multidimensional array)
 
@@ -146,10 +154,12 @@ arr = new Array("사과", "배", "오렌지");
 ```javascript
 let arr = [1, 2, 3];
 alert(arr); // 1,2,3
+alert(arr.toString()); // 1,2,3
 alert(String(arr) === "1,2,3"); // true
 alert([] + 1); // 1
 alert([1] + 1); // 11
 alert([1, 2] + 1); // 1,21
+alert([1] + [2, 3]); // 12,3
 ```
 
 ## 배열과 메서드
@@ -158,7 +168,7 @@ alert([1, 2] + 1); // 1,21
 
 객체형에 속하기 때문에 `delete`를 사용할 수 있으나 배열의 길이는 변하지 않음
 
-- 해당 키에 상응하는 값을 지우기 때문
+- 해당 키에 상응하는 값만 지우기 때문
 - 빈 공간을 채우지는 않음
 
 ```javascript
@@ -229,14 +239,18 @@ arr.splice(); // []
 arr.slice(); // [1, 2, 3]
 ```
 
+```javascript
+let arr = [1, 2, 3];
+let arr2 = [...arr];
+let arr3 = arr.slice();
+```
+
 `arr.concat(arg1, arg2...)`
 
 - 기존 배열의 요소를 사용해 새로운 배열을 만들거나 기존 배열에 요소 추가
 - 인수 개수에 제한이 없고 인수로 배열이나 값이 옴
 - `arr`에 속한 모든 요소와 `arg1`, `arg2` 등에 속한 모든 요소를 한데 모은 새로운 배열 반환
 - 인수 `argN`이 배열일 경우 배열의 모든 요소가 복사됨
-- 객체가 인자로 넘어오면(배열처럼 보이는 유사 배열 객체라도) 객체는 분해되지 않고 통으로 복사
-- 인자로 받은 유사 배열 객체에 특수한 프로퍼티 `Symbol.isConcatSpreadable`이 있으면 이 객체를 배열처럼 취급해서 객체 전체가 아닌 객체 프로퍼티의 값이 더해짐
 
 ```javascript
 let arr = [1, 2];
@@ -251,6 +265,8 @@ let arrayLike = { 0: "something", length: 1 };
 alert(arr.concat(arrayLike)); // 1,2,[object Object]
 ```
 
+- 객체가 인자로 넘어오면(배열처럼 보이는 유사 배열 객체라도) 객체는 분해되지 않고 통으로 복사
+
 ```javascript
 let arr = [1, 2];
 let arrayLike = {
@@ -260,6 +276,19 @@ let arrayLike = {
   length: 2
 };
 alert(arr.concat(arrayLike)); // 1,2,a,b
+```
+
+- 인자로 받은 유사 배열 객체에 특수한 프로퍼티 `Symbol.isConcatSpreadable`이 있으면 이 객체를 배열처럼 취급해서 객체 전체가 아닌 객체 프로퍼티의 값이 더해짐
+
+`splice`와 `concat`
+
+```javascript
+let arr = [1, 2];
+arr.splice(0, 0, 3, 4, [5, 6]); // []
+arr; // [3, 4, [5, 6], 1, 2]
+let arr2 = [1, 2];
+arr2.concat(3, 4, [5, 6]); // [1, 2, 3, 4, 5, 6]
+arr2; // [1, 2]
 ```
 
 ### forEach로 반복 작업하기
@@ -357,6 +386,30 @@ let someUsers = users.filter((item) => item.id < 3);
 alert(someUsers.name); // 2
 ```
 
+`arr.at(index)`
+
+- `index`: 0, 양수, 음수 가능
+- 음수는 뒤에서부터 셈
+- 주어진 인덱스와 일치하는 배열 요소 반환
+- 범위를 벗어나면 `undefined`를 반환
+
+```javascript
+let arr = [1, 2, 3];
+arr.at(0); // 1
+arr.at(-1); // 3
+arr.at(4); // undefined
+arr.at(-3); // 1
+```
+
+맨 마지막 요소 가져오기
+
+```javascript
+let arr = [1, 2, 3];
+arr[arr.length - 1]; // 3
+arr.slice(-1)[0]; // 3
+arr.at(-1); // 3
+```
+
 ### 배열을 변형하는 메서드
 
 `arr.map(fn)`
@@ -398,7 +451,8 @@ arr.sort(compareNumeric);
 alert(arr); // 1,2,15
 ```
 
-- 정렬 함수의 반환 값에는 제약이 없음. 반환 값이 양수인 경우 첫 번째 인수가 두 번째 인수보다 '크다'를 나타내고, 음수인 경우 첫 번째 인수가 두 번째 인수보다 '작다'를 나타내기만 하면 됨
+- 정렬 함수의 반환 값에는 제약이 없음
+- 반환 값이 양수인 경우 첫 번째 인수가 두 번째 인수보다 '크다'를 나타내고, 음수인 경우 첫 번째 인수가 두 번째 인수보다 '작다'를 나타내기만 하면 됨
 
 ```javascript
 let arr = [1, 2, 15];
@@ -444,6 +498,11 @@ let str = "test";
 alert(str.split("")); // t,e,s,t
 ```
 
+```javascript
+[..."123"]; // ["1", "2", "3"]
+"abc".split(""); // ["a", "b", "c"]
+```
+
 `arr.join(glue)`
 
 - `glue`를 배열 요소 사이에 붙여 하나의 문자열을 만들어 반환
@@ -479,7 +538,7 @@ alert(result); // 15
 ```javascript
 let arr = [];
 arr.reduce((acc, cur) => acc + cur); // TypeError: Reduce of empty array with no initial value
-arr.reduce((acc, cur) => acc + cur, 0); // 15
+arr.reduce((acc, cur) => acc + cur, 0); // 0
 ```
 
 `arr.reduceRight(fn)`
@@ -488,7 +547,7 @@ arr.reduce((acc, cur) => acc + cur, 0); // 15
 
 ### Array.isArray로 배열 여부 알아내기
 
-자바스크립트에서 배열은 독립된 자료형으로 취급하지 않고 객체형에 속함
+자바스크립트에서 배열은 독립된 자료형으로 취급되지 않고 객체형에 속함
 
 `typeof`로는 일반 객체와 배열을 구분할 수 없음
 

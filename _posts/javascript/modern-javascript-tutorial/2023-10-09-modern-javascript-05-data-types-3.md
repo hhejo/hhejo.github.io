@@ -96,6 +96,13 @@ map.get(key); // O
 
 - 요소의 개수를 반환
 
+`map.toString`, `map.valueOf`
+
+```javascript
+map.toString(); // "[object Map]"
+map.valueOf(); // map이 나옴
+```
+
 ### 맵 요소에 반복 작업하기
 
 `map.keys()`

@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 6
 date: 2023-10-15 10:20:13 +0900
-last_modified_at: 2023-10-16 12:32:48 +0900
+last_modified_at: 2023-10-19 14:07:00 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -109,6 +109,14 @@ let user = {
   something: undefined // 무시
 };
 alert(JSON.stringify(user)); // {}
+```
+
+`NaN`, `Infinity`, `-Infinity`의 값은 `null`로 변환됨
+
+```javascript
+JSON.stringify({ age: NaN }); // {"age":null}
+JSON.stringify({ age: Infinity }); // {"age":null}
+JSON.stringify({ age: -Infinity }); // {"age":null}
 ```
 
 중첩 객체도 알아서 문자열로 변환

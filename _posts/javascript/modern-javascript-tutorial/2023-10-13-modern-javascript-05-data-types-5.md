@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 5
 date: 2023-10-13 08:20:13 +0900
-last_modified_at: 2023-10-16 09:47:03 +0900
+last_modified_at: 2023-10-19 13:40:47 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,7 +10,11 @@ Date
 
 ## Date 객체와 날짜
 
-`Date` 객체를 활용해 생성 및 수정 시간을 저장하고, 시간을 측정하고, 현재 날짜를 알 수 있음
+`Date` 객체
+
+- 생성 및 수정 시간을 저장
+- 시간을 측정
+- 현재 날짜 파악
 
 ### 객체 생성하기
 
@@ -26,7 +30,10 @@ alert(now); // Fri Oct 13 2023 08:23:56 GMT+0900 (GMT+09:00)
 `new Date(milliseconds)`
 
 - UTC 기준(UTC+0) 1970년 1월 1일 0시 0분 0초에서 `milliseconds` 밀리초 후의 시점이 저장된 `Date` 객체 반환
-- 타임스탬프(timestamp): 1970년의 첫날을 기준으로 흘러간 밀리초를 나타내는 정수
+
+타임스탬프(timestamp)
+
+- 1970년의 첫날을 기준으로 흘러간 밀리초를 나타내는 정수
 
 ```javascript
 let Jan01_1970 = new Date(0); // Thu Jan 01 1970 09:00:00 GMT+0900 (GMT+09:00)

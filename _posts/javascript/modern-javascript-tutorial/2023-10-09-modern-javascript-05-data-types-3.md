@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 3
 date: 2023-10-09 08:23:28 +0900
-last_modified_at: 2023-10-15 07:38:57 +0900
+last_modified_at: 2023-10-18 09:32:46 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -96,6 +96,13 @@ map.get(key); // O
 
 - 요소의 개수를 반환
 
+`map.toString`, `map.valueOf`
+
+```javascript
+map.toString(); // "[object Map]"
+map.valueOf(); // map이 나옴
+```
+
 ### 맵 요소에 반복 작업하기
 
 `map.keys()`
@@ -159,6 +166,7 @@ alert(map.get("1")); // str1
 
 - 객체의 키-값 쌍을 요소(`[key, value]`)로 갖는 배열 반환
 - 반환 값을 `Object.fromEntries()`의 인수로 사용하면 좋음
+- 문자열도 인수로 전달 가능
 
 ```javascript
 let obj = { name: "John", age: 30 };
@@ -166,6 +174,7 @@ Object.entries(obj); // [["name", "John"], ["age", 30]]
 let map = new Map(Object.entries(obj)); // {'name' => 'John', 'age' => 30}
 alert(map.get("name"));
 Object.entries([1, 2, 3]); // [['0', 1], ['1', 2], ['2', 3]]
+Object.entries("abc"); // [['0', 'a'], ['1', 'b'], ['2', 'c']]
 ```
 
 `Object.fromEntries()`
@@ -187,8 +196,8 @@ alert(prices.orange); // 2
 ```javascript
 let map = new Map();
 map.set("banana", 1).set("orange", 2).set("meat", 4);
-// let obj = Object.fromEntries(map);
-let obj = Object.fromEntries(map.entries());
+// let obj = Object.fromEntries(map.entries());
+let obj = Object.fromEntries(map);
 obj; // { banana: 1, orange: 2, meat: 4 }
 alert(obj.orange); // 2
 ```

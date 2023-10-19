@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 4
 date: 2023-10-11 15:17:49 +0900
-last_modified_at: 2023-10-16 08:19:24 +0900
+last_modified_at: 2023-10-19 08:19:24 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -67,6 +67,8 @@ user; // { name: "Bora", surname: "Lee" }
 let user = { name: "John", age: 30 };
 for (let [key, value] of Object.entries(user)) alert(`${key}:${value}`);
 ```
+
+- `of`가 아닌 `in`으로 하면 제대로 안 나옴
 
 ```javascript
 let user = new Map();

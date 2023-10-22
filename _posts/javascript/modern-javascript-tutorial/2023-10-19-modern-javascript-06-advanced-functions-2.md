@@ -1,12 +1,12 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 2
 date: 2023-10-19 12:31:06 +0900
-last_modified_at: 2023-10-21 07:44:18 +0900
+last_modified_at: 2023-10-22 06:24:04 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
 
-변수의 유효 범위와 클로저
+변수의 유효 범위와 클로저, 오래된 var
 
 ## 변수의 유효 범위와 클로저
 
@@ -477,6 +477,321 @@ func(); // ReferenceError: Cannot access 'x' before initialization
 데드 존(dead zone)
 
 - 변수를 일시적으로 사용할 수 없는 영역 (코드 블록의 시작 부분부터 `let` 까지)
+
+```javascript
+let arr = [1, 2, 3, 4, 5, 6, 7];
+function inBetween(a, b) {
+  return function (x) {
+    return x >= a && x <= b;
+  };
+}
+function inArray(arr) {
+  return function (x) {
+    return arr.includes(x);
+  };
+}
+alert(arr.filter(inBetween(3, 6))); // 3,4,5,6
+alert(arr.filter(inArray([1, 2, 10]))); // 1,2
+```
+
+```javascript
+let users = [
+  { name: "John", age: 20, surname: "Johnson" },
+  { name: "Pete", age: 18, surname: "Peterson" },
+  { name: "Ann", age: 19, surname: "Hathaway" }
+];
+// 이름을 기준으로 정렬(Ann, John, Pete)
+// users.sort((a, b) => (a.name > b.name ? 1 : -1));
+// 나이를 기준으로 정렬(Pete, Ann, John)
+// users.sort((a, b) => (a.age > b.age ? 1 : -1));
+function byField(fieldName) {
+  return (a, b) => (a[fieldName] > b[fieldName] ? 1 : -1);
+}
+users.sort(byField("name"));
+users.sort(byField("age"));
+```
+
+```javascript
+function makeArmy() {
+  let shooters = [];
+  let i = 0;
+  while (i < 10) {
+    // shooter 함수
+    let shooter = function () {
+      alert(i); // 몇 번째 shooter인지 출력해줘야 함
+    };
+    shooters.push(shooter);
+    i++;
+  }
+  return shooters;
+}
+
+let army = makeArmy();
+army[0](); // 0번째 shooter가 10을 출력함
+army[5](); // 5번째 shooter 역시 10을 출력함
+// 모든 shooter가 자신의 번호 대신 10을 출력하고 있음
+```
+
+```
+let shooters = [];
+shooters = [
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); },
+  function () { alert(i); }
+];
+```
+
+- 함수 내부에 지역 변수 `i` 가 없기 때문
+- 함수가 호출되면 외부 렉시컬 환경에서 `i`를 가져옴
+- `i`의 마지막 값은 `10`
+
+```javascript
+function makeArmy() {
+  let shooters = [];
+  for (let i = 0; i < 10; i++) {
+    let shooter = function () {
+      alert(i);
+    };
+    shooters.push(shooter);
+  }
+  return shooter;
+}
+let army = makeArmy();
+army[0](); // 0
+army[0](5); // 5
+```
+
+- 코드 블록 `for (let i = 0; i < 10; i++) {...}`이 실행될 때마다 해당 변수 `i`를 사용하여 새로운 렉시컬 환경이 생성되므로 올바르게 작동
+
+```
+shooters = [                 // for block LexicalEnvironment
+  function () { alert(i); }, // [i: 0]
+  function () { alert(i); }, // [i: 1]                                makeArmy() LexicalEnvironment
+  function () { alert(i); }, // [i: 2]                       -outer->
+  ...,
+  function () { alert(i); }, // [i: 10]
+]
+```
+
+```javascript
+function makeArmy() {
+  let shooters = [];
+  let i = 0;
+  while (i < 10) {
+    let j = i; // 값 복사. 현재 루프 반복에 속하는 완전한 독립 복사본
+    let shooter = function () {
+      alert(j);
+    };
+    shooters.push(shooter);
+    i++;
+  }
+  return shooters;
+}
+let army = makeArmy();
+army[0](); // 0
+army[5](); // 5
+```
+
+## 오래된 var
+
+`var`
+
+- `let`으로 선언한 변수와 유사
+- `var`는 초기 자바스크립트 구현 방식 때문에 `let`과 `const`로 선언한 변수와는 다른 방식으로 동작
+
+### var는 블록 스코프가 없음
+
+`var`로 선언한 변수의 스코프는 함수 스코프이거나 전역 스코프
+
+블록 기준으로 스코프가 생기지 않기 때문에 블록 밖에서 접근 가능
+
+```javascript
+if (true) {
+  var test = true;
+}
+alert(test); // true
+```
+
+- `var`는 코드 블록을 무시하기 때문에 `test`는 전역 변수가 됨
+
+```javascript
+if (true) {
+  let test = true;
+}
+alert(test); // ReferenceError: test is not defined
+```
+
+```javascript
+for (var i = 0; i < 10; i++) {}
+alert(i); // 10
+```
+
+```javascript
+function sayHi() {
+  if (true) {
+    var phrase = "Hello";
+  }
+  alert(phrase);
+}
+sayHi(); // Hello
+alert(phrase); // ReferenceError: phrase is not defined
+```
+
+- 코드 블록이 함수 안에 있다면, `var`는 함수 레벨 변수가 됨
+- `var`는 `if`, `for` 등의 코드 블록을 관통
+- 아주 오래 전의 자바스크립트에선 블록 수준 렉시컬 환경이 만들어지지 않았기 때문
+
+### var는 변수의 중복 선언을 허용
+
+한 스코프에서 같은 변수를 `let`으로 두 번 선언하면 에러 발생
+
+```javascript
+let user;
+let user; // SyntaxError: Identifier 'user' has already been declared
+```
+
+`var`로 같은 변수를 여러 번 중복으로 선언 가능
+
+- 이미 선언된 변수에 `var`를 사용하면 두 번째 선언문은 무시됨
+
+```javascript
+var user = "Pete";
+var user = "John";
+alert(user); // John
+```
+
+### 선언하기 전 사용할 수 있는 var
+
+`var` 선언은 함수가 시작될 때 처리됨
+
+- 전역에서 생성한 변수라면 스크립트가 시작될 때 처리됨
+
+함수 본문 내에서 `var`로 선언한 변수는 선언 위치와 상관 없이 함수 본문이 시작되는 지점에서 정의됨
+
+- 변수가 중첩 함수 내에서 정의되지 않아야 함
+
+아래 두 예제는 동일하게 동작
+
+```javascript
+function sayHi() {
+  phrase = "Hello";
+  alert(phrase);
+  var phrase;
+}
+sayHi(); // Hello
+```
+
+```javascript
+function sayHi() {
+  var phrase;
+  phrase = "Hello";
+  alert(phrase);
+}
+sayHi(); // Hello
+```
+
+- `var phrase`가 위로 이동한 것처럼 동작
+
+코드 블록은 무시되기 때문에 아래 코드도 동일하게 동작
+
+```javascript
+function sayHi() {
+  phrase = "Hello"; // if 내부의 var는 함수 sayHi의 시작 부분에서 처리되므로 phrase는 이미 정의된 상태
+  // if 블록 안 코드는 절대 실행되지 않지만 호이스팅에 영향을 주지 않음
+  if (false) {
+    var phrase;
+  }
+  alert(phrase);
+}
+sayHi(); // Hello
+```
+
+호이스팅(hoisting)
+
+- 변수가 끌어올려지는 현상
+- `var`로 선언한 모든 변수는 함수의 최상위로 끌어올려지기(hoisted) 때문
+- 선언은 호이스팅 되지만 할당은 호이스팅 되지 않음
+
+```javascript
+function sayHi() {
+  alert(phrase);
+  var phrase = "Hello";
+}
+sayHi(); // undefined
+```
+
+- `var phrase = "Hello"` 행에서 변수 선언(`var`)과 변수에 값 할당(`=`)이 일어남
+- 변수 선언은 함수 실행이 시작될 때 처리됨(호이스팅)
+- 할당은 호이스팅 되지 않기 때문에 할당 관련 코드에서 처리됨
+- 아래 코드처럼 동작하게 됨
+
+```javascript
+function sayHi() {
+  var phrase;
+  alert(phrase);
+  phrase = "Hello";
+}
+sayHi(); // undefined
+```
+
+모든 `var` 선언은 함수 시작 시 처리됨
+
+- `var`로 선언한 변수는 어디서든 참조 가능
+- 변수에 무언가를 할당하기 전까진 값이 `undefined`
+
+즉시 실행 함수 표현식(immediately-invoked function expressions, `IIFE`)
+
+- 과거엔 `var`만 사용할 수 있었음
+- `var`의 스코프는 블록 레벨 수준이 아님
+- `var`도 블록 레벨 스코프를 가질 수 있게 여러 방안을 고려
+- 이때 만들어진 것이 즉시 실행 함수 표현식
+- 함수를 괄호로 감싸면 자바스크립트가 함수를 함수 선언문이 아닌 표현식으로 인식하도록 속일 수 있음
+  - 함수 표현식은 이름이 없어도 괜찮고 즉시 호출도 가능
+
+```javascript
+(function () {
+  let message = "Hello";
+  alert(message);
+})();
+```
+
+```javascript
+function() {
+  let message = "Hello";
+  alert(message);
+}(); // SyntaxError: Function statements require a function name
+```
+
+```javascript
+function go() {}(); // SyntaxError: Unexpected token ')'
+```
+
+자바스크립트가 함수 표현식이라고 인식하게 해주는 방법들 (IIFE를 만드는 방법들)
+
+```
+(function () {
+  alert("함수를 괄호로 둘러싸기");
+})();
+
+(function () {
+  alert("전체를 괄호로 둘러싸기");
+}());
+
+!function () {
+  alert("표현식 앞에 비트 NOT 연산자 붙이기");
+}();
+
++function () {
+  alert("표현식 앞에 단항 덧셈 연산자 붙이기");
+}();
+```
 
 ## 참고
 

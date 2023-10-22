@@ -1,5 +1,5 @@
 ---
-title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 4
+title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 5
 date: 2023-10-23 12:06:46 +0900
 last_modified_at: 2023-10-23 12:06:46 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]

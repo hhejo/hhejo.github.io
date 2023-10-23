@@ -1,16 +1,18 @@
 ---
 title: 모던 JavaScript 튜토리얼 02 - 자바스크립트 기본 2
 date: 2023-09-30 09:56:48 +0900
-last_modified_at: 2023-10-16 14:55:14 +0900
+last_modified_at: 2023-10-23 16:14:13 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
 
-변수, 상수, 자료형, 브라우저 상호작용, 형 변환, 연산자, 조건 처리, ??, 반복문, switch문, 함수, 화살표 함수
+변수와 상수, 자료형, alert, prompt, confirm을 이용한 상호작용, 형 변환, 기본 연산자와 수학, 비교 연산자, if와 ?를 사용한 조건 처리, 논리 연산자, nullish 병합 연산자 ??, while과 for 반복문, switch문, 함수, 함수 표현식, 화살표 함수 기본
 
-## 변수, 상수
+## 변수와 상수
 
-### 변수
+### 변수(variable)
+
+데이터를 저장할 때 쓰이는 이름이 붙은 저장소
 
 `let` 키워드로 변수 생성
 
@@ -51,7 +53,7 @@ const pageLoadTime = 0.2;
 
 대문자 상수
 
-- 하드 코딩한 값의 별칭을 만들 때 대문자 상수를 활용할 수 있음
+- 하드 코딩한 값의 별칭을 만들 때 활용
 
 ```javascript
 const COLOR_ORANGE = "#FF7F00";
@@ -62,21 +64,21 @@ const COLOR_ORANGE = "#FF7F00";
 동적 타입(dynamically typed) 언어
 
 - 자바스크립트는 동적 타입 언어
-- 자료의 타입은 있지만 변수에 저장되는 값의 타입은 언제든지 바꿀 수 있는 언어
+- 자료의 타입은 있지만 변수에 저장되는 값의 타입은 언제든지 바꿀 수 있음
 - 자바스크립트의 변수는 자료형에 관계 없이 모든 자료형일 수 있음
 
-자바스크립트에는 8가지 기본 자료형 존재
+자바스크립트의 8가지 기본 자료형
 
 - Number, BigInt, String, Boolean, Null, Undefined, Symbol
 - Object
 
 ### 숫자형(Number)
 
-정수 및 부동소수점 숫자를 나타냄
+정수 및 부동소수점(floating point number) 숫자를 나타냄
 
 - 숫자형으로 `-(2^53 - 1)` ~ `2^53 - 1` 표현 가능
-
-특수 문자 값(special numeric value) `Infinity`, `-Infinity`, `NaN` 포함
+- `-9,007,199,254,740,991` ~ `9,007,199,254,740,991`
+- 특수 문자 값(special numeric value) `Infinity`, `-Infinity`, `NaN` 포함
 
 ```javascript
 let num = 123;
@@ -131,11 +133,11 @@ let isGreater = 4 > 1; // true
 
 존재하지 않는(nothing) 값, 비어 있는(empty) 값, 알 수 없는(unknown) 값을 나타냄
 
-- 자바스크립트가 아닌 다른 언어에서는, 존재하지 않는 객체에 대한 참조나 널 포인터(null pointer)를 나타낼 때 사용
-
 ```javascript
 let age = null; // 나이를 알 수 없거나, 그 값이 비어있음
 ```
+
+자바스크립트가 아닌 다른 언어에서는, 존재하지 않는 객체에 대한 참조나 널 포인터(null pointer)를 나타낼 때 사용
 
 ### undefined 값
 
@@ -182,7 +184,7 @@ typeof alert; // function (3)
 2. null은 고유한 자료형을 가지는 특수 값으로 객체가 아니지만, 하위호환성을 유지하기 위해 오류를 수정하지 않음
 3. typeof는 피연산자가 함수면 function을 반환하는데, 함수형은 따로 없고 함수는 객체형에 속함
 
-## 브라우저 상호작용
+## alert, prompt, confirm을 이용한 상호작용
 
 브라우저 환경에서 사용되는 최소한의 사용자 인터페이스 기능
 
@@ -225,6 +227,8 @@ result = confirm(question);
 
 혹은 전달받은 값을 의도를 갖고 원하는 타입으로 변환(명시적 변환)하는 것
 
+문자형, 숫자형, 불린형으로의 변환은 자주 일어나는 형 변환
+
 ### 문자형으로 변환
 
 문자형의 값이 필요할 때 발생
@@ -251,12 +255,16 @@ alert(num); // 3
 num = Number("123"); // 123
 ```
 
-숫자 이외의 글자가 들어간 문자열을 숫자형으로 변환하면 `NaN`이 됨
-
-- `undefined` -> `NaN`
-- `null` -> `0`
-- `true`, `false` -> `1`, `0`
-- `string` -> 문자열의 처음과 끝 공백 제거됨. 제거 후 남아있는 문자열이 없다면 `0`, 그렇지 않다면 문자열에서 숫자를 읽음. 변환에 실패하면 `NaN`
+|             |                                                              |
+| :---------: | :----------------------------------------------------------: |
+| `undefined` |                            `NaN`                             |
+|   `null`    |                             `0`                              |
+|   `true`    |                             `1`                              |
+|   `false`   |                             `0`                              |
+|  `string`   | 문자열의 처음과 끝 공백 제거 후 남아있는 문자열이 없다면 `0` |
+|             |             그렇지 않다면 문자열에서 숫자를 읽음             |
+|             |                    변환에 실패하면 `NaN`                     |
+|             | 숫자 이외의 글자가 들어간 문자열을 숫자형으로 변환하면 `NaN` |
 
 ### 불린형으로 변환
 
@@ -264,8 +272,10 @@ num = Number("123"); // 123
 
 `Boolean(value)` 함수로 변환 가능
 
-- `0`, `빈 문자열`, `null`, `undefined`, `NaN` -> `false`
-- 이외의 값은 `true`로 변환됨
+|                                             |         |
+| :-----------------------------------------: | :-----: |
+| `0`, `빈 문자열`, `null`,`undefined`, `NaN` | `false` |
+|                  이외의 값                  | `true`  |
 
 ```javascript
 alert(Boolean("")); // false
@@ -295,11 +305,14 @@ alert(Boolean("0")); // true
 
 ### 이항 연산자 +와 문자열 연결
 
-이항 연산자 `+`의 피연산자로 문자열이 전달되면 덧셈 연산자는 덧셈이 아닌 문자열을 병합(연결)
+이항 연산자 `+`의 피연산자로 문자열이 전달되는 경우
 
-피연산자 중 하나가 문자열이면 다른 하나도 문자열로 변환
+- 덧셈이 아닌 문자열을 병합(연결)
+- 피연산자 중 하나가 문자열이면 다른 하나도 문자열로 변환
 
-다른 산술 연산자는 오직 숫자형의 피연산자만 다루고 피연산자가 숫자형이 아닌 경우 그 형을 숫자형으로 변환
+다른 산술 연산자는 오직 숫자형의 피연산자만 다룸
+
+- 피연산자가 숫자형이 아닌 경우 그 형을 숫자형으로 변환
 
 ```javascript
 alert("1" + 2); // 12
@@ -332,7 +345,7 @@ alert(+apples + +oranges); // 5
 
 할당(assignment) 연산자 `=`
 
-`x = value`를 호출하면 `value`가 `x`에 쓰이고 `value` 반환
+- `x = value`를 호출하면 `value`가 `x`에 쓰이고 `value` 반환
 
 ```javascript
 let a = 1;
@@ -342,7 +355,7 @@ alert(a); // 3
 alert(c); // 0
 ```
 
-여러 개를 연결할 수 있음(체이닝)
+- 여러 개를 연결할 수 있음(체이닝)
 
 ```javascript
 let a, b, c;
@@ -363,7 +376,9 @@ a = b = c = 2 + 2; // a, b, c는 4
 
 ### 비트 연산자
 
-비트 연산자(bitwise operator)는 인수를 32비트 정수로 변환해 이진 연산 수행
+비트 연산자(bitwise operator)
+
+- 인수를 32비트 정수로 변환해 이진 연산 수행
 
 `&`, `|`, `^`, `~`, `<<`, `>>`, `>>>`
 
@@ -371,7 +386,7 @@ a = b = c = 2 + 2; // a, b, c는 4
 
 쉼표 연산자(comma operator) `,`
 
-여러 표현식을 한 줄에 평가할 수 있게 하고 마지막 표현식의 평가 결과만 반환
+- 여러 표현식을 한 줄에 평가할 수 있게 하고 마지막 표현식의 평가 결과만 반환
 
 ```javascript
 let a = (1 + 2, 3 + 4); // 7
@@ -422,10 +437,13 @@ alert(a == b); // true
 
 ### 일치 연산자
 
-동등 연산자(equality operator) `==`는 `0`과 `flase` 구별 불가
+동등 연산자(equality operator) `==`
 
-일치 연산자(strict equality operator) `===`는 형 변환 없이 값 비교
+- `0`과 `flase` 구별 불가
 
+일치 연산자(strict equality operator) `===`
+
+- 형 변환 없이 값 비교
 - 비교할 때는 일치 연산자 `===` 권장
 
 ```javascript
@@ -436,11 +454,18 @@ alert(0 === false); // false
 
 ### null이나 undefined와 비교하기
 
-일치 연산자 `===`를 사용하여 비교하면, 두 값의 자료형이 다르기 때문에 `false` 반환
+일치 연산자 `===`로 비교
 
-동등 연산자 `==`를 사용하여 비교하면, 특별한 규칙이 적용돼 `true` 반환
+- 두 값의 자료형이 다르기 때문에 `false` 반환
 
-산술 연산자나 기타 비교 연산자 `>`, `<`, `>=`, `<=`를 사용하여 비교하면, `null`은 `0`, `undefined`는 `NaN`으로 변환
+동등 연산자 `==`로 비교
+
+- 특별한 규칙이 적용돼 `true` 반환
+
+산술 연산자나 기타 비교 연산자 `>`, `<`, `>=`, `<=`로 비교
+
+- `null` -> `0`
+- `undefined` -> `NaN`
 
 ```javascript
 alert(null === undefined); // false
@@ -465,8 +490,8 @@ alert(null >= 0); // true (3)
 
 ```javascript
 alert(undefined > 0); // false (1)
-alert(undefined < 0); // false (1)
-alert(undefined == 0); // false (1)
+alert(undefined < 0); // false (2)
+alert(undefined == 0); // false (3)
 ```
 
 1. `undefined`가 `NaN`(숫자형)으로 변환되고, `NaN`이 피연산자인 경우 비교 연산자는 항상 `false`를 반환
@@ -525,18 +550,18 @@ if () {
 let result = condition ? value1 : value2;
 ```
 
-## 논리연산자
+## 논리 연산자
 
 `||`, `&&`, `!`
 
-`if`를 `||`나 `&&`로 대체하는 방식도 있음
+`if`를 `||`나 `&&`로 대체 가능
 
 ```javascript
 let x = 1;
 x > 0 && alert("0보다 크다");
 ```
 
-`!!`을 사용해 값을 불린형으로 변경 가능
+`!!`로 값을 불린형으로 변경 가능
 
 ```javascript
 alert(!!null); // false
@@ -547,11 +572,14 @@ alert(!!"non-empty string"); // true
 
 ## nullish 병합 연산자 '??'
 
-nullish 병합 연산자(nullish coalescing operator) `??`로 여러 피연산자 중 값이 확정되어 있는 변수를 찾을 수 있음
+nullish 병합 연산자(nullish coalescing operator) `??`
+
+- 여러 피연산자 중 값이 확정되어 있는 변수를 찾을 수 있음
 
 `a ?? b`
 
-- a가 null도 아니고 undefined도 아니면 a. 그 외의 경우는 b
+- a가 null도 아니고 undefined도 아니면 a
+- 그 외의 경우는 b
 
 ```javascript
 // x = a !== null && a !== undefined ? a : b;
@@ -569,7 +597,7 @@ alert(firstName ?? lastName ?? nickName ?? "익명의 사용자"); // 바이올�
 `??`는 첫 번째 정의된(defined) 값을 반환
 
 - `null`, `undefined`, `0`을 구분해 다룰 때 중요
-- 높이처럼 `0`이 할당될 수 있는 변수를 사용해 기능을 개발할 땐 `||`보다 `??`이 적합
+- `0`이 할당될 수 있는 변수를 사용할 땐 `||`보다 `??`이 적합
 
 ```javascript
 height = height ?? 100; // height에 값이 정의되지 않은 경우, 100 할당
@@ -581,7 +609,7 @@ alert(height || 100); // 100
 alert(height ?? 100); // 0
 ```
 
-## 반복문
+## while과 for 반복문
 
 ### 'do...while' 반복문
 

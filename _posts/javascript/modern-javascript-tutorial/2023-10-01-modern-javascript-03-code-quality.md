@@ -1,12 +1,12 @@
 ---
 title: 모던 JavaScript 튜토리얼 03 - 코드 품질
 date: 2023-10-01 16:35:02 +0900
-last_modified_at: 2023-10-16 15:51:17 +0900
+last_modified_at: 2023-10-23 20:55:01 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
 
-Chrome으로 스크립트 디버깅하기, Linter, JSDoc, BDD, Polyfill, Babel
+Chrome으로 디버깅하기, Linter, JSDoc, BDD, Polyfill, Babel
 
 ## Chrome으로 디버깅하기
 
@@ -49,7 +49,9 @@ Chrome으로 스크립트 디버깅하기, Linter, JSDoc, BDD, Polyfill, Babel
 
 원하는 것을 콘솔에 출력
 
-## Linter
+## 코딩 스타일
+
+### Linter
 
 작성한 코드가 스타일 가이드를 준수하고 있는지를 자동으로 확인 가능
 
@@ -57,7 +59,9 @@ Chrome으로 스크립트 디버깅하기, Linter, JSDoc, BDD, Polyfill, Babel
 
 - JSLint, JSHint, ESLint, ...
 
-## JSDoc
+## 주석
+
+### JSDoc
 
 ```javascript
 /**
@@ -72,7 +76,9 @@ function pow(x, n) {
 }
 ```
 
-## Behavior Driven Development(BDD)
+## 테스트 자동화와 Mocha
+
+### Behavior Driven Development(BDD)
 
 스펙을 먼저 작성한 후 구현을 시작
 

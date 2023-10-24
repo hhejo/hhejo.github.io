@@ -1,12 +1,12 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 3
 date: 2023-10-09 08:23:28 +0900
-last_modified_at: 2023-10-18 09:32:46 +0900
+last_modified_at: 2023-10-25 07:48:14 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
 
-맵, 셋, 위크맵, 위크셋, Object.keys, values, entries
+맵과 셋, 위크맵과 위크셋, Object.keys, values, entries
 
 ## 맵과 셋
 
@@ -29,7 +29,7 @@ tags: [javascript]
 
 맵은 `SameValueZero`라 불리는 알고리즘을 사용해 값의 등가 여부를 확인
 
-- 일치 연산자 `===`와 거의 유사하지만 `NaN`과 `NaN`을 같다고 취급하는 것이 차이
+- 일치 연산자 `===`와 유사하지만 `NaN`과 `NaN`을 같다고 취급하는 것이 차이
 - 따라서 `NaN`도 키로 쓸 수 있음
 
 ```javascript
@@ -55,6 +55,16 @@ visitsCountObj["[object Object]"]; // 123
 `new Map()`
 
 - 새로운 맵 생성
+- 인수로 각 요소가 `[키, 값]` 쌍인 배열 전달 가능
+
+```javascript
+let map = new Map([
+  ["1", "str1"],
+  [1, "num1"],
+  [true, "bool1"]
+]);
+alert(map.get("1")); // str1
+```
 
 `map.set(key, value)`
 
@@ -70,7 +80,9 @@ map.set("1", "str1").set(1, "num1").set(true, "bool1");
 - `key`에 해당하는 값을 반환
 - `key`가 존재하지 않으면 `undefined`를 반환
 
-`[]`(`map[key]`)를 사용해 접근할 키의 값에 접근하게 되면 `map`이 일반 객체로 취급되기 때문에 여러 제약 발생
+`map[key]`로 사용하지 않기
+
+- `[]`로 키의 값에 접근하면 `map`이 일반 객체로 취급되기 때문에 여러 제약 발생
 
 ```javascript
 map[key] = 2; // X
@@ -139,6 +151,16 @@ for (let entry of recipeMap) {
 
 - 객체는 프로퍼티 순서를 기억하지 못하지만 맵은 값이 삽입된 순서대로 순회
 
+`Array.from`과 같이 사용해 이터러블 객체를 배열로 변환
+
+```javascript
+let map = new Map();
+map.set("1", "hello").set("a", 4);
+let arr = Array.from(map); // [["1", "hello"], ["a", 4]]
+arr = Array.from(map.keys()); // ["1", "a"]
+arr = Array.from(map.values()); // ["hello", 4]
+```
+
 `map.forEach(fn)`
 
 - 배열과 유사하게 해당 메서드 지원
@@ -176,6 +198,8 @@ alert(map.get("name"));
 Object.entries([1, 2, 3]); // [['0', 1], ['1', 2], ['2', 3]]
 Object.entries("abc"); // [['0', 'a'], ['1', 'b'], ['2', 'c']]
 ```
+
+### Object.fromEntries: 맵을 객체로 바꾸기
 
 `Object.fromEntries()`
 
@@ -289,6 +313,18 @@ set.forEach((value, valueAgain, set) => {
 - 셋 내의 각 값을 이용해 만든 `[value, value]` 배열을 포함하는 이터러블 객체를 반환
 - 맵과의 호환성을 위한 메서드
 
+### 배열에서 중복 요소 제거하기
+
+```javascript
+let values = ["a", "b", "a", "b", "b", "b", "a", "a", "c"];
+function unique(arr) {
+  return Array.from(new Set(arr));
+}
+let newArr = unique(values); // ["a", "b", "c"]
+```
+
+Map이나 Set을 `Array.from`과 같이 쓰자
+
 ## 위크맵과 위크셋
 
 자바스크립트는 도달 가능한(추후 사용될 가능성이 있는) 값을 메모리에 유지
@@ -354,7 +390,7 @@ john = null;
 - 가비지 컬렉션이 일어나는 시점은 자바스크립트 엔진이 결정
   - 객체는 모든 참조를 잃었을 때 그 즉시 메모리에서 삭제될 수도 있고, 다른 삭제 작업이 있을 때까지 대기하다가 함께 삭제될 수도 있음
   - 때문에 현재 위크맵에 요소가 몇 개 있는지 정확히 파악하는 것이 불가능
-  - 가비지 컬렉터가 한번에 메모리 청소를 할 수도 있고, 부분 부분 메모리 청소를 할 수도 있으므로 위크맵의 요소(키/값) 전체를 대상으로 무언가를 하는 메서드는 동작 자체가 불가능
+- 가비지 컬렉터가 한번에 메모리 청소를 할 수도 있고, 부분 부분 메모리 청소를 할 수도 있으므로 위크맵의 요소(키/값) 전체를 대상으로 무언가를 하는 메서드는 동작 자체가 불가능
 
 `weakMap.get(key)`
 
@@ -381,8 +417,9 @@ weakMap.set(john, "비밀문서"); // john이 사망하면, 비밀문서 자동 
 
 예시 2
 
-- 맵의 요소의 키에 특정 사용자를 나타내는 객체를, 값엔 해당 사용자의 방문 횟수를 저장
-- 어떤 사용자의 정보를 저장할 필요가 없어지면(가비지 컬렉션의 대상이 되면) 해당 사용자의 방문 횟수도 저장할 필요가 없음
+- 맵의 요소의 키에 특정 사용자를 나타내는 객체 저장
+- 값엔 해당 사용자의 방문 횟수를 저장
+- 어떤 사용자의 정보를 저장할 필요가 없어지면(가비지 컬렉션의 대상이 되면), 해당 사용자의 방문 횟수도 저장할 필요가 없음
 
 ```javascript
 // visitsCount.js
@@ -401,7 +438,6 @@ john = null;
 - 특정 사용자를 나타내는 객체가 메모리에서 사라지면 해당 객체에 대한 정보(방문 횟수)도 손수 지워야 함
   - 그렇지 않으면 `visitsCountMap`이 차지하는 메모리 공간이 커짐
   - 애플리케이션 구조가 복잡할 땐 쓸모 없는 데이터를 수동으로 비워주는 것이 까다로움
-  - 이럴 때 위크맵을 사용해 문제를 예방
 
 ```javascript
 // visitsCount.js
@@ -422,7 +458,7 @@ function countUser(user) {
 
 캐싱
 
-- 시간이 오래 걸리는 작업의 결과를 저장해서 연산 시간과 비용을 절약해주는 기법
+- 시간이 오래 걸리는 작업의 결과를 저장해 연산 시간과 비용을 절약해주는 기법
 - 동일한 함수를 여러 번 호출해야 할 때, 최초 호출 시 반환된 값을 어딘가에 저장해 놓았다가 그 다음엔 함수를 호출하는 대신 저장된 값을 사용하는 것이 예
 
 ```javascript
@@ -481,6 +517,8 @@ alert(visitedSet.has(john)); // true
 alert(visitedSet.has(mary)); // false
 john = null; // visitedSet에 john을 나타내는 객체가 자동으로 삭제됨
 ```
+
+위크맵과 위크셋은 객체와 함께 추가 데이터를 저장하는 용도로 사용
 
 ## Object.keys, values, entries
 

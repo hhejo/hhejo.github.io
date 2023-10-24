@@ -1,18 +1,22 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 2
 date: 2023-10-03 20:13:24 +0900
-last_modified_at: 2023-10-16 20:39:33 +0900
+last_modified_at: 2023-10-24 08:04:14 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
 
-new 연산자, 생성자 함수, 메서드, 옵셔널 체이닝 ?., 심볼, 숨김 프로퍼티, 전역 심볼, 객체를 원시형으로 변환하기, Symbol.toPrimitive, toString, valueOf
+new 연산자와 생성자 함수, 메서드, 옵셔널 체이닝 ?., 심볼형, 객체를 원시형으로 변환하기
 
 ## new 연산자와 생성자 함수
 
-객체 리터럴 `{...}`은 객체 여러 개 생성하기 번거로움
+객체 리터럴 `{...}`
 
-`new` 연산자와 생성자 함수로 유사한 객체를 여러 개 만들 수 있음
+- 객체 여러 개 생성하기 번거로움
+
+`new` 연산자와 생성자 함수
+
+- 유사한 객체를 쉽게 여러 개 만들 수 있음
 
 ### 생성자 함수(constructor function)
 
@@ -21,9 +25,11 @@ new 연산자, 생성자 함수, 메서드, 옵셔널 체이닝 ?., 심볼, 숨�
 - 함수 이름의 첫 글자는 대문자로 시작
 - 반드시 `new` 연산자를 붙여 실행
 
-생성자를 이용해 재사용할 수 있는 객체 생성 코드 구현 가능
+생성자를 이용해 재사용할 수 있는 객체 생성 코드 구현
 
-모든 함수는 생성자 함수가 될 수 있음. 어떤 함수라도 `new`를 붙여 실행하면 생성자 알고리즘 실행
+모든 함수는 생성자 함수가 될 수 있음
+
+- 어떤 함수라도 `new`를 붙여 실행하면 생성자 알고리즘 실행
 
 ```javascript
 function User(name) {
@@ -36,13 +42,12 @@ let user = new User("보라");
 ```
 
 ```javascript
-// 위 코드와 동일하게 동작
-let user = { name: "보라", isAdmin: false };
+let user = { name: "보라", isAdmin: false }; // 위 코드와 동일하게 동작
 ```
 
-### 익명 생성자 함수
+익명 생성자 함수
 
-재사용은 막으면서 코드 캡슐화 가능
+- 재사용은 막으면서 코드를 캡슐화
 
 ```javascript
 let user = new (function () {
@@ -55,11 +60,11 @@ let user = new (function () {
 
 `new.target` 프로퍼티를 사용하면 함수가 `new`와 함께 호출되었는지 아닌지 알 수 있음
 
-일반적인 방법으로 함수 호출
+일반적인 방법으로 함수 호출(in regular mode)
 
 - `new.target`이 `undefined` 반환
 
-`new`와 함께 호출
+`new`와 함께 호출(in constructor mode)
 
 - `new.target`은 함수 자체를 반환
 
@@ -71,18 +76,27 @@ User(); // undefined
 new User(); // function User { ... }
 ```
 
+```javascript
+function User(name) {
+  if (!new.target) {
+    return new User(name); // new 없이 호출해도 new 붙여줌
+  }
+  this.name = name;
+}
+let bora = User("보라"); // new User를 쓴 것처럼 변환
+```
+
 ### 생성자와 return문
 
 생성자 함수에는 보통 `return`문이 없음
 
 - 반환해야 할 것들은 모두 `this`에 저장되고, `this`는 자동으로 반환되기 때문
 
-`return`문이 있으면
+생성자 함수에 `return`문이 있으면
 
 - 객체를 `return`한다면 `this` 대신 객체 반환
 - 원시형을 `return`한다면 `return`문이 무시됨
-
-즉, `return` 뒤에 객체가 오면 생성자 함수는 해당 객체를 반환하고, 이외의 경우는 `this` 반환
+- 즉, `return` 뒤에 객체가 오면 생성자 함수는 해당 객체를 반환하고, 이외의 경우는 `this` 반환
 
 `return`문이 있는 생성자 함수는 거의 없음
 
@@ -102,9 +116,9 @@ function SmallUser() {
 alert(new SmallUser().name); // 원숭이
 ```
 
-### 괄호 생략하기
+괄호 생략하기
 
-인수가 없는 생성자 함수는 괄호를 생략해 호출 가능하지만 괄호 사용을 권장
+- 인수가 없는 생성자 함수는 괄호를 생략해 호출 가능하지만 괄호 사용을 권장
 
 ```
 let user = new User;
@@ -115,7 +129,7 @@ let user = new User(); // 위 코드와 동일하게 동작
 
 생성자 함수를 사용하면 매개변수를 이용해 객체 내부를 자유롭게 구성할 수 있음
 
-메서드도 더할 수 있음
+`this`에 프로퍼티뿐만 아니라 메서드도 추가 가능
 
 `class` 문법을 사용하면 생성자 함수를 사용하는 것과 마찬가지로 복잡한 객체 생성 가능
 
@@ -130,12 +144,63 @@ let bora = new User("이보라");
 bora.sayHi(); // 제 이름은 이보라입니다.
 ```
 
+### 함수 두 개로 동일한 객체 만들기
+
+```javascript
+let obj = {};
+function A() {
+  return obj;
+}
+function B() {
+  return obj;
+}
+alert(new A() == new B()); // true
+```
+
+### 계산기 만들기
+
+```javascript
+function Calculator() {
+  this.read = function () {
+    this.a = +prompt("a?", 0);
+    this.b = +prompt("b?", 0);
+  };
+  this.sum = function () {
+    return this.a + this.b;
+  };
+  this.mul = function () {
+    return this.a * this.b;
+  };
+}
+let calculator = new Calculator();
+calculator.read();
+alert(`Sum = ${calculator.sum()}`);
+alert(`Mul = ${calculator.mul()}`);
+```
+
+### 누산기 만들기
+
+```javascript
+function Accumulator(startingValue) {
+  this.value = startingValue;
+  this.read = function () {
+    this.value += +prompt("더할 값", 0);
+  };
+}
+let accumulator = new Accumulator(1);
+accumulator.read();
+accumulator.read();
+alert(accumulator.value);
+```
+
 ## 옵셔널 체이닝 '?.'
 
 옵셔널 체이닝(optional chaining) `?.`
 
 - 프로퍼티가 없는 중첩 객체를 에러 없이 안전하게 접근
 - 연산자가 아닌 함수나 대괄호와 함께 동작하는 특별한 문법 구조체(syntax construct)
+
+### 옵셔널 체이닝이 필요한 이유
 
 ```javascript
 let user = {}; // 주소 정보 없음
@@ -147,9 +212,10 @@ alert(user.address.street); // TypeError: Cannot read properties of undefined (r
 let html = document.querySelector(".my-element").innerHTML;
 ```
 
-### 옵셔널 체이닝의 등장 이전
-
 `&&` 연산자를 사용해 에러 방지
+
+- 실제 해당 객체나 프로퍼티가 있는지 확인 가능
+- 코드가 길어진다는 단점이 있음
 
 ```javascript
 let user = {};
@@ -179,9 +245,20 @@ alert(user?.address.street); // undefined
 user?.address; // ReferenceError: user is not defined
 ```
 
+### 단락 평가
+
 `?.`는 왼쪽 평가 대상에 값이 없으면 평가 멈춤
 
+```javascript
+let user = null;
+let x = 0;
+user?.sayHi(x++);
+alert(x); // 0
+```
+
 ### ?.()와 ?.[]
+
+`?.`은 연산자가 아닌 함수나 대괄호와 함께 동작하는 특별한 문법 구조체(syntax construct)
 
 ```javascript
 let user1 = {
@@ -203,6 +280,8 @@ alert(user2?.[key]); // undefined
 alert(user1?.[key]?.something?.not?.existing); // undefined
 ```
 
+`delete`와 조합 가능
+
 ```javascript
 delete user?.name; // user가 존재하면 user.name을 삭제
 ```
@@ -211,8 +290,9 @@ delete user?.name; // user가 존재하면 user.name을 삭제
 
 ```javascript
 user?.name = "Violet"; // SyntaxError: Invalid left-hand side in assignment
-// undefined = 'Violet'이 되기 때문
 ```
+
+- `undefined = 'Violet'`이 되기 때문
 
 ## 심볼형
 
@@ -222,9 +302,7 @@ user?.name = "Violet"; // SyntaxError: Invalid left-hand side in assignment
 
 `Symbol()`
 
-유일한 식별자(unique identifier)를 만들고 싶을 때 사용
-
-심볼에 붙이는 설명(심볼 이름)은 어떤 것에도 영향을 주지 않는 이름표 역할
+- 유일한 식별자(unique identifier)를 만들고 싶을 때 사용
 
 ```javascript
 let id = Symbol(); // id는 심볼
@@ -233,6 +311,8 @@ let id = Symbol("id"); // 'id'라는 설명이 붙는 심볼 id
 
 유일성을 보장하기 때문에 동일 심볼을 여러 개 만들어도 각 심볼값은 다름
 
+- 심볼에 붙이는 설명(심볼 이름)은 어떤 것에도 영향을 주지 않는 이름표 역할
+
 ```javascript
 let id1 = Symbol("id");
 let id2 = Symbol("id");
@@ -240,6 +320,10 @@ alert(id1 == id2); // false
 ```
 
 심볼형 값은 다른 자료형으로 암시적 형 번환(자동 형 변환)이 되지 않음
+
+- 문자열과 심볼을 근본이 다름
+- 반드시 출력해야 하는 상황이면 `.toString()` 메서드 사용
+- `symbol.description` 프로퍼티로 설명만 보여줄 수도 있음
 
 ```javascript
 let id = Symbol("id");
@@ -269,7 +353,9 @@ let id = Symbol("id");
 user[id] = "제 3 스크립트 id 값";
 ```
 
-일반적인 프로퍼티를 사용하는 경우, 의도치 않게 덮어쓸 수 있음
+일반적인 프로퍼티를 사용하는 경우
+
+- 의도치 않게 덮어쓸 수 있음
 
 ```javascript
 let user = { name: "John" };
@@ -277,17 +363,19 @@ user.id = "스크립트 id 값";
 user.id = "제3 스크립트 id 값"; // 의도치 않게 덮어 씀
 ```
 
-객체 리터럴 `{...}`을 사용해 객체를 만든 경우, 대괄호를 사용해 심볼형 키를 만들어야 함
+객체 리터럴 `{...}`을 사용해 객체를 만든 경우, 대괄호로 심볼형 키 생성
 
 ```javascript
 let id = Symbol("id");
 let user = { name: "John", [id]: 123 };
+// { id: 123 }은 심볼 id가 아닌 문자열 "id"가 키가 됨
 ```
 
 심볼형 프로퍼티 숨기기(hiding symbolic property)
 
 - 심볼은 `for...in`에서 배제됨
 - `Object.keys()`, `Object.values()`, `Object.entries()`에서도 키가 심볼인 프로퍼티는 배제됨
+- 외부 스크립트나 라이브러리는 심볼형 키를 가진 프로퍼티에 접근 불가
 
 ```javascript
 let id = Symbol("id");
@@ -310,9 +398,10 @@ alert(clone[id]); // 123
 
 ### 전역 심볼
 
-전역 심볼 레지스트리 안에 있는 심볼
+전역 심볼 레지스트리(global symbol registry) 안에 있는 심볼
 
-전역 심볼 레지스트리(global symbol registry)를 이용해 이름이 같은 심볼이 같은 개체를 가리킬 수 있음
+- 이름이 같은 심볼이 같은 개체를 가리킬 수 있음
+- 그냥 심볼은 이름이 같더라도 별개로 취급
 
 `Symbol.for(key)`
 
@@ -357,9 +446,16 @@ alert(localSymbol.description); // name
 
 자바스크립트 내부에서 사용되는 심볼
 
-객체를 미세 조정할 수 있음
+- 내장 메서드 등의 기본 동작을 원하는 대로 변경 가능
+- 객체를 미세 조정할 수 있음
 
-`Symbol.hasInstance`, `Symbol.isConcatSpreadable`, `Symbol.iterator`, `Symbol.toPrimitive`, ...
+`Symbol.*`로 접근
+
+- `Symbol.hasInstance`
+- `Symbol.isConcatSpreadable`
+- `Symbol.iterator`
+- `Symbol.toPrimitive`
+- 기타 등등
 
 ## 객체를 원시형으로 변환하기
 
@@ -384,21 +480,23 @@ hint(목표로 하는 자료형)라 불리는 값이 객체 형 변환의 세 �
 hint가 `string`
 
 - `alert` 함수 같이 문자열을 기대하는 연산을 수행할 때
+- 객체-문자형 변환
 
 ```javascript
 alert(obj); // 객체를 출력하려고 함
-anotherObj[obj] = 123; // 객체를 프로퍼티 키로 사용하고 있음
+anotherObj[obj] = 123; // 객체를 프로퍼티 키로 사용
 ```
 
 hint가 `number`
 
 - 수학 연산을 적용하려 할 때
+- 객체-숫자형 변환
 
 ```javascript
 let num = Number(obj); // 명시적 형 변환
-let n = +obj;
-let delta = date1 - date2;
-let greater = user1 > user2;
+let n = +obj; // 단항 덧셈 연산
+let delta = date1 - date2; // 이항 덧셈 연산을 제외한 수학 연산
+let greater = user1 > user2; // 대소 비교
 ```
 
 hint가 `default`
@@ -407,14 +505,19 @@ hint가 `default`
 - 이항 덧셈 연산자 `+`의 인수가 객체일 때
 - 동등 연산자 `==`를 사용해 객체-문자형, 객체-숫자형, 객체-심볼형끼리 비교할 때
   - 객체를 어떤 자료형으로 바꿔야 할지 확신이 안 서므로 hint는 `default`가 됨
-- `<`, `>` 역시 피연산자에 문자형과 숫자형 둘 다를 허용하는데, 이 연산자들은 hint를 `number`로 고정해 hint가 `default`가 되는 일이 없음 (하위 호환성 때문)
-- `boolean` hint는 존재하지 않음. 모든 객체는 `true`로 평가됨
-- `Date` 객체를 제외한 모든 내장 객체는 hint가 `default`인 경우와 `number`인 경우를 동일하게 처리
+- `<`, `>` 역시 피연산자에 문자형과 숫자형 둘 다 허용
+  - 이 연산자들은 hint를 `number`로 고정해 hint가 `default`가 되는 일이 없음 (하위 호환성 때문)
+
+`Date` 객체를 제외한 모든 내장 객체는 hint가 `default`인 경우와 `number`인 경우를 동일하게 처리
 
 ```javascript
-let total = obj1 + obj2;
-if (obj == 1) { ... }
+let total = obj1 + obj2; // hint가 default
+if (obj == 1) { ... } // hint가 default
 ```
+
+`boolean` hint는 존재하지 않음
+
+- 모든 객체는 `true`로 평가됨
 
 ```javascript
 alert(!!{}); // true
@@ -427,9 +530,13 @@ alert(!!" "); // true
 let obj = { a: 1 };
 let obj2 = { b: 2 };
 obj + obj2; // "[object Object][object Object]"
+// {} + {} 콘솔에서 NaN
+// alert({} + {}) 는 [objectObject][objectObject]
+// [] + [] 콘솔에서 ""
+// alert([] + []) 는 빈 문자열 ""
 ```
 
-자바스크립트는 형 변환이 필요할 때, 아래와 같은 알고리즘에 따라 원하는 메서드를 찾고 호출
+자바스크립트는 형 변환이 필요할 때, 다음 알고리즘에 따라 원하는 메서드를 찾고 호출
 
 1. 객체에 `obj[Symbol.toPrimitive](hint)` 메서드가 있는지 찾고, 있다면 호출
    - `Symbol.toPrimitive`는 시스템 심볼로, 심볼형 키로 사용됨
@@ -467,23 +574,27 @@ alert(user + 500); // hint: default -> 1500
 
 ### toString과 valueOf
 
-`toString`과 `valueOf`는 심볼이 생기기 이전부터 존재해왔던 평범한 메서드
+`toString`, `valueOf`
 
-이 메서드를 사용하면 구식이긴 하지만 형 변환을 직접 구현 가능
+- 심볼이 생기기 이전부터 존재한 평범한 메서드
+- 이 메서드를 사용하면 구식이긴 하지만 형 변환을 직접 구현 가능
 
 객체에 `Symbol.toPrimitive`가 없으면 자바스크립트는 아래 규칙에 따라 `toString`이나 `valueOf`를 호출
 
-- hint가 string인 경우: toString -> valueOf 순 (toString이 있다면 toString 호출, toString이 없다면 valueOf 호출)
-- 그 외: valueOf -> toString 순
+- hint가 string인 경우
+  - toString -> valueOf 순 (toString이 있다면 toString 호출, 없다면 valueOf 호출)
+- 그 외
+  - valueOf -> toString 순
 
 이 메서드들은 반드시 원시값을 반환해야 함
 
-toString이나 valueOf가 객체를 반환하면 그 결과는 무시됨. 메서드가 처음부터 없었던 것처럼 됨
+- toString이나 valueOf가 객체를 반환하면 그 결과는 무시됨
+  - 마치 메서드가 처음부터 없었던 것처럼 됨
 
 일반 객체는 기본적으로 `toString`과 `valueOf`에 적용되는 다음 규칙을 따름
 
 - `toString`은 문자열 `"[object Object]"`를 반환
-- `valueOf`는 객체 자신을 반환 (메서드가 존재하지 않는 것 처럼 무시됨)
+- `valueOf`는 객체 자신을 반환 (메서드가 존재하지 않는 것 처럼 무시됨. 역사적인 이유 때문)
 
 ```javascript
 let user = { name: "John" };
@@ -539,7 +650,8 @@ alert(user + 500); // toString -> John500
 - `toString`이나 `valueOf`가 객체를 반환해도 에러가 발생하지 않음
   - 다만 이때는 반환값이 무시되고, 메서드 자체가 존재하지 않았던 것처럼 동작
   - 과거 자바스크립트엔 에러라는 개념이 잘 정립되어 있지 않았기 때문
-- 반면에 `Symbol.toPrimitive`는 무조건 원시자료를 반환해야 함. 아니면 에러 발생
+- `Symbol.toPrimitive`는 무조건 원시자료를 반환해야 함
+  - 아니면 에러 발생
 
 ### 추가 형 변환
 
@@ -554,7 +666,7 @@ let obj = {
     return "2";
   }
 };
-alert(obj * 2); // 4
+alert(obj * 2); // 4. "2" * 2 -> 2 * 2 -> 4
 ```
 
 ```javascript

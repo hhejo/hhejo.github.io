@@ -1,12 +1,12 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 2
 date: 2023-10-07 08:19:33 +0900
-last_modified_at: 2023-10-17 08:45:37 +0900
+last_modified_at: 2023-10-25 07:46:27 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
 
-배열, 배열 메서드, iterable
+배열, 배열과 메서드, iterable 객체
 
 ## 배열
 
@@ -25,7 +25,7 @@ let arr = [];
 
 새로운 요소를 배열에 추가할 수도 있음
 
-`length`
+`length` 프로퍼티
 
 - 배열의 요소 개수 반환
 
@@ -101,12 +101,19 @@ for (let i = 0; i < arr.length; i++) {
 }
 ```
 
-`for...of`문
+`for...of`
 
-- 현재 요소의 인덱스는 얻을 수 없고 값만 얻을 수 있지만 문법이 간단
-- 배열은 객체형에 속하므로 `for...in`을 사용할 수 있지만 좋지 않음
-  - 모든 프로퍼티를 대상으로 순회하기 때문에 키가 숫자가 아닌 프로퍼티도 순회 대상에 포함
-  - 배열이 아니라 객체와 함께 사용할 때 최적화되어 있어서 배열에 사용하면 객체에 사용하는 것 대비 10~100배 느림
+```javascript
+for (let item of arr) {...}
+```
+
+- 현재 요소의 인덱스는 얻을 수 없고 값만 얻을 수 있음
+- 문법이 간단함
+
+배열은 객체형에 속하므로 `for...in`을 사용할 수 있지만 좋지 않음
+
+- 모든 프로퍼티를 대상으로 순회하기 때문에 키가 숫자가 아닌 프로퍼티도 순회 대상에 포함
+- 배열이 아니라 객체와 함께 사용할 때 최적화되어 있어서 배열에 사용하면 객체에 사용하는 것 대비 10~100배 느림
 
 ### 'length' 프로퍼티
 
@@ -145,6 +152,15 @@ arr = new Array("사과", "배", "오렌지");
 
 배열의 요소가 배열
 
+```javascript
+let matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+];
+alert(matrix[1][1]); // 5
+```
+
 ### toString
 
 요소를 쉼표로 구분한 문자열 반환
@@ -175,6 +191,7 @@ alert([1] + [2, 3]); // 12,3
 let arr = ["I", "go", "home"];
 delete arr[1];
 alert(arr[1]); // undefined
+// arr = ["I", , "home]
 alert(arr.length); // 3
 ```
 
@@ -221,8 +238,8 @@ alert(arr); // 1,2,3,4,5
 
 ```javascript
 let arr = ["t", "e", "s", "t"];
-alert(arr.slice(1, 3));
-alert(arr.slice(-2));
+alert(arr.slice(1, 3)); // e,s
+alert(arr.slice(-2)); // s,t
 ```
 
 ```javascript
@@ -299,7 +316,7 @@ arr2; // [1, 2]
 - 인수로 넘겨준 함수의 반환값은 무시됨
 
 ```javascript
-arr.forEach(function (item, index, array) {...});
+arr.forEach(function (item, index, array) {...})
 ```
 
 ```javascript
@@ -415,6 +432,7 @@ arr.at(-1); // 3
 `arr.map(fn)`
 
 - 배열 요소 전체를 대상으로 함수를 호출하고, 그 결과를 배열로 반환
+- 유용성과 사용 빈도가 아주 높음
 
 ```javascript
 let result = arr.map(function (item, index, array) {
@@ -483,7 +501,7 @@ alert(arr); // 5,4,3,2,1
 
 - 구분자(delimiter) `delim`을 기준으로 문자열을 쪼갬
 - 두 번째 인수로 숫자를 받아 배열의 길이를 제한해줄 수 있음
-- `delim`을 빈 문자열로 지정하면 문자열을 글자 단위로 분리할 수 있음
+- `delim`을 빈 문자열 `''`로 지정하면 문자열을 글자 단위로 분리할 수 있음
 
 ```javascript
 let names = "Bilbo, Gandalf, Nazgul";
@@ -516,9 +534,6 @@ alert(str); // Bilbo;Gandalf;Nazgul
 `arr.reduce(fn)`
 
 - 배열을 기반으로 값 하나를 도출할 때 사용
-- `accumulator`: 이전 함수의 호출 결과. 다음 함수를 호출할 때 첫 번째 인수로 사용됨 (previousValue)
-- `initial`: 함수 최초 호출 시 사용되는 초깃값. 없으면 배열의 첫 번째 요소를 초깃값으로 사용하고 두 번째 요소부터 함수를 호출. 배열이 비어있다면 에러 발생
-- 마지막 함수까지 호출되면 `accumulator`의 값이 반환 값이 됨
 
 ```javascript
 let value = arr.reduce(
@@ -528,6 +543,10 @@ let value = arr.reduce(
   [initial]
 );
 ```
+
+- `accumulator`: 이전 함수의 호출 결과. 다음 함수를 호출할 때 첫 번째 인수로 사용됨 (previousValue)
+- `initial`: 함수 최초 호출 시 사용되는 초깃값. 없으면 배열의 첫 번째 요소를 초깃값으로 사용하고 두 번째 요소부터 함수를 호출. 배열이 비어있다면 에러 발생
+- 마지막 함수까지 호출되면 `accumulator`의 값이 반환 값이 됨
 
 ```javascript
 let arr = [1, 2, 3, 4, 5];
@@ -594,6 +613,24 @@ alert(soldiers[1].age); // 23
 - `thisArg`에 `army`를 지정하지 않고 단순히 `users.filter(army.canJoin)`을 사용했다면 `army.canJoin`은 단독 함수처럼 취급되고, 함수 본문 내 `this`는 `undefined`가 되어 에러가 발생했을 것
 - `users.filter(user => army.canJoin(user))`를 사용하면 `users.filter(army.canJoin, army)`를 대체할 수 있지만 `thisArg`를 사용하는 방식이 좀 더 이해하기 쉬워 더 자주 사용됨
 
+### 이외의 배열 메서드
+
+`arr.some(fn)`, `arr.every(fn)`
+
+- `map`과 유사하게 모든 요소를 대상으로 함수 `fn` 호출
+- `some`: 반환 값을 `true`로 만드는 요소가 하나라도 있는지 여부를 확인
+- `every`: 모든 요소가 함수의 반환 값을 `true`로 만드는지 여부를 확인
+- 조건을 충족하면 `true`, 그렇지 않으면 `false` 반환
+
+`arr.fill(value, start, end)`
+
+- `start`부터 `end` 전까지 `value`를 채워 넣음
+
+`arr.copyWithin(target, start, end)`
+
+- `start`부터 `end`까지 요소를 복사하고, 복사한 요소를 `target`에 붙여 넣음
+- 기존 요소가 있다면 덮어씀
+
 ## iterable 객체
 
 배열을 일반화한 객체, 반복 가능한(iterable) 객체
@@ -602,14 +639,18 @@ alert(soldiers[1].age); // 23
 
 배열은 대표적인 이터러블
 
+- 문자열도 이터러블
+
 ### Symbol.iterator
 
+`range`를 이터러블로 만들기 (`for..of`가 동작하게 하기)
+
 ```javascript
-let range = { from: 1, to: 5 };
+let range = { from: 1, to: 5 }; // 이터러블로 만들 배열이 아닌 객체
 for (let num of range) alert(num); // TypeError: range is not iterable
 ```
 
-- `range`를 이터러블로 만드려면(`for..of`가 동작하도록 하려면) 객체에 `Symbol.iterator`(특수 내장 심볼)라는 메서드를 추가해 아래와 같은 일이 벌어지도록 만들어야 함
+- 객체에 `Symbol.iterator`(특수 내장 심볼)라는 메서드를 추가해 아래와 같은 일을 발생시킴
 
 1. `for..of`가 시작되자마자 `for..of`는 `Symbol.iterator`를 호출
    - `Symbol.iterator`가 없으면 에러 발생
@@ -617,7 +658,7 @@ for (let num of range) alert(num); // TypeError: range is not iterable
 2. 이후 `for..of`는 반환된 객체(이터레이터)만을 대상으로 동작
 3. `for..of`에 다음 값이 필요하면 `for..of`는 이터레이터의 `next()` 메서드를 호출
 4. `next()`의 반환 값은 `{ done: Boolean, value: any }`와 같은 형태여야 함
-   - `done=true`는 반복이 종료되었음을 의미
+   - `done=true`는 반복 종료를 의미
    - `done=false`일 땐 `value`에 다음 값이 저장됨
 
 ```javascript
@@ -642,8 +683,7 @@ for (let num of range) alert(num); // 1, 2, 3, 4, 5
 
 - `range`엔 메서드 `next()`가 없음
 - 대신 `range[Symbol.iterator]()`를 호출해서 만든 이터레이터 객체와 이 객체의 메서드 `next()`에서 반복에 사용될 값 생성
-
-이를 통해 이터레이터 객체와 반복 대상인 객체 분리 가능
+- 이를 통해 이터레이터 객체와 반복 대상인 객체 분리 가능
 
 이터레이터 객체와 반복 대상 객체를 합쳐서 `range` 자체를 이터레이터로 만들면 코드가 더 간단해짐
 
@@ -668,21 +708,22 @@ for (let num of range) alert(num); // 1, 2, 3, 4, 5
 
 - `range[Symbol.iterator]()`가 객체 `range` 자체를 반환
 - 반환된 객체에는 필수 메서드 `next()`가 있고 `this.current`에 반복이 얼마나 진행되었는지를 나타내는 값도 저장됨
-- 코드도 더 짧아져서 이렇게 작성하는 게 좋을 때가 있음
+- 코드도 더 짧아짐
+- 이렇게 작성하는 게 좋을 때가 있음
 - 하지만 두 개의 `for..of` 반복문을 하나의 객체에 동시에 사용할 수 없음
   - 이터레이터(객체 자신)가 하나뿐이어서 두 반복문이 반복 상태를 공유하기 때문
   - 그러나 동시에 두 개의 `for..of`를 사용하는 것은 비동기 처리에서도 흔하지는 않음
 
 무한 개의 이터레이터
 
-- `range`에서 `range.to`에 `Infinity`를 할당하면 `range`가 무한대가 될 수 있음
+- `range`에서 `range.to`에 `Infinity`를 할당하면 `range`가 무한대가 됨
 - 무수히 많은 의사 난수(pseudorandom numbers)를 생성하는 이터러블 객체를 만드는 것도 가능
 - `next`엔 제약 사항이 없고 `next`가 값을 계속 반환하는 것은 정상적인 동작
 - 위와 같은 이터러블에 `for..of` 반복문을 사용하면 끝이 없겠지만 `break`를 사용해 언제든 반복을 멈출 수 있음
 
 ### 문자열은 이터러블입니다
 
-`for..of`는 문자열의 각 글자를 순회함
+`for..of`는 문자열의 각 글자를 순회
 
 ```javascript
 for (let char of "test") alert(char); // t, e, s, t
@@ -703,9 +744,10 @@ while (true) {
 }
 ```
 
-이터레이터를 명시적으로 호출하는 경우는 거의 없지만, 이 방법을 사용하면 `for..of`를 사용하는 것보다 반복 과정을 더 잘 통제할 수 있음
-
-반복을 시작했다가 잠시 멈춰 다른 작업을 하다가 다시 반복을 시작하는 것과 같이 반복 과정을 여러 개로 쪼개기 가능
+- 이터레이터를 명시적으로 호출하는 경우는 잘 없음
+- `for..of`를 사용하는 것보다 반복 과정을 더 잘 통제 가능
+- 반복 과정을 여러 개로 쪼갤 수 있음
+  - 반복을 시작했다가 잠시 멈춰 다른 작업을 하다가 다시 반복을 시작
 
 ### 이터러블과 유사 배열
 
@@ -723,27 +765,27 @@ while (true) {
 
 문자열
 
-- 이터러블 객체(`for..of`를 사용할 수 있음)
-- 유사 배열 객체(숫자 인덱스와 `length` 프로퍼티가 있음)
-- 이터러블 객체이면서 유사 배열 객체임
+- 이터러블 객체(`for..of` 사용)
+- 유사 배열 객체(숫자 인덱스, `length` 프로퍼티 있음)
+- 이터러블 객체이면서 유사 배열 객체
 
 ```javascript
 let arrayLike = { 0: "Hello", 1: "World", length: 2 };
-for (let item of arrayLike) {
-  // Symbol.iterator 없으므로 에러 발생
-} // TypeError: arrayLike is not iterable
+// Symbol.iterator 없으므로 에러 발생
+// TypeError: arrayLike is not iterable
+for (let item of arrayLike) {...}
 ```
 
 ### Array.from
 
-이터러블과 유사 배열에 배열 메서드를 적용하고 싶음
+이터러블과 유사 배열에 배열 메서드를 적용하기
 
 `Array.from()`
 
 - 이터러블이나 유사 배열을 받아 진짜 `Array`를 생성
 - 배열 메서드 사용 가능
 - 객체를 받아 이터러블이나 유사 배열인지 조사
-- 넘겨 받은 인수가 이터러블이나 유사 배열인 경우 새로운 배열을 만들고 객체의 모든 요소를 새롭게 만든 배열로 복사
+- 인수가 이터러블이나 유사 배열인 경우 새로운 배열을 만들고 객체의 모든 요소를 새롭게 만든 배열로 복사
 
 ```javascript
 let arrayLike = { 0: "Hello", 1: "World", length: 2 };
@@ -758,10 +800,8 @@ alert(arr); // 1,2,3,4,5
 
 `Array.from(obj[, mapFn, thisArg])`
 
-- 매핑(mapping) 함수를 선택적으로 넘겨줄 수 있음
-- `mapFn`을 두 번째 인수로 넘겨주면 새로운 배열에 `obj`의 요소를 추가하기 전에 각 요소를 대상으로 `mapFn` 적용 가능
-- 새로운 배열엔 `mapFn`을 적용하고 반환된 값 추가
-- `thisArg`는 각 요소의 `this`를 지정
+- `mapFn`: 각 요소를 대상으로 `mapFn` 적용하고 반환된 값을 새로운 배열에 추가
+- `thisArg`: 각 요소의 `this`를 지정
 
 ```javascript
 let arr = Array.from(range, (num) => num * num);
@@ -777,7 +817,7 @@ alert(chars.length); // 2
 ```
 
 - `str.split`과 달리 문자열 자체가 가진 이터러블 속성을 이용해 동작하기 때문에 `for..of`처럼 서로게이트 쌍에도 제대로 적용됨
-- 위의 예시는 아래 예시와 동일하게 동작
+- 위의 예시는 아래 예시와 기술적으로 동일하게 동작
 
 ```javascript
 let str = "𝒳😂";

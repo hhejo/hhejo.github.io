@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 4
 date: 2023-10-11 15:17:49 +0900
-last_modified_at: 2023-10-19 08:19:24 +0900
+last_modified_at: 2023-10-25 08:46:43 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,9 +10,8 @@ tags: [javascript]
 
 ## 구조 분해 할당
 
-함수에 객체나 배열에 저장된 데이터 전체가 아닌 일부만 필요한 경우
-
-함수의 매개변수가 많거나 매개변수 기본값이 필요한 경우
+- 함수에 객체나 배열에 저장된 데이터 전체가 아닌 일부만 필요한 경우
+- 함수의 매개변수가 많거나 매개변수 기본값이 필요한 경우
 
 구조 분해 할당(destructuring assignment)
 

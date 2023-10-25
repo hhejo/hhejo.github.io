@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 6
 date: 2023-10-15 10:20:13 +0900
-last_modified_at: 2023-10-19 14:07:00 +0900
+last_modified_at: 2023-10-25 09:19:47 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -41,8 +41,10 @@ JSON(JavaScript Object Notation)
 `JSON.stringify`
 
 - 객체를 JSON으로 변환
-- 원시값에도 적용 가능
-  - 객체 `{...}`, 배열 `[...]`, 원시형(문자형, 숫자형, 불린형 값(`true`, `false`), `null`)
+- 객체 `{...}`
+- 배열 `[...]`
+- 원시형
+  - 문자형, 숫자형, 불린형 값(`true`, `false`), `null`
 
 `JSON.parse`
 
@@ -68,6 +70,11 @@ alert(json);
   "wife": null
 }
 */
+// 원시값들에 적용
+alert(JSON.stringify(1)); // 1
+alert(JSON.stringify(`test`)); // "test"
+alert(JSON.stringify(true)); // true
+alert(JSON.stringify([1, 2, 3])); // [1,2,3]
 ```
 
 변환된 문자열
@@ -80,21 +87,13 @@ alert(json);
 
 JSON으로 인코딩된 객체는 일반 객체와 다른 특징을 가짐
 
-- 문자열은 큰따옴표로만 감싸야 함(작은따옴표, 백틱 불가)
+- 문자열은 큰따옴표로만 감싸야 함
+  - 작은따옴표, 백틱 사용 불가능
 - 객체 프로퍼티 이름은 큰따옴표로 감싸야 함
-
-`JSON.stringify`는 원시값에도 적용 가능
-
-```javascript
-alert(JSON.stringify(1)); // 1
-alert(JSON.stringify(`test`)); // "test"
-alert(JSON.stringify(true)); // true
-alert(JSON.stringify([1, 2, 3])); // [1,2,3]
-```
 
 `JSON.stringify`는 자바스크립트 특유의 객체 프로퍼티를 처리할 수 없음
 
-- JSON은 데이터 교환을 목적으로 만들어진 언어에 종속되지 않는 포맷이기 때문
+- JSON은 데이터 교환을 목적으로 만들어진 언어에 종속되지 않는 포맷
 - `JSON.stringify` 호출 시 무시되는 프로퍼티
   - 함수 프로퍼티(메서드)
   - 심볼형 프로퍼티(키가 심볼인 프로퍼티)
@@ -180,7 +179,7 @@ alert(
 
 `replacer` 함수는 프로퍼티(키, 값) 쌍 전체를 대상으로 호출되는데, 반드시 기존 프로퍼티 값을 대신하여 사용할 값을 반환해야 함
 
-- 특정 프로퍼티를 직렬화에서 누락시키려면 반환 값을 `undefined`로 만들면 됨
+- 반환 값이 `undefined`면 해당 프로퍼티 누락
 
 ```javascript
 alert(
@@ -210,7 +209,7 @@ number:       23
 
 중간에 삽입해 줄 공백 문자 수
 
-로깅이나 가독성을 높이는 목적으로 사용
+- 로깅이나 가독성을 높이는 목적으로 사용
 
 ```javascript
 let user = {
@@ -310,11 +309,11 @@ let user = JSON.parse(userData);
 
 ```javascript
 let json = `{
-  name: "John",                     // 프로퍼티 이름을 큰따옴표로 감싸지 않았습니다.
-  "surname": 'Smith',               // 프로퍼티 값은 큰따옴표로 감싸야 하는데, 작은따옴표로 감쌌습니다.
-  'isAdmin': false                  // 프로퍼티 키는 큰따옴표로 감싸야 하는데, 작은따옴표로 감쌌습니다.
-  "birthday": new Date(2000, 2, 3), // "new"를 사용할 수 없습니다. 순수한 값(bare value)만 사용할 수 있습니다.
-  "friends": [0,1,2,3]              // 이 프로퍼티는 괜찮습니다.
+  name: "John",                     // 프로퍼티 이름을 큰따옴표로 감싸야 함
+  "surname": 'Smith',               // 프로퍼티 값은 큰따옴표로 감싸야 하는데, 작은따옴표로 감쌈
+  'isAdmin': false                  // 프로퍼티 키는 큰따옴표로 감싸야 하는데, 작은따옴표로 감쌈
+  "birthday": new Date(2000, 2, 3), // "new"를 사용할 수 없음. 순수한 값(bare value)만 사용할 수 있음
+  "friends": [0,1,2,3]
 }`;
 ```
 
@@ -357,6 +356,32 @@ schedule = JSON.parse(schedule, function (key, value) {
   return value;
 });
 alert(schedule.meetups[1].date.getDate()); // 18
+```
+
+### 역참조 배제하기
+
+```javascript
+let room = { number: 23 };
+let meetup = {
+  title: "Conference",
+  occupiedBy: [{ name: "John" }, { name: "Alice" }],
+  place: room
+};
+// 순환 참조
+room.occupiedBy = meetup;
+meetup.self = meetup;
+
+const result = JSON.stringify(meetup, function replacer(key, value) {
+  return key != "" && value == meetup ? undefined : value;
+});
+alert(result);
+/*
+{
+  "title": "Conference",
+  "occupiedBy": [ { "name": "John" }, { "name": "Alice" } ],
+  "place": { "number": 23 }
+}
+*/
 ```
 
 ## 참고

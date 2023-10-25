@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 5
 date: 2023-10-13 08:20:13 +0900
-last_modified_at: 2023-10-19 13:40:47 +0900
+last_modified_at: 2023-10-25 08:46:43 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -60,10 +60,10 @@ let date = new Date("2017-01-26"); // Thu Jan 26 2017 09:00:00 GMT+0900 (GMT+09:
 `new Date(year, month, date, hours, minutes, seconds, ms)`
 
 - 주어진 인수를 조합해 만들 수 있는 날짜가 저장된 객체 반환(지역 시간대 기준)
-- 첫 번째, 두 번째 인수만 필수
-- `year`는 반드시 네 자리 숫자
-- `month`는 `0`(1월)부터 `11`(12월) 사이의 숫자
-- `date`는 일을 나타내는데 값이 없으면 1일로 처리
+- `year`, `month`만 필수
+- `year`: 반드시 네 자리 숫자
+- `month`: `0`(1월) ~ `11`(12월) 사이의 숫자
+- `date`: 일을 나타내는데 값이 없으면 1일
 - `hours`, `minutes`, `seconds`, `ms`에 값이 없는 경우 `0`으로 처리
 - 최소 정밀도는 1밀리초
 
@@ -117,6 +117,7 @@ alert(date.getUTCHours()); // 표준시간대(UTC+0, 일광 절약 시간제를 
 `getTimezoneOffset()`
 
 - 현지 시간과 표준 시간의 차이(분)를 반환
+- 표준시(UTC+0) 기준의 날짜 구성 요소를 반환해주는 메서드 없음
 
 ```javascript
 alert(new Date().getTimezoneOffset()); // -540
@@ -150,9 +151,8 @@ today.setHours(0, 0, 0, 0); // 날짜는 변경되지 않고 시, 분, 초 모�
 
 ### 자동 고침(autocorrection)
 
-범위를 벗어나는 값을 설정하려고 하면 자동 고침 기능이 활성화되면서 값이 자동으로 수정됨
-
-입력받은 날짜 구성 요소가 범위를 벗어나면 초과분은 자동으로 다른 날짜 구성 요소에 배분됨
+- 범위를 벗어나는 값을 설정하면 값이 자동으로 수정됨
+- 입력받은 날짜 구성 요소가 범위를 벗어나면 초과분은 자동으로 다른 날짜 구성 요소에 배분됨
 
 ```javascript
 let date = new Date(2023, 0, 32); // 2023년 1월 32일은 없음 -> 2월 1일로 자동 수정

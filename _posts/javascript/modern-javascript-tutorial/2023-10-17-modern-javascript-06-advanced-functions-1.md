@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 1
 date: 2023-10-17 14:30:02 +0900
-last_modified_at: 2023-10-20 07:43:33 +0900
+last_modified_at: 2023-10-26 13:08:36 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -24,7 +24,6 @@ pow(x, n); // x를 n제곱하는 함수
 ```
 
 1. 반복적인 사고: `for` 루프
-2. 재귀적인 사고: 작업을 단순화하고 자기 자신을 호출
 
 ```javascript
 function pow(x, n) {
@@ -33,6 +32,8 @@ function pow(x, n) {
   return result;
 }
 ```
+
+2. 재귀적인 사고: 작업을 단순화하고 자기 자신을 호출
 
 ```javascript
 function pow(x, n) {
@@ -47,8 +48,10 @@ pow(2, 1) = 1
 */
 ```
 
-- `n == 1`일 때: 명확한 결괏값을 즉시 도출 -> 재귀의 베이스(base) (`pow(x, 1)`은 `x`)
-- `n != 1`일 때: 재귀 단계. `n`이 `1`이 될 때까지 이어짐(자기 자신을 계속 호출)
+- `n == 1`일 때: 명확한 결괏값을 즉시 도출
+  - 재귀의 베이스(base) (`pow(x, 1)`은 `x`)
+- `n != 1`일 때: 재귀 단계
+  - `n`이 `1`이 될 때까지 이어짐(자기 자신을 계속 호출)
 
 재귀 깊이(recursion depth)
 

@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 3
 date: 2023-10-21 13:07:22 +0900
-last_modified_at: 2023-10-22 07:08:29 +0900
+last_modified_at: 2023-10-27 12:31:32 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -70,6 +70,10 @@ if (!window.Promise) {
 }
 ```
 
+자바스크립트에서 전역(global)이라는 용어는 '함수 안에 있지 않은(not inside the function)'이라고 생각하면 좋음
+
+전역에 변수, 함수 등을 정의하게 되면 전역 객체(브라우저에서 window 객체, Node.js에서 global 객체)를 통해 해당 변수나 함수에 접근할 수 있음
+
 ## 객체로서의 함수와 기명 함수 표현식
 
 자바스크립트에서 함수는 값으로 취급
@@ -85,18 +89,14 @@ if (!window.Promise) {
 name 프로퍼티를 사용해 함수의 이름을 가져올 수 있음
 
 ```javascript
-function sayHi() {
-  alert("Hi");
-}
+function sayHi() {}
 alert(sayHi.name); // sayHi
 ```
 
 익명 함수라도 자동으로 이름이 할당됨
 
 ```javascript
-let sayHi = function () {
-  alert("Hi");
-};
+let sayHi = function () {};
 alert(sayHi.name); // sayHi
 ```
 
@@ -106,7 +106,7 @@ alert(sayHi.name); // sayHi
 function f(sayHi = function () {}) {
   alert(sayHi.name);
 }
-f();
+f(); // sayHi
 ```
 
 자바스크립트 명세서에 정의된 이 기능을 contextual name이라 부름
@@ -149,7 +149,7 @@ alert(f2.length); // 2
 alert(many.length); // 2
 ```
 
-다른 함수 안에서 동작하는 함수의 타입을 검사(type introspection)할 때 사용됨
+다른 함수 안에서 동작하는 함수의 타입을 검사(type introspection)할 때도 사용됨
 
 ```javascript
 function ask(question, ...handlers) {
@@ -246,7 +246,7 @@ alert(counter()); // 10
 
 기명 함수 표현식(Named Function Expression, NFE)
 
-- 함수 표현식을 나타내는 용어
+- 이름이 있는 함수 표현식을 나타내는 용어
 
 일반 함수 표현식
 
@@ -289,7 +289,8 @@ func(); // ReferenceError: func is not defined
 - `sayHi` 대신 `func`로 호출한 이유
   - 아래와 같이 코드를 작성하면 외부 코드에 의해 `sayHi`가 변경될 수 있음
   - 함수가 `sayHi`를 자신의 외부 렉시컬 환경에서 가져오기 때문에 에러 발생
-  - 지역 렉시컬 환경엔 `sayHi`가 없기 때문에 외부 렉시컬 환경에서 `sayHi`를 찾는데 함수 호출 시점에 외부 렉시컬 환경의 `sayHi`엔 `null`이 저장되어 있기 때문에 에러 발생
+  - 지역 렉시컬 환경엔 `sayHi`가 없기 때문에 외부 렉시컬 환경에서 `sayHi`를 찾음
+  - 함수 호출 시점에 외부 렉시컬 환경의 `sayHi`엔 `null`이 저장되어 있기 때문에 에러 발생
   - 함수 표현식에 이름을 붙여주면 해결 가능
 
 ```javascript
@@ -324,6 +325,8 @@ welcome(); // Hello, Guest
   - lodash는 주요 함수 `_`에 `_.clone`, `_.keyBy` 등의 프로퍼티를 추가하는 식으로 구성됨
 - 함수 하나에 다양한 헬퍼 함수를 붙여 라이브러리를 만들면 라이브러리 하나가 전역 변수 하나만 사용하므로 전역 공간을 더럽히지 않음
   - 이름 충돌도 방지
+
+### 예시
 
 ```javascript
 function makeCounter() {
@@ -454,6 +457,10 @@ getFunc()(); // test
 `new Function`으로 만든 함수에 무언가를 넘겨주고 싶다면 인수를 사용
 
 `new Function`을 이용해 만든 함수의 `[[Environment]]`는 외부 렉시컬 환경이 아닌 전역 렉시컬 환경을 참조하므로 외부 변수를 사용할 수 없음
+
+- 단점 같아 보이지만 에러를 예방해주기 때문에 장점이 됨
+- 구조상으로는 매개변수를 사용해 값을 받는 게 더 나음
+- 압축기에 의한 에러도 방지
 
 ## 참고
 

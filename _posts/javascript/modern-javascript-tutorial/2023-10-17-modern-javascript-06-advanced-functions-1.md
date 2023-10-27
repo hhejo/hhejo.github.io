@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 1
 date: 2023-10-17 14:30:02 +0900
-last_modified_at: 2023-10-26 13:08:36 +0900
+last_modified_at: 2023-10-27 06:49:17 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -100,7 +100,7 @@ pow(2, 1) = 1
 
 ### 재귀적 순회
 
-재귀는 재귀적 순회(recursive traversal) 구현할 때 좋음
+재귀는 재귀적 순회(recursive traversal)를 구현할 때 좋음
 
 ```
 let company = {
@@ -184,11 +184,22 @@ list.next.next.next = { value: 4 };
 list.next.next.next.next = null;
 ```
 
+```
+     value         value         value         value
+list [ 1 ] -next-> [ 2 ] -next-> [ 3 ] -next-> [ 4 ] -> null
+```
+
 나누기
 
 ```javascript
 let secondList = list.next.next;
 list.next.next = null;
+```
+
+```
+     value         value
+      list [ 1 ] -next-> [ 2 ] -next-> null
+secondList [ 3 ] -next-> [ 4 ] -next-> null
 ```
 
 합치기
@@ -207,19 +218,31 @@ list.next.next.next = { value: 4 };
 list = { value: "new item", next: list }; // list에 새로운 value 추가
 ```
 
+```
+     value                  value         value         value         value
+list [ "new item" ] -next-> [ 1 ] -next-> [ 2 ] -next-> [ 3 ] -next-> [ 4 ] -next-> null
+```
+
 중간 요소 제거
 
 ```javascript
 list.next = list.next.next;
 ```
 
+```
+     value                  value         value         value
+list [ "new item" ] -next-> [ 2 ] -next-> [ 3 ] -next-> [ 4 ] -next-> null
+
+value
+[ 1 ] -next-> [ 2 ] ...
+```
+
 ## 나머지 매개 변수와 스프레드 문법
 
 상당수의 자바스크립트 내장 함수는 인수의 개수 제약이 없음
 
-임의의 수의 인수를 받는 방법
-
-함수의 매개변수에 배열을 전달하는 방법
+1. 임의의 수의 인수 받기
+2. 함수의 매개변수로 배열 전달하기
 
 ### 나머지 매개 변수 '...'
 
@@ -247,7 +270,7 @@ alert(sumAll(1, 2)); // 3
 alert(sumAll(1, 2, 3, 4)); // 10
 ```
 
-앞부분의 매개변수는 변수로, 남아있는 매개변수는 배열로 모을 수 있음
+앞부분의 매개변수는 변수로, 남은 매개변수는 배열로 모을 수 있음
 
 - 나머지 매개변수는 마지막에 있어야 함
 
@@ -265,11 +288,10 @@ showName("Bora", "Lee", "Software Engineer", "Researcher");
 
 `arguments`
 
-- 유사 배열 객체(array-like object)
-- 또한 이터러블 객체
-- 인수 전체를 담아 인덱스를 사용해 인수에 접근 가능
-- 나머지 매개변수가 나오기 이전, 함수의 인수 전체를 얻어내는 방법
-- 유사 배열 객체이면서 이터러블 객체이고 배열은 아니기 때문에 배열 메서드 사용 불가 (`map` 등)
+- 유사 배열 객체, 이터러블 객체
+  - 배열은 아니므로 배열 메서드 사용 불가 (`map` 등)
+- 인수 전체를 담고 있어 인덱스로 각 인수에 접근
+- 나머지 매개변수 문법이 나오기 전, 함수의 인수 전체를 얻어내는 유일한 방법
 
 ```javascript
 function showName() {
@@ -284,7 +306,9 @@ showName("Bora"); // Bora, undefined
 
 화살표 함수는 `arguments` 객체를 지원하지 않음
 
-- 화살표 함수에서 `arguments` 객체에 접근하면 외부에 있는 일반 함수의 `arguments` 객체 가져옴
+- 화살표 함수에서 `arguments` 객체에 접근하는 경우
+- 외부에 있는 일반 함수의 `arguments` 객체 가져옴
+- 자체 `this`를 갖지 않고, `arguments` 객체도 지원하지 않음
 
 ```javascript
 function f() {
@@ -298,7 +322,7 @@ f(1); // 1
 
 `...`
 
-- 나머지 매개변수와 비슷해 보이나 반대되는 역할
+- 나머지 매개변수와 비슷해 보이나 반대 역할
 
 ```javascript
 let arr = [3, 5, 1];
@@ -334,8 +358,8 @@ alert(merged); // 0,3,5,1,2,8,9,15 (0, arr, 2, arr2 순서)
 배열이 아니더라도 이터러블 객체이면 스프레드 문법 사용 가능
 
 - 스프레드 문법은 `for..of`와 같은 방식으로 내부에서 이터레이터를 사용해 요소 수집
-- 문자열에 `for..of`를 사용하면 문자열을 구성하는 문자 반환
-- `...str`이 `H,e,l,l,o`가 되어 배열 초기자(array initializer) `[...str]`로 전달됨
+  - 문자열에 `for..of`를 사용하면 문자열을 구성하는 문자 반환
+  - `...str`이 `H,e,l,l,o`가 되어 배열 초기자(array initializer) `[...str]`로 전달됨
 
 ```javascript
 let str = "Hello";
@@ -351,8 +375,8 @@ alert(Array.from(str)); // H,e,l,l,o
 
 `Array.from(obj)`과 `[...obj]`의 차이
 
-- `Array.from`은 유사 배열 객체와 이터러블 객체 둘 다에 사용
-- 스프레드 문법은 이터러블 객체에만 사용
+- `Array.from`: 유사 배열 객체와 이터러블 객체 둘 다에 사용
+- 스프레드 문법 `...`: 이터러블 객체에만 사용
 - 무언가를 배열로 바꿀 때는 `Array.from`을 보편적으로 사용
 
 ### 배열과 객체의 복사본 만들기
@@ -388,6 +412,11 @@ alert(JSON.stringify(objCopy)); // {"a":1,"b":2,"c":3}
 let objCopy = { ...obj };
 // let arrCopy = Object.assign([], arr);
 let arrCopy = [...arr];
+```
+
+```javascript
+const obj = Object.assign({}, ["a", "b"]);
+obj; // { "0": "a", "1": "b" }
 ```
 
 ## 참고

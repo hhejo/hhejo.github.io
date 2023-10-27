@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 4
 date: 2023-10-22 12:06:46 +0900
-last_modified_at: 2023-10-22 12:06:46 +0900
+last_modified_at: 2023-10-27 14:28:42 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -57,6 +57,8 @@ setTimeout("alert('안녕하세요.')", 1000); // 첫 번째 인수가 문자열
 ```javascript
 setTimeout(() => alert("안녕하세요."), 1000);
 ```
+
+함수를 넘기지 않고 함수 실행 결과를 넘기는 것을 주의
 
 ### clearTimeout으로 스케줄링 취소하기
 

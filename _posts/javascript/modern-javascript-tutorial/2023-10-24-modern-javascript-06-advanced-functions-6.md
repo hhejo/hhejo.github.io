@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 6
 date: 2023-10-24 12:06:46 +0900
-last_modified_at: 2023-10-24 12:06:46 +0900
+last_modified_at: 2023-10-28 11:01:23 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,7 +10,9 @@ call/apply와 데코레이터, 포워딩
 
 ## call/apply와 데코레이터, 포워딩
 
-자바스크립트에서 함수는 이곳저곳 전달될 수 있고, 객체로도 사용될 수 있음
+자바스크립트는 함수를 다룰 때 탁월한 유연성을 제공
+
+- 함수는 이곳저곳 전달될 수 있고, 객체로도 사용될 수 있음
 
 함수 간에 호출을 어떻게 포워딩(forwarding) 하는지, 데코레이팅(decorating) 하는지 알아보기
 
@@ -40,9 +42,9 @@ function cachingDecorator(func) {
   };
 }
 slow = cachingDecorator(slow);
-alert(slow(1));
+alert(slow(1)); // 캐시에 slow(1) 저장됨
 alert("다시 호출: " + slow(1));
-alert(slow(2));
+alert(slow(2)); // 캐시에 slow(2) 저장됨
 alert("다시 호출: " + slow(2));
 ```
 
@@ -73,7 +75,9 @@ alert("다시 호출: " + slow(2));
 
 ### func.call을 사용해 컨텍스트 지정하기
 
-위에서 구현한 데코레이터는 객체 메서드에 사용하기에는 적합하지 않음
+위에서 구현한 캐싱 데코레이터는 객체 메서드에 사용하기에는 적합하지 않음
+
+- 객체 메서드 `worker.slow()`는 데코레이터 적용 후 제대로 동작하지 않음
 
 ```javascript
 let worker = {

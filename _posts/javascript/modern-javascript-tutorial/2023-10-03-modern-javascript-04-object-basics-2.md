@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 2
 date: 2023-10-03 20:13:24 +0900
-last_modified_at: 2023-10-24 08:04:14 +0900
+last_modified_at: 2023-11-02 12:14:27 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -22,8 +22,8 @@ new 연산자와 생성자 함수, 메서드, 옵셔널 체이닝 ?., 심볼형,
 
 생성자 함수와 일반 함수에 기술적 차이는 없으나, 생성자 함수는 아래 관례를 따름
 
-- 함수 이름의 첫 글자는 대문자로 시작
-- 반드시 `new` 연산자를 붙여 실행
+1. 함수 이름의 첫 글자는 대문자로 시작
+2. 반드시 `new` 연산자를 붙여 실행
 
 생성자를 이용해 재사용할 수 있는 객체 생성 코드 구현
 
@@ -296,7 +296,10 @@ user?.name = "Violet"; // SyntaxError: Invalid left-hand side in assignment
 
 ## 심볼형
 
-객체 프로퍼티 키로 문자형과 심볼형만 허용
+객체 프로퍼티 키
+
+- 문자형
+- 심볼형
 
 ### 심볼(symbol)
 
@@ -309,9 +312,14 @@ let id = Symbol(); // id는 심볼
 let id = Symbol("id"); // 'id'라는 설명이 붙는 심볼 id
 ```
 
-유일성을 보장하기 때문에 동일 심볼을 여러 개 만들어도 각 심볼값은 다름
+유일성을 보장함
 
-- 심볼에 붙이는 설명(심볼 이름)은 어떤 것에도 영향을 주지 않는 이름표 역할
+- 동일 심볼을 여러 개 만들어도 각 심볼값은 다름
+
+심볼 이름
+
+- 심볼에 붙이는 설명
+- 어떤 것에도 영향을 주지 않는 이름표 역할
 
 ```javascript
 let id1 = Symbol("id");
@@ -322,13 +330,14 @@ alert(id1 == id2); // false
 심볼형 값은 다른 자료형으로 암시적 형 번환(자동 형 변환)이 되지 않음
 
 - 문자열과 심볼을 근본이 다름
-- 반드시 출력해야 하는 상황이면 `.toString()` 메서드 사용
-- `symbol.description` 프로퍼티로 설명만 보여줄 수도 있음
+- `symbol.toString()`: 문자열로 출력 가능
+- `symbol.description`: 설명을 보임(프로퍼티)
 
 ```javascript
 let id = Symbol("id");
 alert(id); // TypeError: Cannot convert a Symbol value to a string
 alert(id.toString()); // Symbol(id)
+alert(id.valueOf()); // TypeError: Cannot convert a Symbol value to a string
 alert(id.description); // id
 ```
 
@@ -391,8 +400,7 @@ alert(Object.keys(user)); // name,age
 ```javascript
 let id = Symbol("id");
 let user = { [id]: 123 };
-let clone = Object.assign({}, user);
-// let clone = { ...user };
+let clone = Object.assign({}, user); // { ...user };
 alert(clone[id]); // 123
 ```
 
@@ -511,8 +519,8 @@ hint가 `default`
 `Date` 객체를 제외한 모든 내장 객체는 hint가 `default`인 경우와 `number`인 경우를 동일하게 처리
 
 ```javascript
-let total = obj1 + obj2; // hint가 default
-if (obj == 1) { ... } // hint가 default
+let total = obj1 + obj2; // 이항 덧셈 연산
+if (obj == 1) { ... } // 객체-숫자형 비교
 ```
 
 `boolean` hint는 존재하지 않음
@@ -652,6 +660,17 @@ alert(user + 500); // toString -> John500
   - 과거 자바스크립트엔 에러라는 개념이 잘 정립되어 있지 않았기 때문
 - `Symbol.toPrimitive`는 무조건 원시자료를 반환해야 함
   - 아니면 에러 발생
+
+```javascript
+let obj = {
+  [Symbol.toPrimitive](hint) {
+    return { test: "testObject" };
+  }
+};
+
+console.log(+obj); // TypeError: Cannot convert object to primitive value
+console.log(`${obj}`); // TypeError: Cannot convert object to primitive value
+```
 
 ### 추가 형 변환
 

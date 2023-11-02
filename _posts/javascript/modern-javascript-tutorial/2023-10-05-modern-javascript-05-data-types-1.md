@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 1
 date: 2023-10-05 20:23:45 +0900
-last_modified_at: 2023-10-24 14:29:24 +0900
+last_modified_at: 2023-11-02 13:41:57 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -45,7 +45,7 @@ alert(str.toUpperCase()); // HELLO
 ```
 
 1. 문자열 str은 원시값이므로 원시값의 프로퍼티(toUpperCase)에 접근하는 순간 특별한 객체가 생성됨
-   - 이 객체는 문자열의 값을 알고 있고, toUpperCase()와 같은 유용한 메서드를 가짐
+   - 이 객체는 문자열의 값을 알고 있고, 메서드를 가짐
 2. 메서드가 실행되고 새로운 문자열 반환
 3. 특별한 객체는 파괴되고, 원시값 str만 남음
 
@@ -368,7 +368,10 @@ parseInt(" 3 4 "); // 3
 - 첫 번째 백틱 바로 앞에 함수 이름을 써주면 해당 함수는 백틱 안의 문자열 조각이나 표현식 평가 결과를 인수로 받아 자동으로 호출됨 (태그드 템플릿(tagged template))
 
 ```
-func`string`
+function func(x) {
+  alert(x);
+}
+func`string` // string
 ```
 
 ### 특수 기호
@@ -422,7 +425,7 @@ for (let char of "Hello") alert(char);
 
 `str.split("")`
 
-- 인수로 빈 문자열 넣어야 함
+- 인수로 빈 문자열 넣으면 한 글자씩 쪼개줌
 
 ```javascript
 "abc".split(""); // ["a", "b", "c"]

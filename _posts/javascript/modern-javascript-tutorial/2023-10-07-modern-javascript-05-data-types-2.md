@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 2
 date: 2023-10-07 08:19:33 +0900
-last_modified_at: 2023-10-25 07:46:27 +0900
+last_modified_at: 2023-11-02 14:03:33 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -79,7 +79,8 @@ trailing 쉼표
 
 - 배열은 특별한 종류의 객체(키가 숫자이고, 본질은 객체)
 - 배열은 객체이므로 원하는 프로퍼티를 객체처럼 추가할 수 있음
-- 그러나 그렇게 작성하면 자바스크립트 엔진이 배열을 일반 객체처럼 다루게 되어, 배열을 다룰 때만 적용되는 최적화 기법이 동작하지 않아 배열 특유의 이점이 사라짐
+- 그러나 자바스크립트 엔진이 배열을 일반 객체처럼 다루게 됨
+- 배열을 다룰 때만 적용되는 최적화 기법이 동작하지 않아 배열 특유의 이점이 사라짐
   - `arr.test = 5` 같이 숫자가 아닌 값을 프로퍼티 키로 사용하는 경우
   - `arr[0]`과 `arr[1000]`만 추가하고 그 사이에 아무 요소도 없는 경우
   - `arr[1000]`, `arr[999]` 같이 요소를 역순으로 채우는 경우
@@ -96,9 +97,7 @@ trailing 쉼표
 
 ```javascript
 let arr = [1, 2, 3];
-for (let i = 0; i < arr.length; i++) {
-  alert(arr[i]);
-}
+for (let i = 0; i < arr.length; i++) alert(arr[i]);
 ```
 
 `for...of`
@@ -117,11 +116,10 @@ for (let item of arr) {...}
 
 ### 'length' 프로퍼티
 
-배열에 조작을 가하면 `length` 프로퍼티 자동 갱신
-
-`length` 프로퍼티는 배열 내 요소의 개수가 아니라 가장 큰 인덱스에 1을 더한 값
-
-수동으로 조작해 값을 감소시키면 배열이 잘릴 수 있음
+- 배열에 조작을 가하면 `length` 프로퍼티 자동 갱신
+- 배열 내 요소의 개수가 아니라 가장 큰 인덱스에 1을 더한 값
+- 수동으로 조작해 값을 감소시키면 배열이 잘릴 수 있음
+- `arr.length = 0`으로 쉽게 배열을 비울 수 있음
 
 ```javascript
 let arr = [1, 2, 3, 4, 5];
@@ -720,6 +718,29 @@ for (let num of range) alert(num); // 1, 2, 3, 4, 5
 - 무수히 많은 의사 난수(pseudorandom numbers)를 생성하는 이터러블 객체를 만드는 것도 가능
 - `next`엔 제약 사항이 없고 `next`가 값을 계속 반환하는 것은 정상적인 동작
 - 위와 같은 이터러블에 `for..of` 반복문을 사용하면 끝이 없겠지만 `break`를 사용해 언제든 반복을 멈출 수 있음
+
+```javascript
+let range = {
+  from: 1,
+  to: 5,
+  [Symbol.iterator]() {
+    console.log(this); // this=range
+    let iter = {
+      current: this.from,
+      last: this.to,
+      next() {
+        console.log(this); // this=iter
+        if (this.current <= this.last)
+          return { done: false, value: this.current++ };
+        return { done: true };
+      }
+    };
+    return iter;
+  }
+};
+
+for (let num of range) console.log(num);
+```
 
 ### 문자열은 이터러블입니다
 

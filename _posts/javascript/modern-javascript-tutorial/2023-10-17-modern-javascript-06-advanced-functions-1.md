@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 1
 date: 2023-10-17 14:30:02 +0900
-last_modified_at: 2023-10-27 06:49:17 +0900
+last_modified_at: 2023-11-04 06:23:29 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,7 +10,7 @@ tags: [javascript]
 
 ## 재귀와 스택
 
-재귀
+재귀(recursion)
 
 - 함수가 자기 자신을 호출하는 경우
 - 큰 목표 작업 하나를 동일하면서 간단한 작업 여러 개로 나눌 수 있을 때 유용한 프로그래밍 패턴

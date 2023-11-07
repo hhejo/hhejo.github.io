@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 3
 date: 2023-10-21 13:07:22 +0900
-last_modified_at: 2023-10-27 12:31:32 +0900
+last_modified_at: 2023-11-07 13:29:17 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -12,8 +12,8 @@ tags: [javascript]
 
 - 전역 객체를 사용하면 어디서나 사용 가능한 변수나 함수 생성 가능
 - 전역 객체는 언어나 자체 호스트 환경에 기본 내장되어 있는 경우가 많음
-- 브라우저 환경: `window`
-- Node.js 환경: `global`
+  - 브라우저 환경: `window`
+  - Node.js 환경: `global`
 - 전역 객체 이름을 `globalThis`로 표준화하자는 내용이 최근 자바스크립트 명세에 추가됨
 
 전역 객체의 모든 프로퍼티는 아래와 같이 직접 접근 가능
@@ -48,7 +48,7 @@ alert(window.currentUser.name); // 지역 변수 currentUser가 있다면 충돌
 
 전역 변수는 되도록 사용하지 않는 것이 좋음
 
-함수를 만들 땐 외부 변수나 전역 변수를 사용하는 것보다 input 변수를 받고 이를 이용해 output을 만들어내게 해야 테스트도 쉽고 에러도 덜 발생
+함수를 만들 때는 외부 변수나 전역 변수를 사용하는 것보다 input 변수를 받고 이를 이용해 output을 만들어내게 해야 테스트도 쉽고 에러도 덜 발생
 
 ### 폴리필 사용하기
 
@@ -98,6 +98,8 @@ alert(sayHi.name); // sayHi
 ```javascript
 let sayHi = function () {};
 alert(sayHi.name); // sayHi
+let sayHi = function func() {};
+alert(sayHi.name); // func
 ```
 
 기본값을 사용해 이름을 할당해도 동일
@@ -111,7 +113,7 @@ f(); // sayHi
 
 자바스크립트 명세서에 정의된 이 기능을 contextual name이라 부름
 
-- 이름이 없는 함수의 이름을 지정할 땐 컨텍스트에서 이름을 가져옴
+- 이름이 없는 함수의 이름을 지정할 때는 컨텍스트에서 이름을 가져옴
 
 객체 메서드의 이름도 name 프로퍼티로 가져올 수 있음
 
@@ -217,6 +219,7 @@ function makeCounter() {
 let counter = makeCounter();
 alert(counter()); // 0
 alert(counter()); // 1
+counter.count = 10; // 외부에서 접근 가능
 ```
 
 - 이제 `count`는 외부 렉시컬 환경이 아닌 함수 프로퍼티에 바로 저장됨
@@ -224,23 +227,10 @@ alert(counter()); // 1
 
 `count` 값이 외부 변수에 저장되어 있는 경우 두 방법의 차이가 드러남
 
-- 클로저를 사용한 경우엔 외부 코드에서 `count`에 접근할 수 없음
+- 클로저를 사용한 경우 외부 코드에서 `count`에 접근할 수 없음
   - 오직 중첩 함수 내에서만 `count` 값 수정 가능
-- 함수 프로퍼티를 사용해 `count`를 함수에 바인딩시킨 경우엔 외부에서 값 수정 가능
+- 함수 프로퍼티를 사용해 `count`를 함수에 바인딩시킨 경우 외부에서 값 수정 가능
 - 목적에 따라 구현 방법을 선택하면 됨
-
-```javascript
-function makeCounter() {
-  function counter() {
-    return counter.count++;
-  }
-  counter.count = 0;
-  return counter;
-}
-let counter = makeCounter();
-counter.count = 10;
-alert(counter()); // 10
-```
 
 ### 기명 함수 표현식
 
@@ -258,14 +248,14 @@ let sayHi = function (who) {
 
 이름 붙이기
 
-- 이름 `func`를 붙임
-
 ```javascript
 let sayHi = function func(who) {
   alert(`Hello, ${who}`);
 };
 sayHi("John"); // Hello, John
 ```
+
+- 이름 `func`를 붙임
 
 이름을 붙여도 위 함수는 여전히 함수 표현식
 
@@ -275,7 +265,7 @@ sayHi("John"); // Hello, John
 이름을 붙이면 두 가지 변화가 생김
 
 1. 이름을 사용해 함수 표현식 내부에서 자기 자신을 참조 가능
-2. 기명 함수 표현식 외부에선 그 이름을 사용할 수 없음
+2. 기명 함수 표현식 외부에서는 그 이름을 사용할 수 없음
 
 ```javascript
 let sayHi = function func(who) {
@@ -314,7 +304,7 @@ welcome(); // Hello, Guest
 ```
 
 - `func`라는 이름은 함수 지역 수준(function-local)에 존재하므로 외부 렉시컬 환경에서 찾지 않아도 됨
-  - 외부 렉시컬 환경에선 보이지도 않음
+  - 외부 렉시컬 환경에서는 보이지도 않음
 - 함수 표현식에 붙인 이름은 현재 함수만 참조하도록 명세서에 정의됨
 - 기명 함수 표현식을 사용하면 `sayHi`나 `welcome` 같은 외부 변수의 변경과 관계 없이 `func`라는 내부 함수 이름을 사용해 언제든 함수 표현식 내부에서 자기 자신 호출 가능
 
@@ -461,6 +451,14 @@ getFunc()(); // test
 - 단점 같아 보이지만 에러를 예방해주기 때문에 장점이 됨
 - 구조상으로는 매개변수를 사용해 값을 받는 게 더 나음
 - 압축기에 의한 에러도 방지
+
+세 선언 방식은 동일하게 동작
+
+```javascript
+new Function("a", "b", "return a + b"); // 기본 문법
+new Function("a,b", "return a + b"); // 쉼표로 구분
+new Function("a , b", "return a + b"); // 쉼표와 공백으로 구분
+```
 
 ## 참고
 

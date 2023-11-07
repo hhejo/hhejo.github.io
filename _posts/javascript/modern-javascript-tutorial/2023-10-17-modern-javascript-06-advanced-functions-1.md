@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 1
 date: 2023-10-17 14:30:02 +0900
-last_modified_at: 2023-11-06 07:29:04 +0900
+last_modified_at: 2023-11-07 08:15:06 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -263,7 +263,7 @@ alert(sum(1, 2, 3, 4, 5)); // 3 (에러 발생 x)
 
 `...`
 
-- 여분의 매개변수를 담을 배열 이름 앞에 붙이기
+- 여분의 매개변수를 담을 배열 이름 앞에 붙임
 
 ```javascript
 function sumAll(...args) {
@@ -296,24 +296,24 @@ showName("Bora", "Lee", "Software Engineer", "Researcher");
 
 - 유사 배열 객체, 이터러블 객체
   - 배열은 아니므로 배열 메서드 사용 불가 (`map` 등)
-- 인수 전체를 담고 있어 인덱스로 각 인수에 접근
-- 나머지 매개변수 문법이 나오기 전, 함수의 인수 전체를 얻어내는 유일한 방법
+- 인수 전체를 가짐
+  - 인덱스로 각 인수에 접근
+- 나머지 매개변수 문법이 나오기 전, 함수의 인수 전체를 얻어내는 유일한 방법이었음
 
 ```javascript
 function showName() {
   alert(arguments.length);
   alert(arguments[0]);
   alert(arguments[1]);
-  // for (let arg of arguments) alert(arg);
+  for (let arg of arguments) alert(arg);
 }
-showName("Bora", "Lee"); // Bora, Lee
-showName("Bora"); // Bora, undefined
+showName("Bora", "Lee"); // 2, Bora, Lee, Bora, Lee
+showName("Bora"); // 1, Bora, undefined, Bora
 ```
 
 화살표 함수는 `arguments` 객체를 지원하지 않음
 
-- 화살표 함수에서 `arguments` 객체에 접근하는 경우
-- 외부에 있는 일반 함수의 `arguments` 객체 가져옴
+- 화살표 함수에서 `arguments` 객체에 접근하는 경우, 외부에 있는 일반 함수의 `arguments` 객체 가져옴
 - 자체 `this`를 갖지 않고, `arguments` 객체도 지원하지 않음
 
 ```javascript
@@ -382,8 +382,8 @@ alert(Array.from(str)); // H,e,l,l,o
 `Array.from(obj)`과 `[...obj]`의 차이
 
 - `Array.from`: 유사 배열 객체와 이터러블 객체 둘 다에 사용
+  - 무언가를 배열로 바꿀 때는 `Array.from`을 보편적으로 사용
 - 스프레드 문법 `...`: 이터러블 객체에만 사용
-- 무언가를 배열로 바꿀 때는 `Array.from`을 보편적으로 사용
 
 ### 배열과 객체의 복사본 만들기
 
@@ -392,10 +392,8 @@ alert(Array.from(str)); // H,e,l,l,o
 ```javascript
 let arr = [1, 2, 3];
 let arrCopy = [...arr]; // 배열을 펼쳐 각 요소를 분리한 후, 매개변수 목록으로 만들고 새로운 배열에 할당
-
 alert(JSON.stringify(arr) === JSON.stringify(arrCopy)); // true
 alert(arr === arrCopy); // false (참조가 다름)
-
 arr.push(4);
 alert(arr); // 1, 2, 3, 4
 alert(arrCopy); // 1, 2, 3
@@ -404,25 +402,20 @@ alert(arrCopy); // 1, 2, 3
 ```javascript
 let obj = { a: 1, b: 2, c: 3 };
 let objCopy = { ...obj }; // 객체를 펼쳐 각 요소를 분리한 후, 매개변수 목록으로 만들고 새로운 객체에 할당
-
 alert(JSON.stringify(obj) === JSON.stringify(objCopy)); // true
 alert(obj === objCopy); // false (참조가 다름)
-
 obj.d = 4;
 alert(JSON.stringify(obj)); // {"a":1,"b":2,"c":3,"d":4}
 alert(JSON.stringify(objCopy)); // {"a":1,"b":2,"c":3}
 ```
 
 ```javascript
-// let objCopy = Object.assign({}, obj);
-let objCopy = { ...obj };
-// let arrCopy = Object.assign([], arr);
-let arrCopy = [...arr];
+let objCopy = { ...obj }; // Object.assign({}, obj);
+let arrCopy = [...arr]; // Object.assign([], arr);
 ```
 
 ```javascript
-const obj = Object.assign({}, ["a", "b"]);
-obj; // { "0": "a", "1": "b" }
+const obj = Object.assign({}, ["a", "b"]); // { "0": "a", "1": "b" }
 ```
 
 ## 참고

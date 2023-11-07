@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 2
 date: 2023-10-19 12:31:06 +0900
-last_modified_at: 2023-10-27 07:37:40 +0900
+last_modified_at: 2023-11-07 08:33:01 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -12,7 +12,7 @@ tags: [javascript]
 
 자바스크립트는 함수 지향 언어
 
-- 함수를 동적으로 생성
+- 함수를 동적으로 생성 가능
 - 생성한 함수를 다른 함수에 인수로 전달
 - 생성된 곳이 아닌 곳에서 함수 호출
 
@@ -93,7 +93,7 @@ function sayHiBye(firstName, lastName) {
 }
 ```
 
-호출될 때마다 다음 숫자를 반환
+호출될 때마다 다음 숫자를 반환하는 함수
 
 ```javascript
 function makeCounter() {
@@ -116,17 +116,17 @@ alert(counter()); // 2
 
 단계 1. 변수
 
-렉시컬 환경(lexical environment)
+렉시컬 환경(Lexical Environment)
 
-- 자바스크립트에서 실행 중인 함수, 코드 블록, 스크립트 전체는 렉시컬 환경을 가짐
-- 내부 숨김 연관 객체(internal hidden associated object)로, 렉시컬 환경이라 불림
+- 자바스크립트에서는 실행 중인 함수, 코드 블록 `{...}`, 스크립트 전체는 렉시컬 환경을 가짐
+- 내부 숨김 연관 객체(internal hidden associated object)
 
-렉시컬 환경은 두 부분으로 구성
+렉시컬 환경 객체는 두 부분으로 구성됨
 
-1. 환경 레코드(environment record)
+1. 환경 레코드(Environment Record)
    - 모든 지역 변수를 프로퍼티로 저장하고 있는 객체
-   - `this` 값과 같은 기타 정보도 저장
-2. 외부 렉시컬 환경(outer lexical environment)에 대한 참조
+   - `this` 값과 같은 기타 정보도 저장됨
+2. 외부 렉시컬 환경(Outer Lexical Environment)에 대한 참조
    - 외부 코드와 연관됨
 
 변수는 특수 내부 객체인 환경 레코드의 프로퍼티일 뿐
@@ -141,11 +141,11 @@ alert(phrase);
 ```
 
 - 렉시컬 환경이 하나만 존재
-- 스크립트 전체와 관련된 렉시컬 환경: 전역 렉시컬 환경(global Lexical Environment)
+- 스크립트 전체와 관련된 렉시컬 환경: 전역 렉시컬 환경(Global Lexical Environment)
 - `[phrase: "Hello"]`: 변수가 저장되는 환경 레코드
 - `-outer->`: 외부 렉시컬 환경에 대한 참조
   - 전역 렉시컬 환경은 외부 참조를 갖지 않아 `null`을 가리킴
-- 코드가 실행되고 실행 흐름이 이어지면서 렉시컬 환경은 변화
+- 코드가 실행되고 실행 흐름이 이어지면서 렉시컬 환경은 변화함
 
 예시 2
 
@@ -166,8 +166,8 @@ phrase = "Bye";     // [phrase: "Bye"]
 
 렉시컬 환경은 명세서에만 존재
 
-- 렉시컬 환경은 명세서에 자바스크립트가 어떻게 동작하는지 설명하는 데 쓰이는 이론상의 객체
-- 코드를 사용해 직접 렉시컬 환경을 얻거나 조작하는 것은 불가능
+- 렉시컬 환경은 명세서에서 자바스크립트가 어떻게 동작하는지 설명하는 데 쓰이는 이론상의 객체
+  - 코드를 사용해 직접 렉시컬 환경을 얻거나 조작하는 것은 불가능
 - 자바스크립트 엔진들은 명세서에 언급된 사항을 준수하면서 엔진 고유의 방법을 사용해 렉시컬 환경 최적화
 
 단계 2. 함수 선언문
@@ -177,7 +177,7 @@ phrase = "Bye";     // [phrase: "Bye"]
 - 다만 함수 선언문(function declaration)으로 선언한 함수는 일반 변수와는 달리 바로 초기화됨
 - 함수 선언문으로 선언한 함수는 렉시컬 환경이 만들어지는 즉시 사용 가능
   - 변수는 `let`을 만나 선언이 될 때까지 사용할 수 없음
-- 그래서 선언되기 전에도 함수 사용 가능
+  - 그래서 선언되기 전에도 함수 사용 가능
 - 함수를 변수에 할당한 함수 표현식(function expression)은 해당하지 않음
 
 ```javascript
@@ -191,11 +191,14 @@ function say(name) {
 
 단계 3. 내부와 외부 렉시컬 환경
 
-함수를 호출해 실행하면 새로운 렉시컬 환경 자동 생성
+함수를 호출해 실행하면 새로운 렉시컬 환경이 자동 생성됨
 
-- 함수 호출 시 넘겨받은 매개 변수와 함수의 지역 변수가 렉시컬 환경에 저장됨
-- 함수가 호출 중인 동안엔 호출 중인 함수를 위한 내부 렉시컬 환경과 내부 렉시컬 환경이 가리키는 외부 렉시컬 환경을 가짐
-- 내부 렉시컬 환경은 외부 렉시컬 환경에 대한 참조를 가짐
+- 함수 호출 시 넘겨받은 매개 변수와 함수의 지역 변수가 해당 렉시컬 환경에 저장됨
+
+함수가 호출 중일 때 갖는 것들
+
+- 호출 중인 함수를 위한 내부 렉시컬 환경
+- 내부 렉시컬 환경이 가리키는 외부 렉시컬 환경(외부 렉시컬 환경에 대한 참조)
 
 코드에서 변수에 접근할 때
 
@@ -235,13 +238,14 @@ let counter = makeCounter();
 
 `makeCounter()` 호출
 
-- 호출할 때마다 새로운 렉시컬 환경 객체가 생성되고
-- 여기에 `makeCounter`를 실행하는 데 필요한 변수들 저장됨
+- 호출할 때마다 새로운 렉시컬 환경 객체가 생성됨
+  - 여기에 `makeCounter`를 실행하는 데 필요한 변수들 저장됨
 
 두 개의 렉시컬 환경 생성됨
 
 - `makeCounter()`가 실행되는 도중엔 본문(`return counter++`)이 한줄 짜리인 중첩 함수가 생성됨
   - 현재는 중첩 함수가 생성되기만 하고 실행은 되지 않은 상태
+  - 위 예시와의 차이점임
 - `counter.[[Environment]]`엔 `{count: 0}`이 있는 렉시컬 환경에 대한 참조가 저장됨
 - `counter()`를 호출하면 각 호출마다 새로운 렉시컬 환경이 생성됨
   - 이 렉시컬 환경은 `counter.[[Environment]]`에 저장된 렉시컬 환경을 외부 렉시컬 환경으로서 참조
@@ -255,7 +259,7 @@ LexicalEnvironment of makeCounter() call  |  global LexicalEnvironment
 모든 함수는 함수가 생성된 곳의 렉시컬 환경을 기억
 
 - 함수는 `[[Environment]]`라는 숨김 프로퍼티를 가짐
-- 여기에 함수가 만들어진 곳의 렉시컬 환경에 대한 참조가 저장됨
+  - 여기에 함수가 만들어진 곳의 렉시컬 환경에 대한 참조가 저장됨
 - 호출 장소와 상관 없이 함수가 자신이 태어난 곳을 기억할 수 있는 건 `[[Environment]]` 프로퍼티 때문
 - `[[Environment]]`는 함수가 생성될 때 딱 한 번 값이 세팅되고 영원히 변하지 않음
 
@@ -280,7 +284,8 @@ LexicalEnvironment of makeCounter() call  |  global LexicalEnvironment
 클로저(closure)
 
 - 외부 변수를 기억하고 이 외부 변수에 접근할 수 있는 함수
-- 자바스크립트에선 모든 함수가 클로저가 됨
+- 자바스크립트에선 모든 함수가 자연스럽게 클로저가 됨
+  - 예외가 있긴 함
 - 자바스크립트의 함수는 숨김 프로퍼티인 `[[Environment]]`를 이용해 자신이 어디서 만들어졌는지를 기억함
   - 함수 본문에선 `[[Environment]]`를 사용해 외부 변수에 접근
 
@@ -619,6 +624,7 @@ army[5](); // 5
 `var`
 
 - `let`으로 선언한 변수와 유사
+  - 대부분의 경우에 `let`을 `var`로, `var`를 `let`으로 바꿔도 큰 문제 없이 동작
 - `var`는 초기 자바스크립트 구현 방식 때문에 `let`과 `const`로 선언한 변수와는 다른 방식으로 동작
 
 ### var는 블록 스코프가 없음
@@ -643,12 +649,15 @@ if (true) {
 alert(test); // ReferenceError: test is not defined
 ```
 
+- `let`을 사용하면 해당 변수는 블록 내에서만 접근 가능
+
 ```javascript
 for (var i = 0; i < 10; i++) {}
 alert(i); // 10
 ```
 
 - 반복문에도 유사한 일 발생
+  - 블록이나 루프 수준의 스코프를 형성하지 않기 때문
 
 ```javascript
 function sayHi() {
@@ -664,6 +673,7 @@ alert(phrase); // ReferenceError: phrase is not defined
 - 코드 블록이 함수 안에 있다면, `var`는 함수 레벨 변수가 됨
 - `var`는 `if`, `for` 등의 코드 블록을 관통
 - 아주 오래 전의 자바스크립트에선 블록 수준 렉시컬 환경이 만들어지지 않았기 때문
+  - `var`는 구식 자바스크립트의 잔재
 
 ### var는 변수의 중복 선언을 허용
 
@@ -692,16 +702,24 @@ alert(user); // John
 
 함수 본문 내에서 `var`로 선언한 변수는 선언 위치와 상관 없이 함수 본문이 시작되는 지점에서 정의됨
 
-- 변수가 중첩 함수 내에서 정의되지 않아야 함
+- 변수가 중첩 함수 내에서 정의되지 않아야 이 규칙이 적용됨
 
 아래 두 예제는 동일하게 동작
 
 ```javascript
 function sayHi() {
-  // var phrase;
   phrase = "Hello";
   alert(phrase);
   var phrase;
+}
+sayHi(); // Hello
+```
+
+```javascript
+function sayHi() {
+  var phrase;
+  phrase = "Hello";
+  alert(phrase);
 }
 sayHi(); // Hello
 ```

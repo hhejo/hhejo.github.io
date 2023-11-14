@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 5
 date: 2023-10-24 12:06:46 +0900
-last_modified_at: 2023-11-10 13:44:53 +0900
+last_modified_at: 2023-11-14 19:52:45 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -22,7 +22,7 @@ CPU를 많이 잡아먹지만 결과는 안정적인 함수 `slow(x)`
 
 - 결과가 안정적이라는 말은 `x`가 같으면 호출 결과도 같다는 것
 - `slow(x)`가 자주 호출된다면 결과를 어딘가에 저장(캐싱)해 재연산에 걸리는 시간을 줄이는 것이 좋음
-- `slow()` 안에 캐싱 관련 코드를 추가하는 대신, 래퍼 함수를 만들어 캐싱 기능을 추가할 것
+- `slow()` 안에 캐싱 관련 코드를 추가하는 대신, 래퍼 함수를 만들어 캐싱 기능을 추가
 
 ```javascript
 function slow(x) {
@@ -71,10 +71,10 @@ alert("다시 호출: " + slow(2));
 
 `slow` 본문을 수정하는 것보다 독립된 래퍼 함수 `cachingDecorator`를 사용할 때 생기는 이점
 
-- `cachingDecorator`를 재사용 할 수 있음
-  - 원하는 함수 어디에든 `cachingDecorator`를 적용할 수 있음
+- `cachingDecorator` 재사용 가능
+  - 원하는 함수 어디에든 `cachingDecorator`를 적용
 - 캐싱 로직이 분리되어 `slow` 자체의 복잡성이 증가하지 않음
-- 필요하다면 여러 개의 데코레이터를 조합해서 사용할 수도 있음(추가 데코레이터는 `cachingDecorator` 뒤를 따름)
+- 여러 개의 데코레이터를 조합해서 사용할 수도 있음(추가 데코레이터는 `cachingDecorator` 뒤를 따름)
 
 ### func.call을 사용해 컨텍스트 지정하기
 

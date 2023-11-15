@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 07 - 객체 프로퍼티 설정
 date: 2023-11-01 21:26:07 +0900
-last_modified_at: 2023-11-12 09:17:48 +0900
+last_modified_at: 2023-11-15 09:00:02 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---

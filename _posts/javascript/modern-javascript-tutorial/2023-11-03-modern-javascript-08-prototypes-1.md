@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 08 - 프로토타입과 프로토타입 상속 1
 date: 2023-11-03 06:05:33 +0900
-last_modified_at: 2023-11-04 12:27:46 +0900
+last_modified_at: 2023-11-15 09:36:05 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -463,7 +463,181 @@ console.log(lazy.stomach); // []
 
 자바스크립트가 만들어졌을 당시에는 프로토타입 기반 상속이 자바스크립트의 주요 기능 중 하나였음
 
+- 그런데 과거에는 프로토타입에 직접 접근할 수 있는 방법이 없었음
+- 생성자 함수의 `prototype` 프로퍼티를 이용하는 것이 그나마 믿고 사용할 수 있던 방법
+  - 많은 스크립트가 아직 이 방법을 사용하는 이유
+
+생성자 함수(`F`)의 프로토타입을 의미하는 `F.prototype`에서 `prototype`은 `F`에 정의된 일반 프로퍼티
+
+- 바로 앞에서 배운 프로토타입과는 이름만 같고 실제로는 다름
+- 일반적인 프로퍼티임
+
+```javascript
+let animal = { eats: true };
+function Rabbit(name) {
+  this.name = name;
+}
+Rabbit.prototype = animal;
+let rabbit = new Rabbit("흰 토끼"); // rabbit.__proto__ == animal
+alert(rabbit.eats); // true
+```
+
+- `Rabbit.prototype = animal`
+  - `new Rabbit`을 호출해 만든 새로운 객체의 `[[Prototype]]`을 `animal`로 설정하라는 것을 의미
+
+```
+Rabbit               animal
+[     ] -prototype-> [ eats: true            ]
+                             ^
+                             | [[Prototype]]
+                      rabbit |
+                      [ name: "White Rabbit" ]
+```
+
+- 가로 화살표: 일반 프로퍼티인 `prototype`을 나타냄
+- 세로 화살표: `[[Prototype]]`을 나타냄
+  - `rabbit`이 `animal`을 상속받았음을 의미
+
+`F.prototype`은 `new F`를 호출할 때만 사용
+
+- `new F`를 호출할 때 만들어지는 새로운 객체의 `[[Prototype]]`을 할당해줌
+- 새로운 객체가 만들어진 후에 `F.prototype` 프로퍼티가 바뀌면(`F.prototype = <another object>`) `new F`를 호출해 만드는 또 다른 새로운 객체는 another object를 `[[Prototype]]`으로 가짐
+- 다만 기존에 있던 객체의 `[[Prototype]]`은 그대로 유지됨
+
 ### 함수의 디폴트 프로퍼티 prototype과 constructor 프로퍼티
+
+개발자가 특별히 할당하지 않더라도 모든 함수는 기본적으로 `prototype` 프로퍼티를 가짐
+
+디폴트 프로퍼티 `prototype`은 `constructor` 프로퍼티 하나만 있는 객체를 가리킴
+
+- `constructor` 프로퍼티는 함수 자신을 가리킴
+
+```javascript
+function Rabbit() {}
+/* 디폴트 prototype
+Rabbit.prototype = { constructor: Rabbit };
+*/
+```
+
+```
+Rabbit            default "prototype"
+[ prototype -]--->[              ]
+[            ]<---[- constructor ]
+```
+
+```javascript
+function Rabbit() {} // 함수를 만들기만 해도 디폴트 프로퍼티 prototype이 설정됨
+// Rabbit.prototype = { constructor: Rabbit }
+alert(Rabbit.prototype.constructor == Rabbit); // true
+```
+
+특별한 조작을 가하지 않았다면 `new Rabbit`을 실행해 만든 토끼 객체 모두에서 `constructor` 프로퍼티를 사용할 수 있는데, 이때 `[[Prototype]]`을 거침
+
+```javascript
+function Rabbit() {}
+let rabbit = new Rabbit();
+alert(rabbit.constructor == Rabbit); // true
+```
+
+```
+Rabbit                default "prototype"
+[     ] -prototype->  [                 ]
+[     ] <-constructor-[                 ]
+                               ^
+                               | [[Prototype]]
+                      rabbit   |
+                      [                 ]
+```
+
+`constructor` 프로퍼티는 기존에 있던 객체의 `constructor`를 사용해 새로운 객체를 만들 때 사용할 수 있음
+
+- 객체가 있는데 이 객체를 만들 때 어떤 생성자가 사용되었는지 알 수 없는 경우(객체가 서드 파티 라이브러리에서 온 경우 등)에 유용하게 쓸 수 있음
+
+```javascript
+function Rabbit(name) {
+  this.name = name;
+  alert(name);
+}
+let rabbit = new Rabbit("흰 토끼");
+let rabbit2 = new rabbit.constructor("검정 토끼");
+```
+
+`constructor`를 이야기할 때 가장 중요한 점
+
+- 자바스크립트는 알맞은 `constructor` 값을 보장하지 않음
+- 함수에는 기본으로 `prototype`이 설정된다는 사실이 전부
+- `constructor`와 관련해서 벌어지는 모든 일은 개발자에게 달림
+
+함수에 기본으로 설정되는 `prototype` 프로퍼티 값을 다른 객체로 바꾸면?
+
+- `new`를 사용해 객체를 만들었지만 이 객체에 `constructor`가 없음
+
+```javascript
+function Rabbit() {}
+Rabbit.prototype = { jumps: true };
+let rabbit = new Rabbit();
+alert(rabbit.constructor === Rabbit); // false
+```
+
+이런 상황을 방지하고 `constructor`의 기본 성질을 제대로 활용하려면 `prototype`에 뭔가를 하고 싶을 때 `prototype` 전체를 덮어쓰지 말고 디폴트 `prototype`에 원하는 프로퍼티를 추가, 제거해야 함
+
+```javascript
+function Rabbit() {}
+Rabbit.prototype.jumps = true; // Rabbit.prototype 전체를 덮어쓰지 않고 원하는 프로퍼티를 추가
+// 디폴트 프로퍼티 Rabbit.prototype.constructor가 유지됨
+```
+
+실수로 `prototype`을 덮어썼어도 `constructor` 프로퍼티를 수동으로 다시 만들어주면 `constructor`를 다시 사용할 수 있음
+
+```javascript
+Rabbit.prototype = { jumps: true, constructor: Rabbit };
+```
+
+일반 객체에 `prototype` 프로퍼티를 추가해도 아무런 일이 일어나지 않음
+
+모든 함수는 기본적으로 `F.prototype = { constructor: F }`를 가지고 있으므로 `constructor` 프로퍼티를 사용하면 객체의 생성자를 얻을 수 있음
+
+### 예제
+
+prototype 변경하기
+
+```javascript
+function Rabbit() {}
+Rabbit.prototype = { eats: true };
+let rabbit = new Rabbit();
+// Rabbit.prototype = {};
+// Rabbit.prototype.eats = false;
+// delete rabbit.eats;
+// delete Rabbit.prototype.eats;
+alert(rabbit.eats);
+```
+
+- `true`
+- `false`
+- `true`
+- `undefined`
+
+동일한 생성자 함수로 객체 만들기
+
+```javascript
+function User(name) {
+  this.name = name;
+}
+// User.prototype = {};
+let user = new User("John");
+let user2 = new user.constructor("Pete");
+alert(user2.name); // Pete
+```
+
+- `User.prototype = {}`이 있다면 `user2.name`은 `undefined`가 됨
+  - `new user.constructor("Pete")`는 `user`에서 `constructor`를 찾는데 아무것도 찾지 못함
+  - 객체에서 원하는 프로퍼티를 찾지 못했기 때문에 프로토타입에서 검색을 시작
+  - `user`의 프로토타입은 `User.prototype`인데 `User.prototype`은 빈 객체
+  - `User.prototype`은 일반 객체 `{}`이고 일반 객체의 프로토타입은 `Object.prototype`임
+  - `Object.prototype.constructor == Object`이므로 `Object`가 사용됨
+- 결국 `let user2 = new user.constructor("Pete")`는 `let user2 = new Object("Pete")`가 됨
+  - `Object`의 생성자는 인수를 무시하고 항상 빈 객체를 생성
+  - `let user2 = new Object("Pete")`는 `let user2 = {}`와 같음
 
 ## 참고
 

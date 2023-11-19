@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 1
 date: 2023-10-02 12:01:57 +0900
-last_modified_at: 2023-11-02 09:03:48 +0900
+last_modified_at: 2023-11-19 08:08:16 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -15,7 +15,7 @@ tags: [javascript]
 프로퍼티(property)
 
 - `키(key): 값(value)` 쌍으로 구성
-- `key`: 프로퍼티 이름으로도 불리며 문자형만 가능
+- `key`: 프로퍼티 이름. 문자형만 가능
 - `value`: 모든 자료형(원시형, 객체 등 데이터 집합이나 복잡한 개체(entity)) 가능
 - 객체 안에 프로퍼티 여러 개가 들어갈 수 있음
 
@@ -29,9 +29,12 @@ let user = {}; // 객체 리터럴
 let user = new Object(); // 객체 생성자
 ```
 
-일반 객체는 순수 객체(plain object)라고 불림
+순수 객체(plain object)
 
-- 일반 객체 외에도 다양한 객체 존재
+- 일반 객체는 순수 객체라고 불림
+
+일반 객체 외에도 다양한 객체 존재
+
 - `Array`, `Date`, `Error`, ...
 
 ### 리터럴과 프로퍼티
@@ -47,12 +50,9 @@ let user = new Object(); // 객체 생성자
 
 ```javascript
 let user = { age: 30, "like birds": true };
-
 user.name = "John"; // 점 표기법으로 프로퍼티 값 읽고 쓰기
 alert(user["like birds"]); // 대괄호 표기법으로 프로퍼티 값 읽기
-
 delete user.age; // 프로퍼티 삭제
-
 key = "name";
 alert(user[key]); // John
 alert(user.key); // undefined, (user["key"]와 같음)
@@ -74,16 +74,10 @@ user.name = "Pete";
 ```javascript
 let fruit = prompt("과일 이름", "apple");
 let bag = { [fruit]: 5 };
+// 아래 두 줄보다 간결함
+// let bag = {};
+// bag[fruit] = 5;
 alert(bag.apple); // fruit에 'apple'이 할당되었다면 5 출력
-```
-
-- 아래 코드보다 더 간결함
-
-```javascript
-let fruit = prompt("과일 이름", "apple");
-let bag = {};
-bag[fruit] = 5;
-alert(bag.apple);
 ```
 
 복잡한 표현식 작성 가능
@@ -97,7 +91,8 @@ alert(bag.appleComputers); // 5
 
 프로퍼티 값 단축 구문(property value shorthand)
 
-- 프로퍼티 값을 기존 변수에서 받아와 사용하는 경우가 많음
+- 프로퍼티 값을 기존 변수에서 받아와 사용
+- 이런 경우가 많음
 
 ```javascript
 function makeUser(name, age) {
@@ -108,7 +103,7 @@ let user = makeUser("John", 30);
 
 ### 프로퍼티 이름의 제약 사항
 
-키로 예약어 사용 가능
+예약어를 키로 사용 가능
 
 - `for`, `let`, `return` 등
 
@@ -120,7 +115,7 @@ alert(obj.for + obj.let + obj.return); // 6
 문자형, 심볼형이 아닌 값은 문자열로 자동 형 변환
 
 ```javascript
-let obj = { 0: "test" };
+let obj = { 0: "test" }; // 0은 "0"으로 자동 형 변환됨
 alert(obj["0"]); // test
 alert(obj[0]); // test (동일한 프로퍼티)
 ```
@@ -137,8 +132,7 @@ alert(obj.__proto__); // [object Object] (값이 변하지 않았음)
 
 존재하지 않는 프로퍼티에 접근하기
 
-- `undefined` 반환
-- 에러가 발생하지 않음
+- 에러가 발생하지 않고 `undefined` 반환
 
 ```javascript
 "use strict";
@@ -199,8 +193,10 @@ String(Math.trunc(Number("+49"))); // 49, 정수 프로퍼티 x
 String(Math.trunc(Number("1.2"))); // 1, 정수 프로퍼티 x
 ```
 
-- 키가 정수인 경우, 자동 정렬
-- 키가 정수가 아닌 경우, 작성된 순서대로 프로퍼티 나열
+- 키가 정수인 경우
+  - 자동 정렬
+- 키가 정수가 아닌 경우
+  - 작성된 순서대로 프로퍼티 나열
 
 ## 참조에 의한 객체 복사
 
@@ -216,7 +212,7 @@ String(Math.trunc(Number("1.2"))); // 1, 정수 프로퍼티 x
   - 동등 연산자 `==`와 일치 연산자 `===`는 동일하게 동작
   - 피연산자인 두 객체가 동일한 객체이면 `true` 반환
 - 대소 비교 `obj1 > obj2`, 원시값과의 비교 `obj == 5`
-  - 객체가 원시형으로 변환
+  - 객체가 원시형으로 변환됨
 
 ```javascript
 let a = {};
@@ -510,6 +506,7 @@ sayHi(); // undefined (엄격 모드 o)
 
 - bound `this`
   - `this`는 항상 메서드가 정의된 객체를 참조할 것이라는 개념
+  - 다른 언어를 사용하던 개발자의 혼동
 - 자바스크립트에서 `this`는 런타임에 결정
 - 메서드가 어디에서 정의되었는지에 상관 없이, `this`는 점 앞의 객체가 무엇인가에 따라 자유롭게 결정
 - 장점: 함수(메서드)를 하나만 만들어 여러 객체에서 재사용 가능
@@ -559,7 +556,6 @@ let user = {
     arrow();
   }
 };
-
 user.sayHi();
 ```
 
@@ -577,10 +573,11 @@ let user = {
 user.sayHi(); // undefined
 ```
 
-### 객체 리터럴에서 this 사용하기
+### 예제
 
-`this` 값을 설정할 때는 객체 정의가 사용되지 않음
+객체 리터럴에서 this 사용하기
 
+- `this` 값을 설정할 때는 객체 정의가 사용되지 않음
 - `this` 값은 호출 시점에 결정됨
 
 ```javascript
@@ -650,7 +647,7 @@ temp.f = func;
 temp.f(); // { f: [Function: func] }
 ```
 
-### 계산기 만들기
+계산기 만들기
 
 ```javascript
 let calculator = {
@@ -670,9 +667,9 @@ alert(calculator.sum());
 alert(calculator.mul());
 ```
 
-### 체이닝
+체이닝
 
-메서드가 객체 자신을 반환하면 체이닝을 만들 수 있음
+- 메서드가 객체 자신을 반환하면 체이닝을 만들 수 있음
 
 `return this;`
 

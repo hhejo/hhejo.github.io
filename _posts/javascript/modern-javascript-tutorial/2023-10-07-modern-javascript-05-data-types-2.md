@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 2
 date: 2023-10-07 08:19:33 +0900
-last_modified_at: 2023-11-02 14:03:33 +0900
+last_modified_at: 2023-11-19 10:05:02 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -12,7 +12,9 @@ tags: [javascript]
 
 순서가 있는 컬렉션을 저장할 때 사용
 
-객체는 순서를 고려하지 않고 만들어진 자료구조로 새로운 프로퍼티를 기존 프로퍼티 사이에 끼워넣기 불가능
+객체는 순서를 고려하지 않고 만들어진 자료구조
+
+- 새로운 프로퍼티를 기존 프로퍼티 사이에 끼워넣기 불가능
 
 ### 배열 선언
 
@@ -102,12 +104,12 @@ for (let i = 0; i < arr.length; i++) alert(arr[i]);
 
 `for...of`
 
+- 현재 요소의 인덱스는 얻을 수 없고 값만 얻을 수 있음
+- 문법이 간단함
+
 ```javascript
 for (let item of arr) {...}
 ```
-
-- 현재 요소의 인덱스는 얻을 수 없고 값만 얻을 수 있음
-- 문법이 간단함
 
 배열은 객체형에 속하므로 `for...in`을 사용할 수 있지만 좋지 않음
 
@@ -116,9 +118,12 @@ for (let item of arr) {...}
 
 ### 'length' 프로퍼티
 
-- 배열에 조작을 가하면 `length` 프로퍼티 자동 갱신
+- 배열에 조작을 가하면 `length` 프로퍼티가 자동 갱신됨
 - 배열 내 요소의 개수가 아니라 가장 큰 인덱스에 1을 더한 값
 - 수동으로 조작해 값을 감소시키면 배열이 잘릴 수 있음
+
+배열 비우기
+
 - `arr.length = 0`으로 쉽게 배열을 비울 수 있음
 
 ```javascript
@@ -159,6 +164,14 @@ let matrix = [
 alert(matrix[1][1]); // 5
 ```
 
+이차원 배열 만들기
+
+```javascript
+let graph = new Array(3).fill(0).map(() => new Array(3).fill(0));
+graph = Array.from(Array(3), () => new Array(3).fill(0));
+console.log(graph); // [ [ 0, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ]
+```
+
 ### toString
 
 요소를 쉼표로 구분한 문자열 반환
@@ -176,6 +189,23 @@ alert([1, 2] + 1); // 1,21
 alert([1] + [2, 3]); // 12,3
 ```
 
+### 예제
+
+배열 컨텍스트에서 함수 호출하기
+
+- `arr[2]()`를 호출하는 것은
+- `obj`가 `arr`이고, `method`는 `2`인 `obj[method]()`를 호출하는 것과 문법적으로 동일
+- 즉 `arr[2]`에 있는 함수가 객체 메서드처럼 호출됨
+- 따라서 `arr[2]`는 `arr`을 참조하는 `this`를 받고, 배열을 출력
+
+```javascript
+let arr = ["a", "b"];
+arr.push(function () {
+  console.log(this);
+});
+arr[2](); // a,b,function(){...}
+```
+
 ## 배열과 메서드
 
 ### 요소 추가·제거 메서드
@@ -189,8 +219,7 @@ alert([1] + [2, 3]); // 12,3
 let arr = ["I", "go", "home"];
 delete arr[1];
 alert(arr[1]); // undefined
-// arr = ["I", , "home]
-alert(arr.length); // 3
+alert(arr.length); // 3. arr = ["I", , "home]
 ```
 
 `arr.splice(index[, deleteCount, elem1, ..., elemN])`
@@ -263,7 +292,8 @@ let arr3 = arr.slice();
 `arr.concat(arg1, arg2...)`
 
 - 기존 배열의 요소를 사용해 새로운 배열을 만들거나 기존 배열에 요소 추가
-- 인수 개수에 제한이 없고 인수로 배열이나 값이 옴
+- 인수는 배열이나 값
+  - 인수 개수에 제한 없음
 - `arr`에 속한 모든 요소와 `arg1`, `arg2` 등에 속한 모든 요소를 한데 모은 새로운 배열 반환
 - 인수 `argN`이 배열일 경우 배열의 모든 요소가 복사됨
 
@@ -282,6 +312,8 @@ alert(arr.concat(arrayLike)); // 1,2,[object Object]
 
 - 객체가 인자로 넘어오면(배열처럼 보이는 유사 배열 객체라도) 객체는 분해되지 않고 통으로 복사
 
+`Symbol.isConcatSpreadable`
+
 ```javascript
 let arr = [1, 2];
 let arrayLike = {
@@ -293,7 +325,8 @@ let arrayLike = {
 alert(arr.concat(arrayLike)); // 1,2,a,b
 ```
 
-- 인자로 받은 유사 배열 객체에 특수한 프로퍼티 `Symbol.isConcatSpreadable`이 있으면 이 객체를 배열처럼 취급해서 객체 전체가 아닌 객체 프로퍼티의 값이 더해짐
+- 인자로 받은 유사 배열 객체에 특수한 프로퍼티 `Symbol.isConcatSpreadable`이 있는 경우
+- 이 객체를 배열처럼 취급해서 객체 전체가 아닌 객체 프로퍼티의 값이 더해짐
 
 `splice`와 `concat`
 
@@ -354,14 +387,13 @@ alert(arr.includes(NaN)); // true
 `arr.find(fn)`
 
 - 객체로 이루어진 배열에서, 특정 조건에 부합하는 객체를 찾는 데 유용
+  - `true`가 반환되면 반복이 멈추고 해당 요소 반환
+  - 조건에 해당하는 요소가 없으면 `undefined` 반환
 - `arr.findIndex`도 동일한 일을 하지만, 요소를 반환하지 않고 인덱스를 반환
 - 실무에선 객체로 구성된 배열을 많이 다루기 때문에 유용
 
 ```javascript
-let result = arr.find(function (item, index, array) {
-  // true가 반환되면 반복이 멈추고 해당 요소 반환
-  // 조건에 해당하는 요소가 없으면 undefined 반환
-});
+let result = arr.find(function (item, index, array) {});
 ```
 
 - `item`: 함수를 호출할 요소
@@ -382,13 +414,11 @@ alert(user.name); // John
 
 - 조건을 충족하는 요소가 여러 개일 때 사용
 - 조건에 맞는 요소 전체를 담은 배열을 반환
+  - 조건을 충족하는 요소가 하나도 없으면 빈 배열 반환
 - `find`는 하나, `filter`는 여러 개 탐색
 
 ```javascript
-let results = arr.filter(function (item, index, array) {
-  // 조건을 충족하는 요소는 results에 순차적으로 더해짐
-  // 조건을 충족하는 요소가 하나도 없으면 빈 배열 반환
-});
+let results = arr.filter(function (item, index, array) {});
 ```
 
 ```javascript
@@ -403,7 +433,7 @@ alert(someUsers.name); // 2
 
 `arr.at(index)`
 
-- `index`: 0, 양수, 음수 가능
+- `index`: `0`, 양수, 음수 가능
 - 음수는 뒤에서부터 셈
 - 주어진 인덱스와 일치하는 배열 요소 반환
 - 범위를 벗어나면 `undefined`를 반환
@@ -433,9 +463,7 @@ arr.at(-1); // 3
 - 유용성과 사용 빈도가 아주 높음
 
 ```javascript
-let result = arr.map(function (item, index, array) {
-  // 요소 대신 새로운 값 반환
-});
+let result = arr.map(function (item, index, array) {});
 ```
 
 ```javascript
@@ -446,7 +474,8 @@ alert(lengths); // 5,7,6
 `arr.sort(fn)`
 
 - 배열 요소를 정렬
-- 재정렬된 배열을 반환하지만 이미 배열 자체가 수정되었기 때문에 반환 값은 잘 사용하지 않음
+- 재정렬된 배열을 반환
+  - 이미 배열 자체가 수정되었기 때문에 반환 값은 잘 사용하지 않음
 - 요소는 기본적으로 문자열로 취급해 정렬
 - 새로운 정렬 기준을 만드려면 함수를 넘겨줘야 함
 
@@ -534,12 +563,9 @@ alert(str); // Bilbo;Gandalf;Nazgul
 - 배열을 기반으로 값 하나를 도출할 때 사용
 
 ```javascript
-let value = arr.reduce(
-  function (accumulator, item, index, array) {
-    // ...
-  },
-  [initial]
-);
+let value = arr.reduce(function (accumulator, item, index, array) {}, [
+  initial
+]);
 ```
 
 - `accumulator`: 이전 함수의 호출 결과. 다음 함수를 호출할 때 첫 번째 인수로 사용됨 (previousValue)
@@ -608,8 +634,11 @@ alert(soldiers[0].age); // 20
 alert(soldiers[1].age); // 23
 ```
 
-- `thisArg`에 `army`를 지정하지 않고 단순히 `users.filter(army.canJoin)`을 사용했다면 `army.canJoin`은 단독 함수처럼 취급되고, 함수 본문 내 `this`는 `undefined`가 되어 에러가 발생했을 것
-- `users.filter(user => army.canJoin(user))`를 사용하면 `users.filter(army.canJoin, army)`를 대체할 수 있지만 `thisArg`를 사용하는 방식이 좀 더 이해하기 쉬워 더 자주 사용됨
+- `thisArg`에 `army`를 지정하지 않고 단순히 `users.filter(army.canJoin)`을 사용한 경우
+  - `army.canJoin`은 단독 함수처럼 취급됨
+  - 함수 본문 내 `this`는 `undefined`가 되어 에러 발생
+- `users.filter(user => army.canJoin(user))`를 사용할 수도 있음
+  - 하지만 `thisArg`를 사용하는 방식(`users.filter(army.canJoin, army)`)이 좀 더 이해하기 쉬워 더 자주 사용됨
 
 ### 이외의 배열 메서드
 
@@ -677,7 +706,7 @@ range[Symbol.iterator] = function () {
 for (let num of range) alert(num); // 1, 2, 3, 4, 5
 ```
 
-이터러블 객체의 핵심은 관심사의 분리(Separation of concern, SoC)에 있음
+이터러블 객체의 핵심은 관심사의 분리(Separation of Concern, SoC)에 있음
 
 - `range`엔 메서드 `next()`가 없음
 - 대신 `range[Symbol.iterator]()`를 호출해서 만든 이터레이터 객체와 이 객체의 메서드 `next()`에서 반복에 사용될 값 생성
@@ -793,8 +822,7 @@ while (true) {
 ```javascript
 let arrayLike = { 0: "Hello", 1: "World", length: 2 };
 // Symbol.iterator 없으므로 에러 발생
-// TypeError: arrayLike is not iterable
-for (let item of arrayLike) {...}
+for (let item of arrayLike) {...} // TypeError: arrayLike is not iterable
 ```
 
 ### Array.from

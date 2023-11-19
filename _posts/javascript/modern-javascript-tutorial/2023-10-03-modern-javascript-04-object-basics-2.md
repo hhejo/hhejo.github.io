@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 2
 date: 2023-10-03 20:13:24 +0900
-last_modified_at: 2023-11-02 12:14:27 +0900
+last_modified_at: 2023-11-19 08:36:11 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -92,10 +92,10 @@ let bora = User("보라"); // new User를 쓴 것처럼 변환
 
 - 반환해야 할 것들은 모두 `this`에 저장되고, `this`는 자동으로 반환되기 때문
 
-생성자 함수에 `return`문이 있으면
+생성자 함수에 `return`문이 있을 때
 
-- 객체를 `return`한다면 `this` 대신 객체 반환
-- 원시형을 `return`한다면 `return`문이 무시됨
+- 객체 `return`: `this` 대신 해당 객체 반환
+- 원시형 `return`: `return`문 무시
 - 즉, `return` 뒤에 객체가 오면 생성자 함수는 해당 객체를 반환하고, 이외의 경우는 `this` 반환
 
 `return`문이 있는 생성자 함수는 거의 없음
@@ -129,7 +129,7 @@ let user = new User(); // 위 코드와 동일하게 동작
 
 생성자 함수를 사용하면 매개변수를 이용해 객체 내부를 자유롭게 구성할 수 있음
 
-`this`에 프로퍼티뿐만 아니라 메서드도 추가 가능
+- `this`에 프로퍼티뿐만 아니라 메서드도 추가 가능
 
 `class` 문법을 사용하면 생성자 함수를 사용하는 것과 마찬가지로 복잡한 객체 생성 가능
 
@@ -144,7 +144,9 @@ let bora = new User("이보라");
 bora.sayHi(); // 제 이름은 이보라입니다.
 ```
 
-### 함수 두 개로 동일한 객체 만들기
+### 예제
+
+함수 두 개로 동일한 객체 만들기
 
 ```javascript
 let obj = {};
@@ -157,7 +159,7 @@ function B() {
 alert(new A() == new B()); // true
 ```
 
-### 계산기 만들기
+계산기 만들기
 
 ```javascript
 function Calculator() {
@@ -178,7 +180,7 @@ alert(`Sum = ${calculator.sum()}`);
 alert(`Mul = ${calculator.mul()}`);
 ```
 
-### 누산기 만들기
+누산기 만들기
 
 ```javascript
 function Accumulator(startingValue) {

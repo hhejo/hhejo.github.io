@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 3
 date: 2023-10-09 08:23:28 +0900
-last_modified_at: 2023-11-23 09:12:56 +0900
+last_modified_at: 2023-11-23 16:17:04 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -20,9 +20,13 @@ tags: [javascript]
 
 ### 맵(Map)
 
-키가 있는 데이터를 저장(객체와 유사)
+객체와의 유사점
 
-키에 다양한 자료형을 허용(객체와 차이)
+- 키가 있는 데이터를 저장
+
+객체와의 차이점
+
+- 키에 다양한 자료형을 허용
 
 - 객체: 키를 문자형으로 자동 변환
 - 맵: 키의 타입을 변환하지 않고 그대로 유지(객체도 키로 허용)

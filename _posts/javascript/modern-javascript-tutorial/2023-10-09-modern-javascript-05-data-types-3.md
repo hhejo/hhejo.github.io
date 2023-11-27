@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 3
 date: 2023-10-09 08:23:28 +0900
-last_modified_at: 2023-11-24 12:41:43 +0900
+last_modified_at: 2023-11-26 09:47:49 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -27,13 +27,12 @@ tags: [javascript]
 객체와의 차이점
 
 - 키에 다양한 자료형을 허용
-
-- 객체: 키를 문자형으로 자동 변환
-- 맵: 키의 타입을 변환하지 않고 그대로 유지(객체도 키로 허용)
+  - 객체: 키를 문자형으로 자동 변환
+  - 맵: 키의 타입을 변환하지 않고 그대로 유지(객체도 키로 허용)
 
 맵은 `SameValueZero`라 불리는 알고리즘을 사용해 값의 등가 여부를 확인
 
-- 일치 연산자 `===`와 유사하지만 `NaN`과 `NaN`을 같다고 취급하는 것이 차이
+- 일치 연산자 `===`와 유사하지만 `NaN`과 `NaN`을 같다고 취급
 - 따라서 `NaN`도 키로 쓸 수 있음
 
 ```javascript

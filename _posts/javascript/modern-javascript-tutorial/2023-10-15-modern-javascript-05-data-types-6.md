@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 6
 date: 2023-10-15 10:20:13 +0900
-last_modified_at: 2023-11-02 20:02:44 +0900
+last_modified_at: 2023-11-27 22:02:18 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---

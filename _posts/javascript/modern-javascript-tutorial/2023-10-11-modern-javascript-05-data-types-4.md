@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 4
 date: 2023-10-11 15:17:49 +0900
-last_modified_at: 2023-11-02 19:33:01 +0900
+last_modified_at: 2023-11-27 20:45:17 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -25,15 +25,15 @@ tags: [javascript]
 
 ```javascript
 let arr = ["Bora", "Lee"];
-let [firstName, surname] = arr; // 코드 양 감소
-alert(firstName); // Bora
-alert(surname); // Lee
+let firstName = arr[0];
+let surname = arr[1];
 ```
 
 ```javascript
 let arr = ["Bora", "Lee"];
-let firstName = arr[0];
-let surname = arr[1];
+let [firstName, surname] = arr; // 코드 양 감소
+alert(firstName); // Bora
+alert(surname); // Lee
 ```
 
 반환 값이 배열인 메서드와 사용하기

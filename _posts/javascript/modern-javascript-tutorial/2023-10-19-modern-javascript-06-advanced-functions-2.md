@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 2
 date: 2023-10-19 12:31:06 +0900
-last_modified_at: 2023-11-07 08:33:01 +0900
+last_modified_at: 2023-11-29 09:00:59 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -136,24 +136,28 @@ alert(counter()); // 2
 예시 1
 
 ```javascript
-let phrase = "Hello"; // Lexical Environment [phrase: "Hello"] -outer-> null
+//////////////////////// Lexical Environment
+let phrase = "Hello"; // [ phrase: "Hello" ] -outer-> null
 alert(phrase);
 ```
 
-- 렉시컬 환경이 하나만 존재
-- 스크립트 전체와 관련된 렉시컬 환경: 전역 렉시컬 환경(Global Lexical Environment)
-- `[phrase: "Hello"]`: 변수가 저장되는 환경 레코드
-- `-outer->`: 외부 렉시컬 환경에 대한 참조
+- 위 코드는 렉시컬 환경이 하나만 존재
+- 전역 렉시컬 환경(Global Lexical Environment)
+  - 스크립트 전체와 관련된 렉시컬 환경
+- `[ phrase: "Hello" ]`
+  - 변수가 저장되는 환경 레코드
+- `-outer->`
+  - 외부 렉시컬 환경에 대한 참조
   - 전역 렉시컬 환경은 외부 참조를 갖지 않아 `null`을 가리킴
 - 코드가 실행되고 실행 흐름이 이어지면서 렉시컬 환경은 변화함
 
 예시 2
 
 ```
-// execution start --- [phrase: <uninitialized>] -outer-> null
-let phrase;         // [phrase: undefined]
-phrase = "Hello";   // [phrase: "Hello"]
-phrase = "Bye";     // [phrase: "Bye"]
+// execution start     [ phrase: <uninitialized> ] -outer-> null
+let phrase;         // [ phrase: undefined       ]
+phrase = "Hello";   // [ phrase: "Hello"         ]
+phrase = "Bye";     // [ phrase: "Bye"           ]
 ```
 
 1. 스크립트가 시작되면 스크립트 내에서 선언한 변수 전체가 렉시컬 환경에 올라감(pre-populated)
@@ -181,8 +185,8 @@ phrase = "Bye";     // [phrase: "Bye"]
 - 함수를 변수에 할당한 함수 표현식(function expression)은 해당하지 않음
 
 ```javascript
-// execution start --- [phrase: <uninitialized>] -outer-> null
-//                     [say: function]
+// execution start     [ phrase: <uninitialized> ] -outer-> null
+//                     [ say: function           ]
 let phase = "Hello";
 function say(name) {
   alert(`${phrase}, ${name}`);
@@ -216,8 +220,8 @@ function say(name) {
 say("John"); // Hello, John
 /*
 Lexical Environment of the call
-[name: "John"]                  -outer-> [say: function] -outer-> null
-                                         [phrase: "Hello"]
+[ name: "John" ]                  -outer-> [ say: function   ] -outer-> null
+                                           [ phrase: "Hello" ]
 */
 ```
 
@@ -246,14 +250,14 @@ let counter = makeCounter();
 - `makeCounter()`가 실행되는 도중엔 본문(`return counter++`)이 한줄 짜리인 중첩 함수가 생성됨
   - 현재는 중첩 함수가 생성되기만 하고 실행은 되지 않은 상태
   - 위 예시와의 차이점임
-- `counter.[[Environment]]`엔 `{count: 0}`이 있는 렉시컬 환경에 대한 참조가 저장됨
+- `counter.[[Environment]]`엔 `{ count: 0 }`이 있는 렉시컬 환경에 대한 참조가 저장됨
 - `counter()`를 호출하면 각 호출마다 새로운 렉시컬 환경이 생성됨
   - 이 렉시컬 환경은 `counter.[[Environment]]`에 저장된 렉시컬 환경을 외부 렉시컬 환경으로서 참조
 
 ```
 LexicalEnvironment of makeCounter() call  |  global LexicalEnvironment
-[count: 0] -outer->                       |  [makeCounter: function] -outer-> null
-                                          |  [counter: undefined]
+[ count: 0 ] -outer->                     |  [ makeCounter: function ] -outer-> null
+                                          |  [ counter: undefined    ]
 ```
 
 모든 함수는 함수가 생성된 곳의 렉시컬 환경을 기억
@@ -264,8 +268,8 @@ LexicalEnvironment of makeCounter() call  |  global LexicalEnvironment
 - `[[Environment]]`는 함수가 생성될 때 딱 한 번 값이 세팅되고 영원히 변하지 않음
 
 ```
-[<empty>] -outer-> [count: 0] -outer-> [makeCounter: function] -outer-> null
-                                       [counter: function]
+[ <empty> ] -outer-> [ count: 0 ] -outer-> [ makeCounter: function ] -outer-> null
+                                           [ counter: function     ]
 ```
 
 실행 흐름이 중첩 함수의 본문으로 넘어오면 `count` 변수 필요
@@ -277,8 +281,8 @@ LexicalEnvironment of makeCounter() call  |  global LexicalEnvironment
 - `counter()`를 여러 번 호출하면 `count` 변수가 증가하는 이유임
 
 ```
-[<empty>] -outer-> [count: 1] -outer-> [makeCounter: function] -outer-> null
-                                       [counter: function]
+[ <empty> ] -outer-> [ count: 1 ] -outer-> [ makeCounter: function ] -outer-> null
+                                           [ counter: function     ]
 ```
 
 클로저(closure)

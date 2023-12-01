@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 3
 date: 2023-10-21 13:07:22 +0900
-last_modified_at: 2023-11-07 13:29:17 +0900
+last_modified_at: 2023-11-30 09:38:26 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,13 +10,15 @@ tags: [javascript]
 
 ## 전역 객체
 
-- 전역 객체를 사용하면 어디서나 사용 가능한 변수나 함수 생성 가능
-- 전역 객체는 언어나 자체 호스트 환경에 기본 내장되어 있는 경우가 많음
+전역 객체
+
+- 어디서나 사용 가능한 변수나 함수 생성 가능
+- 언어나 자체 호스트 환경에 기본 내장되어 있는 경우가 많음
   - 브라우저 환경: `window`
   - Node.js 환경: `global`
 - 전역 객체 이름을 `globalThis`로 표준화하자는 내용이 최근 자바스크립트 명세에 추가됨
 
-전역 객체의 모든 프로퍼티는 아래와 같이 직접 접근 가능
+전역 객체의 모든 프로퍼티는 직접 접근 가능
 
 ```javascript
 alert("Hello");
@@ -31,9 +33,6 @@ window.alert("Hello"); // 위와 동일하게 동작
 ```javascript
 var gVar = 5;
 alert(window.gVar); // 5. var로 선언한 변수는 전역 객체 window의 프로퍼티가 됨
-```
-
-```javascript
 let gLet = 5;
 alert(window.gLet); // undefined
 ```
@@ -111,8 +110,9 @@ function f(sayHi = function () {}) {
 f(); // sayHi
 ```
 
-자바스크립트 명세서에 정의된 이 기능을 contextual name이라 부름
+contextual name
 
+- 자바스크립트 명세서에 정의된 이 기능을 contextual name이라 부름
 - 이름이 없는 함수의 이름을 지정할 때는 컨텍스트에서 이름을 가져옴
 
 객체 메서드의 이름도 name 프로퍼티로 가져올 수 있음

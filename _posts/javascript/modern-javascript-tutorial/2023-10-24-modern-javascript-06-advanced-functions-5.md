@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 5
 date: 2023-10-24 12:06:46 +0900
-last_modified_at: 2023-11-14 19:52:45 +0900
+last_modified_at: 2023-12-01 10:22:39 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -12,7 +12,10 @@ call/apply와 데코레이터, 포워딩, 함수 바인딩, 화살표 함수 다
 
 자바스크립트는 함수를 다룰 때 탁월한 유연성을 제공
 
-- 함수는 이곳저곳 전달될 수 있고, 객체로도 사용될 수 있음
+함수
+
+- 이곳저곳 전달될 수 있음
+- 객체로도 사용될 수 있음
 
 함수 간에 호출을 어떻게 포워딩(forwarding) 하는지, 데코레이팅(decorating) 하는지 알아보기
 
@@ -119,7 +122,7 @@ func(2); // 비슷한 증상 발생
 
 - 래퍼가 기존 메서드 호출 결과를 전달하려 했지만 `this`의 컨텍스트가 사라졌기 때문에 에러 발생
 
-`func.call(context, ...agrs)`
+`func.call(context, ...args)`
 
 - `this`를 명시적으로 고정해 함수를 호출할 수 있게 해주는 특별한 내장 함수 메서드
 
@@ -911,7 +914,10 @@ const obj = {
   func() {
     console.log("from func: ", this);
     function outerF() {
-      const innerF = () => console.log("from f: ", this);
+      console.log("from outerF: ", this);
+      const innerF = () => {
+        console.log("from innerF: ", this);
+      };
       innerF();
     }
     outerF();
@@ -921,7 +927,8 @@ const obj = {
 obj.func();
 /*
 from func:  { name: 'testObject', func: [Function: func] }
-from f:  <ref *1> Object [global] { ... }
+from outerF:  undefined
+from innerF:  undefined
 */
 ```
 

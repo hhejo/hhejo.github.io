@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 4
 date: 2023-10-22 12:06:46 +0900
-last_modified_at: 2023-11-14 11:45:14 +0900
+last_modified_at: 2023-11-30 10:14:03 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---

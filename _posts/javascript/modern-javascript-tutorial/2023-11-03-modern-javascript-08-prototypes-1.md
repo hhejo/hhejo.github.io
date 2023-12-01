@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 08 - 프로토타입과 프로토타입 상속 1
 date: 2023-11-03 06:05:33 +0900
-last_modified_at: 2023-11-15 09:36:05 +0900
+last_modified_at: 2023-12-01 22:56:07 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -537,16 +537,19 @@ alert(Rabbit.prototype.constructor == Rabbit); // true
 function Rabbit() {}
 let rabbit = new Rabbit();
 alert(rabbit.constructor == Rabbit); // true
+alert(rabbit.__proto__.constructor == Rabbit); // true
+alert(rabbit.__proto__.constructor == Rabbit.prototype.constructor); // true
+alert(rabbit.__proto__.constructor == rabbit.constructor); // true
 ```
 
 ```
-Rabbit                default "prototype"
-[     ] -prototype->  [                 ]
-[     ] <-constructor-[                 ]
-                               ^
-                               | [[Prototype]]
-                      rabbit   |
-                      [                 ]
+Rabbit                 default "prototype"
+[     ] -prototype->   [                 ]
+[     ] <-constructor- [                 ]
+   ^                            ^
+   |                            | [[Prototype]]
+   |                   rabbit   |
+   ㄴ---constructor--- [                 ]
 ```
 
 `constructor` 프로퍼티는 기존에 있던 객체의 `constructor`를 사용해 새로운 객체를 만들 때 사용할 수 있음

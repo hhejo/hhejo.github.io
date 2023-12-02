@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 08 - 프로토타입과 프로토타입 상속 2
 date: 2023-11-05 11:54:16 +0900
-last_modified_at: 2023-11-16 10:54:14 +0900
+last_modified_at: 2023-12-02 05:58:57 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -396,7 +396,7 @@ Object               Object.prototype
                      [                         ]
 ```
 
-- `__proto__`는 객체의 프로퍼티가 아니가 `Object.prototype`의 접근자 프로퍼티
+- `__proto__`는 객체의 프로퍼티가 아니라 `Object.prototype`의 접근자 프로퍼티
 - `obj.__proto__`를 읽거나 쓸 때는 이에 대응하는 getter, setter가 프로토타입에서 호출되고 `obj`는 `[[Prototype]]`을 통해 getter와 setter에 겁근
 - `__proto__`는 `[[Prototype]]`에 접근하기 위한 수단이지 `[[Prototype]]` 그 자체가 아님
 

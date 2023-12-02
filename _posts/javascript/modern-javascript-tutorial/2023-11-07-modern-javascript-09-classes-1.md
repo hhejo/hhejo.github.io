@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 09 - 클래스 1
 date: 2023-11-07 20:11:03 +0900
-last_modified_at: 2023-11-18 10:54:44 +0900
+last_modified_at: 2023-12-02 06:58:56 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -12,7 +12,7 @@ tags: [javascript]
 
 클래스
 
-- 객체 지향 프로그래밍에서 특정 객체를 생성하기 위해 변수와 메서드를 정의하논 일종의 틀
+- 객체 지향 프로그래밍에서 특정 객체를 생성하기 위해 변수와 메서드를 정의하는 일종의 틀
 - 객체를 정의하기 위한 상태(멤버 변수)와 메서드(함수)로 구성됨
 
 실무에서는 사용자나 물건 같이 동일한 종류의 객체를 여러 개 생성하는 경우가 많음
@@ -501,7 +501,7 @@ rabbit.run(5); // 흰 토끼가 속도 5로 달립니다.
 rabbit.stop(); // 흰 토끼가 멈췄습니다. 흰 토끼가 숨었습니다!
 ```
 
-화살표 함수에는 `super`가 없습니다
+화살표 함수에는 `super`가 없음
 
 - 화살표 함수는 `super`를 지원하지 않음
 - `super`에 접근하면 `super`를 외부 함수에서 가져옴
@@ -805,14 +805,14 @@ longEar.eat(); // 귀가 긴 토끼 이/가 먹이를 먹습slek.
 
 - `longEar.eat` 같은 객체 메서드는 `[[HomeObject]]`를 알고 있기 때문에 `this` 없이도 프로토타입으로부터 부모 메서드를 가져올 수 있음
 
-메서드는 자유롭지 않습니다.
+메서드는 자유롭지 않음
 
 - 자바스크립트에서 함수는 대개 객체에 묶이지 않고 자유로움
-- 이런 자유성 때문에 `this`가 달라고 객체 간 메서드를 복사하는 것이 가능
+- 이런 자유성 때문에 `this`가 달라도 객체 간 메서드를 복사하는 것이 가능
 - 그런데 `[[HomeObject]]`는 그 존재만으로도 함수의 자유도를 파괴
   - 메서드가 객체를 기억하기 때문
   - 개발자가 `[[HomeObject]]`를 변경할 방법은 없기 때문에 한번 바인딩 된 함수는 더이상 변경되지 않음
-- 다행스럽게도 `[[HomeObject]]`는 오직 `super` 내부에서만 유효
+- 다행히 `[[HomeObject]]`는 오직 `super` 내부에서만 유효
   - 그렇기 때문에 `super`를 사용하지 않는 경우에는 메서드의 자유성이 보장됨
   - 객체간 복사도 가능
   - 메서드에서 `super`를 사용하면 이야기가 달라짐
@@ -896,7 +896,26 @@ rabbit.eat(); // SyntaxError: 'super' keyword unexpected here
 
 인스턴스 생성 오류
 
-시계 확장하기
+```javascript
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class Rabbit extends Animal {
+  constructor(name) {
+    // super(name);
+    this.name = name;
+    this.created = Date.now();
+  }
+}
+
+let rabbit = new Rabbit("White Rabbit"); // ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor
+alert(rabbit.name);
+```
+
+- 자식 클래스의 생성자에서 `super()`를 호출하지 않아 에러 발생
 
 ## 참고
 

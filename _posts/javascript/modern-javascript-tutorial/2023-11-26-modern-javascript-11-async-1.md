@@ -1,7 +1,7 @@
 ---
-title: 모던 JavaScript 튜토리얼 11 - 프라미스와 async, await
+title: 모던 JavaScript 튜토리얼 11 - 프라미스와 async, await 1
 date: 2023-11-26 07:42:19 +0900
-last_modified_at: 2023-12-03 06:03:13 +0900
+last_modified_at: 2023-12-03 07:43:13 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---

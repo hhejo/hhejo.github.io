@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 6
 date: 2023-10-15 10:20:13 +0900
-last_modified_at: 2023-11-27 22:02:18 +0900
+last_modified_at: 2023-12-05 22:55:27 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -15,6 +15,9 @@ JSON
 - 네트워크를 통해 객체를 전송
 - 로깅 목적으로 객체를 출력
 - 전환된 문자열에 원하는 객체 프로퍼티가 포함되어야 함
+- `toString`을 사용할 수 있음
+- 개발 과정에서 프로퍼티가 추가, 삭제, 수정될 수 있는데 매번 `toString`을 수정한다면 번거로움
+- 반복문을 돌릴 수 있지만 중첩 객체 등으로 객체가 복잡한 경우는 까다로움
 
 ```javascript
 let user = {
@@ -26,9 +29,6 @@ let user = {
 };
 alert(user); // {name: "John", age: 30}
 ```
-
-- 개발 과정에서 프로퍼티가 추가, 삭제, 수정될 수 있는데 매번 `toString`을 수정한다면 번거로움
-- 반복문을 돌릴 수 있지만 중첩 객체 등으로 객체가 복잡한 경우는 까다로움
 
 ### JSON.stringify
 
@@ -146,13 +146,15 @@ JSON.stringify(meetup); // TypeError: Converting circular structure to JSON
 
 ### replacer로 원하는 프로퍼티만 직렬화하기
 
-```javascript
-let json = JSON.stringify(value[, replacer, space])
-```
+`JSON.stringify(value[, replacer, space])`
 
 - `value`: 인코딩 하려는 값
 - `replacer`: JSON으로 인코딩하길 원하는 프로퍼티가 담긴 배열. 또는 매핑 함수(`function(key, value)`)
 - `space`: 서식 변경 목적으로 사용할 공백 문자 수
+
+```javascript
+let json = JSON.stringify(value[, replacer, space])
+```
 
 ```javascript
 let room = { number: 23 };
@@ -177,8 +179,10 @@ alert(
 */
 ```
 
-`replacer` 함수는 프로퍼티(키, 값) 쌍 전체를 대상으로 호출되는데, 반드시 기존 프로퍼티 값을 대신하여 사용할 값을 반환해야 함
+`replacer` 함수
 
+- 프로퍼티(키, 값) 쌍 전체를 대상으로 호출
+- 반드시 기존 프로퍼티 값을 대신하여 사용할 값을 반환해야 함
 - 반환 값이 `undefined`면 해당 프로퍼티 누락
 
 ```javascript
@@ -284,15 +288,16 @@ alert(JSON.stringify(meetup)); // {"title":"Conference","room":23}
 
 ### JSON.parse
 
-JSON으로 인코딩된 객체를 다시 객체로 디코딩
+`JSON.parse(str, [reviver])`
+
+- JSON으로 인코딩된 객체를 다시 객체로 디코딩
+- `str`: JSON 형식의 문자열
+- `reviver`: 모든 `(key, value)` 쌍을 대상으로 호출되는 `function(key, value)` 형태의 함수로 값을 변경시킬 수 있음
+- 중첩 객체에도 사용 가능
 
 ```javascript
 let value = JSON.parse(str, [reviver]);
 ```
-
-- `str`: JSON 형식의 문자열
-- `reviver`: 모든 `(key, value)` 쌍을 대상으로 호출되는 `function(key, value)` 형태의 함수로 값을 변경시킬 수 있음
-- 중첩 객체에도 사용 가능
 
 ```javascript
 let numbers = "[0, 1, 2, 3]";
@@ -317,7 +322,8 @@ let json = `{
 }`;
 ```
 
-JSON은 주석을 지원하지 않음. 주석을 추가하면 유효하지 않은 형식이 됨
+- JSON은 주석을 지원하지 않음
+- 주석을 추가하면 유효하지 않은 형식이 됨
 
 ### reviver 사용하기
 

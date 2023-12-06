@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 5
 date: 2023-10-24 12:06:46 +0900
-last_modified_at: 2023-12-01 10:22:39 +0900
+last_modified_at: 2023-12-06 20:31:01 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -12,8 +12,6 @@ call/apply와 데코레이터, 포워딩, 함수 바인딩, 화살표 함수 다
 
 자바스크립트는 함수를 다룰 때 탁월한 유연성을 제공
 
-함수
-
 - 이곳저곳 전달될 수 있음
 - 객체로도 사용될 수 있음
 
@@ -23,13 +21,14 @@ call/apply와 데코레이터, 포워딩, 함수 바인딩, 화살표 함수 다
 
 CPU를 많이 잡아먹지만 결과는 안정적인 함수 `slow(x)`
 
-- 결과가 안정적이라는 말은 `x`가 같으면 호출 결과도 같다는 것
-- `slow(x)`가 자주 호출된다면 결과를 어딘가에 저장(캐싱)해 재연산에 걸리는 시간을 줄이는 것이 좋음
-- `slow()` 안에 캐싱 관련 코드를 추가하는 대신, 래퍼 함수를 만들어 캐싱 기능을 추가
+- 결과가 안정적: `x`가 같으면 호출 결과도 같음
+- `slow(x)`가 자주 호출되는 경우
+  - 결과를 어딘가에 저장(캐싱)해 재연산에 걸리는 시간을 줄이는 것이 좋음
+- 래퍼 함수를 만들어 캐싱 기능을 추가
+  - `slow()` 안에 캐싱 관련 코드를 추가하지 않음
 
 ```javascript
 function slow(x) {
-  // CPU 집약적인 작업이 여기 올 수 있음
   alert(`slow(${x})을/를 호출함`);
   return x;
 }
@@ -37,9 +36,7 @@ function slow(x) {
 function cachingDecorator(func) {
   let cache = new Map();
   return function (x) {
-    if (cache.has(x)) {
-      return cache.get(x);
-    }
+    if (cache.has(x)) return cache.get(x);
     let result = func(x);
     cache.set(x, result);
     return result;
@@ -58,26 +55,18 @@ alert("다시 호출: " + slow(2));
 - 인수로 받은 함수의 행동을 변경시켜주는 함수
 - 함수에 추가된 기능 혹은 상(aspect)
 
-모든 함수를 대상으로 `cachingDecorator`를 호출할 수 있음
+`cachingDecorator(func)`
 
-- 반환되는 것은 캐싱 래퍼
-- 함수에 `cachingDecorator`를 적용하기만 하면 캐싱이 가능한 함수를 원하는 만큼 구현할 수 있기 때문에 데코레이터 함수는 유용하게 사용됨
-- 캐싱 관련 코드를 함수 코드와 분리할 수 있기 때문에 함수의 코드가 간결해짐
-
-`cachingDecorator(func)`를 호출하면 래퍼(wrapper), `function(x)`이 반환됨
-
-- 래퍼 `function(x)`는 `func(x)`의 호출 결과를 캐싱 로직으로 감쌈(wrapping)
-
-바깥 코드에서 봤을 때 함수 `slow`는 래퍼로 감싼 이전이나 이후나 동일한 일을 수행
-
-- 행동 양식에 캐싱 기능이 추가된 것뿐
-
-`slow` 본문을 수정하는 것보다 독립된 래퍼 함수 `cachingDecorator`를 사용할 때 생기는 이점
-
-- `cachingDecorator` 재사용 가능
-  - 원하는 함수 어디에든 `cachingDecorator`를 적용
-- 캐싱 로직이 분리되어 `slow` 자체의 복잡성이 증가하지 않음
-- 여러 개의 데코레이터를 조합해서 사용할 수도 있음(추가 데코레이터는 `cachingDecorator` 뒤를 따름)
+- 모든 함수를 대상으로 호출 가능
+- 캐싱 래퍼(wrapper) `function(x)` 반환
+- 함수에 `cachingDecorator`를 적용하기만 하면 캐싱이 가능한 함수를 원하는 만큼 구현 가능
+  - 재사용성 증가
+- 캐싱 관련 코드를 함수 코드와 분리
+  - 함수의 코드가 간결해져 원 함수 자체의 복잡성이 증가하지 않음
+- 바깥 코드에서 봤을 때 함수 `slow`는 래퍼로 감싼 이전이나 이후나 동일한 일을 수행
+  - 행동 양식에 캐싱 기능이 추가된 것
+- 여러 개의 데코레이터를 조합해서 사용할 수도 있음
+  - 추가 데코레이터는 `cachingDecorator` 뒤를 따름
 
 ### func.call을 사용해 컨텍스트 지정하기
 
@@ -91,7 +80,6 @@ let worker = {
     return 1;
   },
   slow(x) {
-    // CPU 집약적인 작업이라 가정
     alert(`slow(${x})을/를 호출`);
     return x * this.someMethod(); // (*)
   }
@@ -110,36 +98,29 @@ function cachingDecorator(func) {
 alert(worker.slow(1)); // slow(1)을/를 호출, 1
 worker.slow = cachingDecorator(worker.slow);
 alert(worker.slow(2)); // TypeError: Cannot read properties of undefined (reading 'someMethod')
-```
 
-- `(*)` 줄에서 `this.someMethod` 접근에 실패했기 때문에 에러 발생
-- `(**)` 줄에서 래퍼가 기존 함수 `func(x)`를 호출하면 `this`가 `undefined`가 되기 때문
-
-```javascript
 let func = worker.slow;
 func(2); // 비슷한 증상 발생
 ```
 
+- `(*)` 줄에서 `this.someMethod` 접근에 실패했기 때문에 에러 발생
+- `(**)` 줄에서 래퍼가 기존 함수 `func(x)`를 호출하면 `this`가 `undefined`가 되기 때문
 - 래퍼가 기존 메서드 호출 결과를 전달하려 했지만 `this`의 컨텍스트가 사라졌기 때문에 에러 발생
 
 `func.call(context, ...args)`
 
 - `this`를 명시적으로 고정해 함수를 호출할 수 있게 해주는 특별한 내장 함수 메서드
+- 첫 번째 인수가 `this`
+- 이어지는 인수가 `func`의 인수가 됨
 
 ```javascript
 func.call(context, arg1, arg2, ...)
 ```
 
-- 메서드를 호출하면 첫 번째 인수가 `this`, 이어지는 인수가 `func`의 인수가 된 후 `func`이 호출됨
-
 ```javascript
 func(1, 2, 3);
-func.call(obj, 1, 2, 3); // 윗 줄과 거의 동일한 일 발생
+func.call(obj, 1, 2, 3); // this가 obj로 고정되는 것이 위 코드와의 차이
 ```
-
-- `func.call`에선 `this`가 `obj`로 고정되는 것이 차이
-
-다른 컨텍스트(다른 객체) 하에 sayHi를 호출하는 예시
 
 ```javascript
 function sayHi() {
@@ -151,14 +132,12 @@ sayHi.call(user); // John (sayHi의 컨텍스트가 this = user)
 sayHi.call(admin); // Admin (sayHi의 컨텍스트가 this = admin)
 ```
 
-`call`을 사용해 컨텍스트와 phrase에 원하는 값 지정
-
 ```javascript
 function say(phrase) {
   alert(this.name + ": " + phrase);
 }
 let user = { name: "John" };
-say.call(user, "Hello"); // John: Hello
+say.call(user, "Hello"); // John: Hello. call을 사용해 컨텍스트와 인수에 원하는 값 지정
 ```
 
 ```javascript
@@ -195,20 +174,10 @@ alert(worker.slow(2)); // 2
 
 복수 인수를 가진 메서드, `worker.slow`를 캐싱하기
 
-```javascript
-let worker = {
-  slow(min, max) {
-    return min + max; // CPU를 아주 많이 쓰는 작업이라고 가정
-  }
-};
-worker.slow = cachingDecorator(worker.slow); // 동일한 인수를 전달했을 때 호출 결과를 기억할 수 있어야 함
-```
-
-해결 방법
-
-1. 복수 키를 지원하는 맵과 유사한 자료 구조 구현하기 (서드 파티 라이브러리 사용하기)
+1. 복수 키를 지원하는 맵과 유사한 자료 구조 구현하기
+   - 서드 파티 라이브러리 사용
 2. 중첩 맵을 사용하기
-   - `(max, result)` 쌍 저장은 `cache.set(min)`으로
+   - `(max, result)` 쌍 저장은 `cache.set(min)` 사용
    - `result`는 `cache.get(min).get(max)`을 사용해 얻음
 3. 두 값을 하나로 합치기
    - 맵의 키로 문자열 `"min,max"`를 사용
@@ -247,31 +216,27 @@ alert("다시 호출: " + worker.slow(3, 5)); // 다시 호출: 8
 
 ### func.apply
 
-`func.call(this, ...arguments)` 대신 `func.apply(this, arguments)`를 사용해도 됨
+`func.apply(this, arguments)`
+
+- `func.call(this, ...arguments)` 대신 사용 가능
+  - 받는 인수만 다르고 같은 역할을 함
+- `func`의 `this`를 `context`로 고정
+- 유사 배열 객체인 `args`를 인수로 사용할 수 있게 함
+- `call`은 복수 인수를 따로 받음
+- `apply`는 인수를 유사 배열 객체로 받음
+  - 이터러블 사용 불가
+  - 배열은 가능
+- 대부분의 자바스크립트 엔진은 내부에서 `apply`를 최적화함
+  - `apply`를 사용하는 것이 좀 더 빠름
 
 ```javascript
 func.apply(context, args);
 ```
-
-- `func`의 `this`를 `context`로 고정해주고, 유사 배열 객체인 `args`를 인수로 사용할 수 있게 함
-
-`call`과 `apply`의 문법적 차이
-
-- `call`은 복수 인수를 따로 받음
-- `apply`는 인수를 유사 배열 객체로 받음
-
-아래 코드 두 줄은 거의 같은 역할을 함
 
 ```javascript
 func.call(context, ...args); // 전개 문법으로 인수가 담긴 배열 전달
-func.apply(context, args);
+func.apply(context, args); // 위 코드와 거의 같은 역할
 ```
-
-약간의 차이
-
-- 전개 문법 `...`은 이터러블 `args`를 분해해 `call`에 전달할 수 있도록 해줌
-- `apply`는 오직 유사 배열 형태의 `args`만 받음
-- 위 두 차이를 제외하면 두 메서드는 동일하게 동작
 
 ```javascript
 function func() {
@@ -283,53 +248,34 @@ func.call(null, 1, 2, 3);
 func.apply(null, [1, 2, 3]);
 ```
 
-배열같이 이터러블이면서 유사 배열인 객체에는 둘 다 사용 가능
-
-- 대부분의 자바스크립트 엔진은 내부에서 `apply`를 최적화하기 때문에 `apply`를 사용하는 것이 좀 더 빠름
-
 콜 포워딩(call forwarding)
 
 - 컨텍스트와 함께 인수 전체를 다른 함수에 전달하는 것
+- 아래 코드처럼 외부에서 `wrapper`를 호출하는 경우, 기존 함수 `func`를 호출하는 것과 명확하게 구분할 수 없음
 
 ```javascript
+// 가장 간단한 형태의 콜 포워딩
 let wrapper = function () {
   return func.apply(this, arguments);
 };
 ```
 
-- 가장 간단한 형태의 콜 포워딩
-- 이런 식으로 외부에서 `wrapper`를 호출하면, 기존 함수인 `func`를 호출하는 것과 명확하게 구분할 수 없음
-
 ### 메서드 빌리기
 
 위에서 구현한 해싱 함수를 개선해보기
 
-```javascript
-function hash(args) {
-  // return args[0] + "," + args[1];
-  return args.join();
-}
-hash(1, 2); // TypeError: arguments.join is not a function
-```
-
-```javascript
-function hash() {
-  alert(arguments.join());
-}
-hash(1, 2); // TypeError: arguments.join is not a function
-```
-
 - `args`의 요소 개수에 상관 없이 요소를 합치게 개선
-- 위 방법은 동작하지 않음
-  - `hash(arguments)`를 호출할 때 인수로 넘겨주는 `arguments`는 진짜 배열이 아닌 이터러블 객체나 유사 배열 객체
-  - 배열이 아닌 것에 `join`을 호출하면 에러 발생
+- 배열이 아닌 것에 `join`을 호출하면 에러 발생
+- `args`는 진짜 배열이 아닌 이터러블 객체나 유사 배열 객체
 - 아래 방법을 사용하면 배열 메서드 `arr.join(glue)` 사용 가능
 
 ```javascript
-function hash() {
-  return [].join.call(arguments);
+function hash(args) {
+  // return args[0] + "," + args[1];
+  alert(arguments.join()); // Error
+  return args.join(); // Error. ...args로 받았다면 괜찮음
 }
-hash(1, 2); // 1,2
+hash(1, 2); // TypeError: arguments.join is not a function
 ```
 
 메서드 빌리기(method borrowing)
@@ -350,23 +296,26 @@ hash(1, 2); // 1,2
   - 상당수의 메서드가 이런 관습을 따름
 - `this`에 `arguments`가 할당되더라도 잘 동작하는 이유
 
+```javascript
+function hash() {
+  return [].join.call(arguments);
+}
+hash(1, 2); // 1,2
+```
+
 ### 데코레이터와 함수 프로퍼티
 
-함수 또는 메서드를 데코레이터로 감싸 대체하는 것은 대체적으로 안전
+데코레이터와 함수 프로퍼티
 
-그러나 원본 함수에 `func.calledCount` 등의 프로퍼티가 있으면 데코레이터를 적용한 함수에선 프로퍼티를 사용할 수 없으므로 안전하지 않음
-
-함수에 프로퍼티가 있는 경우에는 데코레이터 사용에 주의
-
-위 예시에서 함수 `slow`에 프로퍼티가 있었다면 `cachingDecorator(slow)` 호출 결과인 래퍼에는 프로퍼티가 없음
-
-몇몇 데코레이터는 자신만의 프로퍼티를 갖기도 함
-
-- 데코레이터는 함수가 얼마나 호출되었는지 세거나 호출 시 얼마나 많은 시간이 소모 되었는지 등의 정보를 래퍼의 프로퍼티에 저장 가능
-
-함수 프로퍼티에 접근할 수 있게 해주는 데코레이터를 만드는 방법도 있음
-
-- `Proxy`라는 특별한 객체를 사용해 함수를 감싸야 함
+- 함수 또는 메서드를 데코레이터로 감싸 대체하는 것은 대체적으로 안전
+- 그러나 원본 함수에 `func.calledCount` 등의 프로퍼티가 있는 경우
+  - 데코레이터를 적용한 함수에서는 프로퍼티를 사용할 수 없음
+- 위 코드에서 함수 `slow`에 프로퍼티가 있었다면 `cachingDecorator(slow)` 호출 결과인 래퍼에는 프로퍼티가 없음
+- 몇몇 데코레이터는 자신만의 프로퍼티를 갖기도 함
+  - 함수 호출 횟수 정보, 호출 시 소모되는 시간 등
+  - 래퍼의 프로퍼티에 저장 가능
+- 함수 프로퍼티에 접근할 수 있게 해주는 데코레이터를 만드는 방법도 있음
+  - `Proxy`라는 특별한 객체를 사용해 함수를 감싸야 함
 
 ### 예제
 
@@ -485,42 +434,46 @@ f1000(5);
 
 ## 함수 바인딩
 
-객체 메서드를 콜백으로 전달할 때 `this` 정보가 사라지는 문제 발생
+객체 메서드를 콜백으로 전달할 때 `this` 정보가 사라지는 문제
 
 ### 사라진 this
 
-객체 메서드가 객체 내부가 아닌 다른 곳에 전달되어 호출되면 `this`가 사라짐
+사라진 `this`
+
+- 객체 메서드가 객체 내부가 아닌 다른 곳에 전달되어 호출되면 `this`가 사라짐
+
+브라우저 환경에서 발생하는 일
+
+- 인수로 전달받은 함수를 호출할 때, `this`에 `window`를 할당
+- `this.firstName`은 `window.firstName`이 됨
+- `window` 객체에는 `firstName`이 없어 `undefined` 출력
+- 다른 유사한 사례들에서도 대부분 `this`는 `undefined`가 됨
+- 메서드를 전달할 때, 컨텍스트도 제대로 유지하려면?
 
 ```javascript
 let user = {
   firstName: "John",
   sayHi() {
-    alert(`Hello, ${this.firstName}!`);
+    alert(`Hello, ${this.firstName}!`); // this=window
   }
 };
-setTimeout(user.sayHi, 1000); // Hello, undefined!
+setTimeout(user.sayHi, 1000); // Hello, undefined!. 객체에서 분리된 함수 user.sayHi가 전달됨
 ```
-
-- 객체에서 분리된 함수인 `user.sayHi`가 전달되기 때문
 
 ```javascript
 let f = user.sayHi; // 아래 줄은 위 코드와 같음
 setTimeout(f, 1000); // user 컨텍스트를 잃음
 ```
 
-브라우저 환경에서 발생하는 일
-
-- 인수로 전달받은 함수를 호출할 때, `this`에 `window`를 할당
-- `this.firstName`은 `window.firstName`이 됨
-- `window` 객체에는 `firstName`이 없으므로 `undefined`가 출력됨
-- 다른 유사한 사례들에서도 대부분 `this`는 `undefined`가 됨
-
-메서드를 전달할 때, 컨텍스트도 제대로 유지하려면?
-
 ### 방법 1: 래퍼
 
 래퍼 함수를 사용하는 것이 가장 간단
 
+- 외부 렉시컬 환경에서 `user`를 받아서 보통 때처럼 메서드를 호출했기 때문에 제대로 동작
+- `setTimeout`이 트리거되기 전(1초가 지나기 전)에 `user`가 변경되는 경우
+  - 변경된 객체의 메서드가 호출됨
+  - 약간의 취약성 발생
+
 ```javascript
 let user = {
   firstName: "John",
@@ -528,73 +481,17 @@ let user = {
     alert(`Hello, ${this.firstName}!`);
   }
 };
+
 setTimeout(function () {
   user.sayHi(); // Hello, John!
 }, 1000);
-```
 
-- 외부 렉시컬 환경에서 `user`를 받아서 보통 때처럼 메서드를 호출했기 때문에 제대로 동작
-
-```javascript
 setTimeout(() => user.sayHi(), 1000); // Hello, John!
 ```
 
-- 간결해지지만 약간의 취약성 발생
-- `setTimeout`이 트리거되기 전(1초가 지나기 전)에 `user`가 변경되면, 변경된 객체의 메서드 호출
-- ```javascript
-  setTimeout(() => user.sayHi(), 1000); // 또 다른 사용자!
-  user = {
-    sayHi() {
-      alert("또 다른 사용자!");
-    }
-  };
-  ```
-
-### 방법 2: bind
-
-위 문제가 발생하지 않음
-
-모든 함수는 `this`를 수정하게 해주는 내장 메서드 `bind`를 제공
-
 ```javascript
-let boundFunc = func.bind(context);
-```
+setTimeout(() => user.sayHi(), 1000); // 또 다른 사용자!
 
-- 함수처럼 호출 가능한 특수 객체(exotic object)를 반환
-- 이 객체를 호출하면 `this`가 `context`로 고정된 `func`가 반환됨
-- 따라서 `boundFunc`를 호출하면 `this`가 고정된 `func`를 호출하는 것과 동일한 효과
-- 더 긴 문법의 버전도 있음
-
-```javascript
-let user = { firstName: "John" };
-function func() {
-  alert(this.firstName);
-}
-let funcUser = func.bind(user); // this가 user로 고정된 func 할당
-funcUser(); // John
-```
-
-- 인수는 원본 함수 `func`에 그대로 전달
-
-```javascript
-let user = { firstName: "John" };
-function func(phrase) {
-  alert(phrase + ", " + this.firstName);
-}
-let funcUser = func.bind(user);
-funcUser("Hello"); // Hello, John
-```
-
-```javascript
-let user = {
-  firstName: "John",
-  sayHi() {
-    alert(`Hello, ${this.firstName}!`);
-  }
-};
-let sayHi = user.sayHi.bind(user);
-sayHi(); // Hello, John!
-setTimeout(sayHi, 1000); // Hello, John!
 user = {
   sayHi() {
     alert("또 다른 사용자!");
@@ -602,21 +499,52 @@ user = {
 };
 ```
 
+### 방법 2: bind
+
+`bind`
+
+- 모든 함수는 `this`를 수정하게 해주는 내장 메서드 `bind`를 제공
+- 함수처럼 호출 가능한 특수 객체(exotic object) 반환
+- 이 객체를 호출하면 `this`가 `context`로 고정된 `func`가 반환됨
+- 따라서 `boundFunc`를 호출하면 `this`가 고정된 `func`를 호출하는 것과 동일한 효과
+- 더 긴 문법의 버전도 있음
+
+```javascript
+let boundFunc = func.bind(context);
+```
+
+```javascript
+let user = { firstName: "John" };
+function func(phrase) {
+  alert(phrase + ", " + this.firstName);
+}
+let funcUser = func.bind(user); // this가 user로 고정된 func 할당
+funcUser("Hello"); // Hello, John. 인수는 원본 함수 func에 그대로 전달
+```
+
 ```javascript
 let user = {
   firstName: "John",
-  say(phrase) {
-    alert(`${phrase}, ${this.firstName}`);
+  sayHi(phrase = "Hello") {
+    alert(`${phrase}, ${this.firstName}!`);
   }
 };
-let say = user.say.bind(user);
-say("Hello"); // Hello, John
-say("Bye"); // Bye, John
+let sayHi = user.sayHi.bind(user);
+sayHi(); // Hello, John!
+sayHi("Bye"); // Bye, John!
+setTimeout(sayHi, 1000); // Hello, John!. 아까 문제가 발생하지 않음
+user = {
+  sayHi() {
+    alert("또 다른 사용자!");
+  }
+};
 ```
 
-`bindAll`로 메서드 전체 바인딩하기
+`bindAll`
 
-- 객체에 복수의 메서드가 있고, 이 메서드 전체를 전달할 때 반복문을 통해서 메서드를 바인딩할 수 있음
+- 메서드 전체 바인딩
+- 객체에 복수의 메서드가 있고, 이 메서드 전체를 전달할 때
+  - 반복문을 통해 메서드 바인딩 가능
 - lodash 라이브러리의 `_.bindAll(object, methodNames)`
 
 ```javascript
@@ -629,7 +557,15 @@ for (let key in user) {
 
 ### 부분 적용
 
-`this` 뿐만 아니라 인수도 바인딩 가능
+부분 적용(partial application)
+
+- `this` 뿐만 아니라 인수도 바인딩
+  - 특정 인수가 고정되어 전달할 인수 감소
+- 기존 함수의 매개변수를 고정하여 새로운 함수 생성
+- 매우 포괄적인 함수를 기반으로 덜 포괄적인 변형 함수 생성
+- 가독성이 좋은 이름의 독립 함수를 만들 수 있음
+- 함수 `send(from, to, text)`가 있을 때
+  - 객체 `user` 안에서 부분 적용을 활용해 전송 주체가 현재 사용자인 함수 `sendTo(to, text)` 구현
 
 ```javascript
 let bound = func.bind(context, [arg1], [arg2], ...)
@@ -640,33 +576,18 @@ function mul(a, b) {
   return a * b;
 }
 let double = mul.bind(null, 2); // 항상 컨텍스트를 넘겨야 하므로 null을 넘김
-double(3); // = mul(2, 3) = 6
-double(4); // = mul(2, 4) = 8
 double(5); // = mul(2, 5) = 10
-```
-
-이런 방식을 부분 적용(partial application)이라 부름
-
-- 부분 적용을 사용하면 기존 함수의 매개변수를 고정하여 새로운 함수 생성 가능
-
-```javascript
 let triple = mul.bind(null, 3);
-triple(3); // = mul(3, 3) = 9
-triple(4); // = mul(3, 4) = 12
 triple(5); // = mul(3, 5) = 15
 ```
 
-- 가독성이 좋은 이름을 가진 독립 함수를 만들 수 있음
-- `bind`를 사용해 첫 번째 인수를 고정할 수 있기 때문에 매번 인수를 전달할 필요 없음
-- 매우 포괄적인 함수를 기반으로 덜 포괄적인 변형 함수를 만들 수 있음
-- 함수 `send(from, to, text)`가 있을 때, 객체 `user` 안에서 부분 적용을 활용하면, 전송 주체가 현재 사용자인 함수 `sendTo(to, text)`를 구현할 수 있음
-
 ### 컨텍스트 없는 부분 적용
 
-인수 일부는 고정하고 컨텍스트 `this`는 고정하고 싶지 않은 경우
+컨텍스트 없는 부분 적용
 
+- 인수 일부는 고정하고 컨텍스트 `this`는 고정하고 싶지 않은 경우
 - 네이티브 `bind`만으로는 컨텍스트를 생략하고 인수로 바로 뛰어넘을 수 없음
-- 대신 인수만 바인딩해주는 헬퍼 함수 `partial`을 직접 구현할 수 있음
+- 대신 인수만 바인딩해주는 헬퍼 함수 `partial`을 직접 구현
 
 ```javascript
 function partial(func, ...argsBound) {
@@ -800,21 +721,17 @@ askPassword(
 
 ## 화살표 함수 다시 살펴보기
 
-화살표 함수는 단순히 함수를 짧게 쓰기 위한 용도로 사용되지 않음
+화살표 함수
 
+- 단순히 함수를 짧게 쓰기 위한 용도로 사용되지 않음
 - 독특하고 유용한 기능을 제공
-
-자바스크립트를 사용하다 보면 멀리 떨어진 곳에서 실행될 작은 함수를 작성해야 하는 상황이 많음
-
-- `arr.forEach(func)`
-- `setTimeout(func)`
-- 등등
-
-자바스크립트에서는 함수를 생성하고 그 함수를 어딘가에 전달하는 것이 아주 자연스러움
-
-그런데 어딘가에 함수를 전달하게 되면 함수의 컨텍스트를 잃을 수 있음
-
+- 자바스크립트 사용 중에 멀리 떨어진 곳에서 실행될 작은 함수를 작성해야 하는 상황이 많음
+  - `arr.forEach(func)`
+  - `setTimeout(func)` 등등
+- 자바스크립트에서 함수를 생성하고 어딘가에 전달하는 것은 자연스러움
+- 그런데 함수를 전달하게 되면 함수의 컨텍스트를 잃을 수 있음
 - 이때 화살표 함수를 사용하면 현재 컨텍스트를 잃지 않아 편리함
+- 화살표 함수는 컨텍스트가 있는 긴 코드보다는 자체 컨텍스트가 없는 짧은 코드를 담을 용도로 만들어짐
 
 화살표 함수가 일반 함수와 다른 점
 
@@ -823,58 +740,45 @@ askPassword(
 3. `arguments`를 지원하지 않음
 4. `super`가 없음
 
-화살표 함수는 컨텍스트가 있는 긴 코드보다는 자체 컨텍스트가 없는 짧은 코드를 담을 용도로 만들어짐
-
 ### 화살표 함수에는 this가 없습니다
 
-화살표 함수 본문에서 `this`에 접근하면 외부에서 값을 가져옴
+화살표 함수에는 `this`가 없음
 
+- 화살표 함수 본문에서 `this`에 접근하면 외부에서 값을 가져옴
 - 객체의 메서드 안에서 동일 객체의 프로퍼티를 대상으로 순회하는 데 사용 가능
-
-```javascript
-let group = {
-  title: "1모둠",
-  students: ["보라", "호진", "지민"],
-  showList() {
-    this.students.forEach((student) => alert(this.title + ": " + student));
-  }
-};
-group.showList();
-```
-
-```javascript
-let group = {
-  title: "1모둠",
-  students: ["보라", "호진", "지민"],
-  showList() {
-    console.log(this); // this=group
-    this.students.forEach(function (student) {
-      console.log(this); // this=global
-      console.log(this.title + ": " + student); // undefined: ...
-    });
-  }
-};
-group.showList();
-// 엄격 모드였으면 에러 발생
-```
-
-- 화살표 함수는 `this` 자체가 없음
 
 화살표 함수는 `new`와 함께 실행할 수 없음
 
 - `this`가 없기 때문에 화살표 함수는 생성자 함수로 사용할 수 없음
 
-```javascript
-const f = () => console.log(this);
-f(); // {}
-```
-
 화살표 함수 vs. bind
 
 - `.bind(this)`는 함수의 한정된 버전(bound version)으로 만듦
 - 화살표 함수는 어떤 것도 바인딩시키지 않음
-  - 단지 `this`가 없을 뿐임
-- 화살표 함수에서 `this`를 사용하면 일반 변수 서칭과 마찬가지로 `this`의 값을 외부 렉시컬 환경에서 탐색
+  - 단지 `this`가 없을 뿐
+- 화살표 함수에서 `this`를 사용하면 `this`의 값을 외부 렉시컬 환경에서 탐색
+  - 일반 변수 서칭과 마찬가지
+
+```javascript
+let group = {
+  name: "fruitGroup",
+  fruits: ["Apple", "Banana", "Orange"],
+  showList() {
+    this.fruits.forEach((fruit) => alert(`${this.name}: ${fruit}`)); // this=group
+    // console.log(this); // this=group
+    // this.fruits.forEach(function (fruit) {
+    //   console.log(this); // this=global
+    //   console.log(`${this.name}: ${fruit}`); // undefined: ... (엄격 모드였으면 에러)
+    // });
+  }
+};
+group.showList();
+```
+
+```javascript
+const f = () => console.log(this);
+f(); // {}
+```
 
 헷갈리는 `this`
 
@@ -934,9 +838,11 @@ from innerF:  undefined
 
 ### 화살표 함수엔 arguments가 없습니다
 
-화살표 함수는 일반 함수와는 다르게 모든 인수에 접근할 수 있게 해주는 유사 배열 객체 `arguments`를 지원하지 않음
+화살표 함수에는 `arguments`가 없음
 
-- 이런 특징은 현재 `this` 값과 `arguments` 정보를 함께 실어 호출을 포워딩해주는 데코레이터를 만들 때 유용하게 사용됨
+- 일반 함수와는 다르게 `arguments`를 지원하지 않음
+  - `arguments`: 모든 인수에 접근할 수 있게 해주는 유사 배열 객체
+- 현재 `this` 값과 `arguments` 정보를 함께 실어 호출을 포워딩해주는 데코레이터를 만들 때 유용하게 사용되는 특징
 
 ```javascript
 function defer(f, ms) {
@@ -953,12 +859,11 @@ let sayHiDeferred = defer(sayHi, 2000);
 sayHiDeferred("철수"); // 2초 후 "안녕, 철수" 출력
 ```
 
-- 화살표 함수를 사용하지 않고 동일한 기능을 하는 데코레이터 함수를 만들면 아래와 같음
-
 ```javascript
+// 화살표 함수를 사용하지 않고 동일한 기능을 하는 데코레이터 함수
 function defer(f, ms) {
   return function (...args) {
-    let ctx = this;
+    let ctx = this; // 컨텍스트 따로 저장
     setTimeout(function () {
       return f.apply(ctx, args);
     }, ms);

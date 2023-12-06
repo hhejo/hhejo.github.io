@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 1
 date: 2023-10-02 12:01:57 +0900
-last_modified_at: 2023-11-19 08:08:16 +0900
+last_modified_at: 2023-12-05 07:34:25 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,16 +10,22 @@ tags: [javascript]
 
 ## 객체(Object)
 
-객체는 몇 가지 특수한 기능을 가진 연관 배열(associative array)
+객체(object)
+
+- 몇 가지 특수한 기능을 가진 연관 배열(associative array)
+- 일반 객체는 순수 객체(plain object)라고 불림
+- 일반 객체 외에도 다양한 객체(`Array`, `Date`, `Error`, ...) 존재
 
 프로퍼티(property)
 
 - `키(key): 값(value)` 쌍으로 구성
-- `key`: 프로퍼티 이름. 문자형만 가능
-- `value`: 모든 자료형(원시형, 객체 등 데이터 집합이나 복잡한 개체(entity)) 가능
+- `key`: 문자형만 가능
+  - 프로퍼티 이름
+- `value`: 모든 자료형 가능
+  - 원시형, 객체 등 데이터 집합이나 복잡한 개체(entity)
 - 객체 안에 프로퍼티 여러 개가 들어갈 수 있음
 
-빈 객체를 생성하는 두 가지 방법
+빈 객체 생성하기
 
 1. 객체 리터럴(object literal) `{}`
 2. 객체 생성자 `new Object()`
@@ -28,14 +34,6 @@ tags: [javascript]
 let user = {}; // 객체 리터럴
 let user = new Object(); // 객체 생성자
 ```
-
-순수 객체(plain object)
-
-- 일반 객체는 순수 객체라고 불림
-
-일반 객체 외에도 다양한 객체 존재
-
-- `Array`, `Date`, `Error`, ...
 
 ### 리터럴과 프로퍼티
 
@@ -70,21 +68,13 @@ user.name = "Pete";
 `{ [key]: value }`
 
 - 객체를 만들 때 객체 리터럴 안의 프로퍼티 키를 대괄호로 둘러 쌈
+- 복잡한 표현식 가능
 
 ```javascript
 let fruit = prompt("과일 이름", "apple");
-let bag = { [fruit]: 5 };
-// 아래 두 줄보다 간결함
-// let bag = {};
-// bag[fruit] = 5;
+let bag = { [fruit]: 5, [fruit + "Computers"]: 10 };
 alert(bag.apple); // fruit에 'apple'이 할당되었다면 5 출력
-```
-
-복잡한 표현식 작성 가능
-
-```javascript
-let bag = { [fruit + "Computers"]: 5 };
-alert(bag.appleComputers); // 5
+alert(bag.appleComputers); // 10
 ```
 
 ### 단축 프로퍼티
@@ -92,7 +82,6 @@ alert(bag.appleComputers); // 5
 프로퍼티 값 단축 구문(property value shorthand)
 
 - 프로퍼티 값을 기존 변수에서 받아와 사용
-- 이런 경우가 많음
 
 ```javascript
 function makeUser(name, age) {
@@ -130,9 +119,9 @@ alert(obj.__proto__); // [object Object] (값이 변하지 않았음)
 
 ### 'in' 연산자로 프로퍼티 존재 여부 확인하기
 
-존재하지 않는 프로퍼티에 접근하기
+존재하지 않는 프로퍼티에 접근
 
-- 에러가 발생하지 않고 `undefined` 반환
+- `undefined` 반환 (에러가 발생하지 않음)
 
 ```javascript
 "use strict";
@@ -140,9 +129,12 @@ let user = {};
 user.name; // undefined
 ```
 
-`===`
+프로퍼티 존재 여부 확인
 
-- 키가 존재하는지, 존재하지 않는지 `===` 비교로 알 수 없음
+- `===`
+  - 키가 존재하는지 아닌지 알 수 없음
+- `"key" in object`
+  - 키의 존재 여부를 정확히 알 수 있음
 
 ```javascript
 let user = {};
@@ -151,10 +143,6 @@ alert(user.noSuchProperty === undefined); // true
 
 - 키 `noSuchProperty`가 존재하고 그 값이 `undefined`
 - 키 `noSuchProperty`가 존재하지 않음
-
-`"key" in object`
-
-- 키의 존재 여부를 정확히 알 수 있음
 
 ```javascript
 let obj = { test: undefined };
@@ -182,6 +170,8 @@ for (let key in user) {
 객체 정렬 방식
 
 - 객체는 특별한 방식으로 정렬됨
+- 키가 정수인 경우, 자동 정렬
+- 키가 정수가 아닌 경우, 작성된 순서대로 프로퍼티 나열
 
 정수 프로퍼티
 
@@ -192,11 +182,6 @@ String(Math.trunc(Number("49"))); // 49, 정수 프로퍼티 o
 String(Math.trunc(Number("+49"))); // 49, 정수 프로퍼티 x
 String(Math.trunc(Number("1.2"))); // 1, 정수 프로퍼티 x
 ```
-
-- 키가 정수인 경우
-  - 자동 정렬
-- 키가 정수가 아닌 경우
-  - 작성된 순서대로 프로퍼티 나열
 
 ## 참조에 의한 객체 복사
 
@@ -226,9 +211,9 @@ alert(a == b); // false
 
 ### 객체 복사, 병합과 Object.assign
 
-새로운 객체를 생성한 후, 기존 객체의 프로퍼티들을 순회해 원시 수준까지 복사하면 됨
+자바스크립트는 객체 복사 내장 메서드를 지원하지 않음
 
-- 자바스크립트는 객체 복사 내장 메서드를 지원하지 않음
+- 새로운 객체를 생성한 후, 기존 객체의 프로퍼티들을 순회해 원시 수준까지 복사하면 됨
 
 ```javascript
 let user = { name: "John", age: 30 };
@@ -477,29 +462,31 @@ admin["f"](); // Admin (점과 대괄호는 동일하게 동작)
 
 객체가 없어도 함수 호출 가능
 
-엄격 모드가 아닐 때는 `this`가 전역 객체를 참조
+엄격 모드 X
 
-- 브라우저에서는 `window` 전역 객체
-- Node.js에서는 `global` 전역 객체
-- 전역 객체 참조는 대개 실수인 경우가 많음
+- `this`가 전역 객체를 참조
+  - 브라우저: `window` 전역 객체
+  - Node.js: `global` 전역 객체
+  - 전역 객체 참조는 대개 실수인 경우가 많음
+
+엄격 모드 O
+
+- `this`가 `undefined`가 됨
+  - `this`가 `undefined`이기 때문에 `this.name` 같이 접근하려고 하면 에러 발생
 
 ```javascript
 function sayHi() {
   alert(this);
 }
-sayHi(); // [object Window] (엄격 모드 x)
+sayHi(); // [object Window]
 ```
-
-엄격 모드일 때는 `this`가 `undefined`가 됨
-
-- `this`가 `undefined`이기 때문에 `this.name` 같이 접근하려고 하면 에러 발생
 
 ```javascript
 "use strict";
 function sayHi() {
   alert(this);
 }
-sayHi(); // undefined (엄격 모드 o)
+sayHi(); // undefined
 ```
 
 자유로운 `this`가 만드는 결과
@@ -514,63 +501,40 @@ sayHi(); // undefined (엄격 모드 o)
 
 ### this가 없는 화살표 함수
 
-화살표 함수는 일반 함수와는 달리 고유한 `this`를 가지지 않음
+화살표 함수
 
-- 화살표 함수에서 `this`를 참조하는 경우
-  - 화살표 함수가 아닌 평범한 외부 함수에서 `this` 값을 가져옴
-- 별개의 `this`가 만들어지는 건 원하지 않고, 외부 컨텍스트에 있는 `this`를 이용하고 싶은 경우 화살표 함수가 유용
-
-```javascript
-let user = {
-  firstName: "보라",
-  sayHi() {
-    let arrow = () => alert(this.firstName);
-    arrow(); // arrow의 this는 외부 함수 user.sayHi()의 this가 됨
-  }
-};
-user.sayHi(); // 보라
-```
+- 일반 함수와는 달리 고유한 `this`를 가지지 않음
+- 화살표 함수에서 `this`를 참조하는 경우, 화살표 함수가 아닌 평범한 외부 함수에서 `this` 값을 가져옴
+- 별개의 `this`가 만들어지는 건 원하지 않고, 외부 컨텍스트에 있는 `this`를 이용하고 싶은 경우 유용
 
 ```javascript
-let user = {
-  firstName: "bora",
-  sayHi() {
-    function notArrow() {
-      alert(this.firstName); // undefined
-    }
-    notArrow();
-  }
-};
-user.sayHi();
-```
-
-```javascript
-let user = {
-  firstName: "보라",
-  sayHi() {
+"use strict";
+let obj = {
+  name: "test object",
+  objMethod() {
+    let arrow = () => alert(this); // [object Object] (obj 객체)
+    arrow();
     function notArrow() {
       return alert(this); // [object Window] (전역 Window 객체)
     }
     notArrow();
-    let arrow = () => alert(this); // [object Object] (user 객체)
-    arrow();
   }
 };
-user.sayHi();
+obj.objMethod();
 ```
 
 ```javascript
-let user = {
-  firstName: "보라",
-  sayHi() {
+"use strict";
+let obj = {
+  objMethod() {
     function f() {
-      let arrow = () => alert(this.firstName);
+      let arrow = () => alert(this);
       arrow();
     }
     f();
   }
 };
-user.sayHi(); // undefined
+obj.objMethod(); // undefined
 ```
 
 ### 예제
@@ -589,7 +553,7 @@ let user = makeUser();
 alert(user.ref.name); // TypeError: Cannot read properties of undefined
 ```
 
-- `makeUser()` 내 `this`는 `undefined`가 됨
+- `makeUser()` 내 `this`는 `undefined`
   - 메서드로써 호출된 게 아니라 함수로써 호출되었기 때문
 - `this` 값은 전체 함수가 됨
   - 코드 블록과 객체 리터럴은 여기에 영향을 주지 않음
@@ -631,7 +595,7 @@ let obj = {
   }
 };
 console.log(obj.ref.name); // undefined
-obj.ref; // {}
+console.log(obj.ref); // {}
 let temp = obj.f(); // { name: "test", ref: {}, f: [Function: f] }
 console.log(temp); // { name: "test", ref: {}, f: [Function: f] }
 ```
@@ -647,31 +611,10 @@ temp.f = func;
 temp.f(); // { f: [Function: func] }
 ```
 
-계산기 만들기
-
-```javascript
-let calculator = {
-  sum() {
-    return this.a + this.b;
-  },
-  mul() {
-    return this.a * this.b;
-  },
-  read() {
-    this.a = +prompt("a:", 0);
-    this.b = +prompt("b:", 0);
-  }
-};
-calculator.read();
-alert(calculator.sum());
-alert(calculator.mul());
-```
-
 체이닝
 
 - 메서드가 객체 자신을 반환하면 체이닝을 만들 수 있음
-
-`return this;`
+- `return this;`
 
 ```javascript
 let ladder = {

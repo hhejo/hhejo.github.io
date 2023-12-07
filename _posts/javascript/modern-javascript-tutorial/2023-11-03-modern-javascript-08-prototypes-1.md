@@ -420,10 +420,40 @@ alert(rabbit.eats); // true
 ```
 Rabbit               animal
 [     ] -prototype-> [ eats: true            ]
-                             ^
-                             | [[Prototype]]
-                      rabbit |
-                      [ name: "White Rabbit" ] animal을 상속받음
+                                 ^
+                                 | [[Prototype]]
+                     rabbit      |
+                     [ name: "White Rabbit"  ] animal을 상속받음
+```
+
+생성자 함수, 객체 리터럴, 객체 생성자로 생성한 객체
+
+```javascript
+function NewFunction() {}
+let fromNewFunction = new NewFunction();
+console.log(fromNewFunction.__proto__.__proto__ == Object.prototype); // true
+console.log(NewFunction.prototype.__proto__ == Object.prototype); // true
+console.log(fromNewFunction.__proto__); // {}
+console.log(NewFunction.prototype); // {}
+
+let fromObjectLiteral = {};
+console.log(fromObjectLiteral.__proto__ == Object.prototype); // true
+
+let fromNewObject = new Object();
+console.log(fromNewObject.__proto__ == Object.prototype); // true
+```
+
+```
+                          Object.prototype
+                          [                       ]
+                                      ^                            ^                            ^
+                                      | [[Prototype]]              | [[Prototype]]              | [[Prototype]]
+NewFunction               {}          |                fromObjectLiteral            fromNewObject
+[          ] -prototype-> [                       ]    [                       ]    [                       ]
+                                      ^
+                                      | [[Prototype]]
+                          fromNewFunction
+                          [                       ]
 ```
 
 ### 함수의 디폴트 프로퍼티 prototype과 constructor 프로퍼티

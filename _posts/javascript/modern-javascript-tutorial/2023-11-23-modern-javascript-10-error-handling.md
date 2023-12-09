@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 10 - 에러 핸들링
 date: 2023-11-23 08:11:35 +0900
-last_modified_at: 2023-12-02 20:05:27 +0900
+last_modified_at: 2023-12-09 21:21:36 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,11 +10,15 @@ tags: [javascript]
 
 ## 'try..catch'와 에러 핸들링
 
-에러가 발생하면 스크립트는 죽고(즉시 중단되고), 콘솔에 에러가 출력됨
+에러 발생
 
-`try..catch` 문법을 사용하면 스크립트가 죽는 걸 방지하고 에러를 잡아서 더 합당한 무언가를 할 수 있게 됨
+- 스크립트 죽음(즉시 중단됨)
+- 콘솔에 에러 출력
+- `try..catch` 문법으로 스크립트가 죽는 것을 막고 에러를 잡아 더 합당한 무언가를 할 수 있음
 
 ### 'try...catch' 문법
+
+`try {...} catch (err) {...}`
 
 ```javascript
 try {
@@ -24,61 +28,61 @@ try {
 }
 ```
 
-`try {...}` 블록 안에서 에러가 발생해도 `catch (err) {...}`에서 에러를 처리하기 때문에 스크립트는 죽지 않음
-
-1. `try {...}` 안의 코드 실행됨
+1. `try {...}` 안의 코드 실행
 2. 에러가 없다면 `try` 안의 마지막 줄까지 실행되고 `catch` 블록은 건너뜀
 3. 에러가 있다면 `try` 안 코드의 실행이 중단되고 `catch (err)` 블록으로 제어 흐름이 넘어감
-   - 변수 `err`(아무 이름 가능)는 무슨 일이 일어났는지에 대한 설명이 담긴 에러 객체를 포함
+   - `err`(아무 이름 가능)는 에러 객체를 포함
+   - 무슨 일이 일어났는지에 대한 설명이 담김
 
-`try..catch`는 오직 런타임 에러에만 동작
-
-- 실행 가능한(runnable) 코드에만 동작
+- 실행 가능한(runnable) 코드, 유효한 코드에서 발생하는 에러만 처리 가능
   - 실행 가능한 코드는 유효한 자바스크립트 코드를 의미
-- 코드가 문법적으로 잘못된 경우에는 동작하지 않음
-- 자바스크립트 엔진은 코드를 읽고 난 후 코드를 실행
-- 코드를 읽는 중에 발생하는 에러는 parse-time 에러라고 부름
-  - 엔진은 이 코드를 이해할 수 없기 때문에 parse-time 에러는 코드 안에서 복구 불가
-- `try..catch`는 유효한 코드에서 발생하는 에러만 처리 가능
   - 런타임 에러(runtime error) 혹은 예외(exception)라 부름
+- 자바스크립트 엔진은 코드를 읽고 난 후 코드를 실행
+- 코드가 문법적으로 잘못된 경우에는 동작하지 않음
 
-`try..catch`는 동기적으로 동작
+parse-time 에러
+
+- 코드를 읽는 중에 발생하는 에러
+- 엔진은 이 코드를 이해할 수 없기 때문에 parse-time 에러는 코드 안에서 복구 불가
+
+동기적으로 동작
 
 - setTimeout처럼 스케줄된(scheduled) 코드에서 발생한 예외는 잡을 수 없음
+- setTimeout에 넘겨진 익명 함수는 엔진이 `try..catch`를 떠난 다음에서야 실행되기 때문
+- 스케줄된 함수 내부의 예외를 잡으려면 `try..catch`를 함수 내부에 구현
 
 ```javascript
+// 스케줄된 코드에서 발생한 예외는 잡을 수 없음
 try {
   setTimeout(function () {
     noSuchVariable; // 스크립트는 여기서 죽음
   }, 1000);
 } catch (e) {
-  alert("작동 멈춤");
+  alert("작동 멈춤"); // 출력되지 않음
 }
-```
 
-- setTimeout에 넘겨진 익명 함수는 엔진이 `try..catch`를 떠난 다음에서야 실행되기 때문
-- 스케줄된 함수 내부의 예외를 잡으려면 `try..catch`를 함수 내부에 구현해야 함
-
-```javascript
+// 스케줄된 함수 내부의 예외 잡기
 setTimeout(function () {
   try {
     noSuchVariable;
   } catch {
-    alert("에러 잡음");
+    alert("에러 잡음"); // 에러 잡음
   }
 }, 1000);
 ```
 
 ### 에러 객체
 
-에러가 발생하면 자바스크립트는 에러 상세내용이 담긴 객체를 생성하고 `catch` 블록에 이 객체를 인수로 전달
+에러가 발생했을 때
 
-내장 에러 전체와 에러 객체는 두 가지 주요 프로퍼티를 가짐
+- 자바스크립트는 에러 상세내용이 담긴 객체를 생성
+- `catch` 블록에 이 객체를 인수로 전달
 
-- `name`
-  - 에러 이름
-- `message`
-  - 에러 상세 내용을 담고 있는 문자 메시지
+내장 에러 전체와 에러 객체
+
+- 두 가지 주요 프로퍼티를 가짐
+- `name`: 에러 이름
+- `message`: 에러 상세 내용을 담고 있는 문자 메시지
 - `stack`
   - 가장 널리 사용되는 비표준 프로퍼티(대부분의 호스트 환경에서 지원)
   - 현재 호출 스택
@@ -100,7 +104,7 @@ try {
 
 ### 선택적 'catch' 바인딩
 
-에러에 대한 자세한 정보가 필요하지 않으면 `catch`에서 이를 생략할 수 있음
+- 에러에 대한 자세한 정보가 필요하지 않으면 `catch`에서 생략 가능
 
 ```javascript
 try {
@@ -130,12 +134,18 @@ throw <error object>
 ```
 
 - 에러를 생성
-- 이론적으로는 숫자, 문자열 같은 원시형 자료를 포함한 어떤 것이든 에러 객체(error object)로 사용 가능
-- 하지만 내장 에러와의 호환을 위해 에러 객체에 `name`, `message` 프로퍼티를 넣어주는 것을 권장
+- 이론적으로는 어떤 것이든 에러 객체(error object)로 사용 가능
+  - 숫자, 문자열 같은 원시형 자료를 포함
+- 에러 객체에 `name`, `message` 프로퍼티를 넣는 것을 권장
+  - 내장 에러와의 호환을 위함
 
-자바스크립트는 `Error`, `SyntaxError`, `ReferenceError`, `TypeError` 등의 표준 에러 객체 관련 생성자를 지원
+표준 에러 객체 관련 생성자
 
+- 자바스크립트는 표준 에러 객체 관련 생성자를 지원
+  - `Error`, `SyntaxError`, `ReferenceError`, `TypeError` 등
 - 이 생성자들을 이용해 에러 객체 생성 가능
+- 일반 객체가 아닌 내장 생성자를 사용해 만든 내장 에러 객체의 `name` 프로퍼티는 생성자 이름과 동일한 값을 가짐
+- 프로퍼티 `message`의 값은 인수에서 가져옴
 
 ```javascript
 let error = new Error(message);
@@ -144,17 +154,11 @@ error = new ReferenceError(message);
 ...
 ```
 
-일반 객체가 아닌 내장 생성자를 사용해 만든 내장 에러 객체의 `name` 프로퍼티는 생성자 이름과 동일한 값을 가짐
-
-- 프로퍼티 `message`의 값은 인수에서 가져옴
-
 ```javascript
 let error = new Error("이상한 일이 발생했습니다. o_0");
 alert(error.name); // Error
 alert(error.message); // 이상한 일이 발생했습니다. o_0
-```
 
-```javascript
 let json = '{ "age": 30 }';
 try {
   let user = JSON.parse(json);
@@ -167,7 +171,14 @@ try {
 
 ### 에러 다시 던지기
 
-또 다른 예기치 않은 에러가 `try {...}` 블록 안에서 발생할 수도 있음
+다시 던지기(rethrowing)
+
+- 또 다른 예기치 않은 에러가 `try {...}` 블록 안에서 발생할 수 있음
+- catch는 알고 있는 에러만 처리하고 나머지는 다시 던져야 함
+
+1. catch가 모든 에러를 받음
+2. `catch(err) {...}` 블록 안에서 에러 객체 `err`를 분석
+3. 에러 처리 방법을 알지 못하면 `throw err`를 함
 
 ```javascript
 let json = '{ "age": 30 }';
@@ -179,15 +190,9 @@ try {
 }
 ```
 
-다시 던지기(rethrowing) 기술
+에러 타입 체크하기
 
-- catch는 알고 있는 에러만 처리하고 나머지는 다시 던져야 함
-
-1. catch가 모든 에러를 받음
-2. `catch(err) {...}` 블록 안에서 에러 객체 `err`를 분석
-3. 에러 처리 방법을 알지 못하면 `throw err`를 함
-
-에러 타입은 보통 `instanceof` 명령어로 체크
+- 에러 타입은 보통 `instanceof`로 체크
 
 ```javascript
 try {
@@ -199,10 +204,11 @@ try {
 }
 ```
 
-`err.name` 프로퍼티로 에러 클래스 이름을 알 수도 있음
+에러 클래스 이름 확인하기
 
+- `err.name` 프로퍼티 사용
 - 기본형 에러는 모두 `err.name` 프로퍼티를 가짐
-- 또는 `err.constructor.name`을 사용할 수도 있음
+- `err.constructor.name`을 사용할 수도 있음
 
 ```javascript
 function readData() {

@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 11 - 프라미스와 async, await 2
 date: 2023-11-29 13:01:02 +0900
-last_modified_at: 2023-12-04 06:02:37 +0900
+last_modified_at: 2023-12-10 11:40:19 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -10,13 +10,15 @@ tags: [javascript]
 
 ## 프라미스 API
 
-`Promise` 클래스에는 5가지 정적 메서드가 있음
+`Promise` 클래스의 5가지 정적 메서드
+
+- `Promise.all`
+- `Promise.allSettled`
+- `Promise.race`
+- `Promise.resolve`
+- `Promise.reject`
 
 ### Promise.all
-
-여러 개의 프라미스를 동시에 실행시키고 모든 프라미스가 준비될 때까지 기다리는 상황
-
-- 복수의 URL에 동시에 요청을 보내고, 다운로드가 모두 완료된 후에 콘텐츠를 처리하는 경우
 
 `Promise.all`
 
@@ -24,60 +26,43 @@ tags: [javascript]
 let promise = Promise.all([...promises...]);
 ```
 
-- 요소 전체가 프라미스인 배열을 받고 새로운 프라미스를 반환
-  - 엄밀히 따지만 이터러블 객체이지만 대개는 배열임
-- 배열 안 프라미스가 모두 처리되면 새로운 프라미스가 이행됨
-- 배열 안 프라미스의 결괏값을 담은 배열이 새로운 프라미스의 `result`가 됨
+- 여러 프라미스를 동시에 실행시키고, 모두 완료될 때까지 대기
+  - 복수의 URL에 동시에 요청을 보내고, 다운로드가 모두 완료된 후에 콘텐츠를 처리하는 경우
+- 요소 전체가 프라미스인 배열을 받음
+  - 엄밀히 따지만 이터러블 객체이지만 대개는 배열
+- 배열 안 프라미스가 모두 처리되면 새로운 프라미스 반환
+- 새로운 프라미스의 `result`는 배열 안 프라미스의 결괏값을 담은 배열
+- 배열 `result`의 요소 순서는 `Promise.all`에 전달되는 프라미스 순서
+  - `Promise.all`의 첫 번째 프라미스가 가장 늦게 이행되더라도, 처리 결과는 배열의 첫 번째 요소가 됨
 
 ```javascript
 Promise.all([
   new Promise((resolve) => setTimeout(() => resolve(1), 3000)),
   new Promise((resolve) => setTimeout(() => resolve(2), 2000)),
   new Promise((resolve) => setTimeout(() => resolve(3), 1000))
-]).then(alert); // 프라미스 전체가 처리되면 1, 2, 3이 반환됨
+]).then(alert); // 3초 후 프라미스 전체가 처리되고, 반환된 프라미스의 result는 [1, 2, 3] (전달된 프라미스 순서)
 ```
 
-- `Promise.all`은 3초 후에 처리되고, 반환되는 프라미스의 `result`는 `[1, 2, 3]`
-- 배열 `result`의 요소 순서는 `Promise.all`에 전달되는 프라미스 순서
-- `Promise.all`의 첫 번째 프라미스는 가장 늦게 이행되더라도 처리 결과는 배열의 첫 번째 요소에 저장됨
-
-작업해야 할 데이터가 담긴 배열을 프라미스 배열로 매핑하고, 이 배열을 `Promise.all`로 감싸는 트릭은 자주 사용됨
+작업할 데이터가 담긴 배열을 프라미스 배열로 매핑하고 `Promise.all`로 감싸기
 
 ```javascript
-let urls = [
-  "https://api.github.com/users/iliakan",
-  "https://api.github.com/users/Violet-Bora-Lee",
-  "https://api.github.com/users/jeresig"
-];
-
-let requests = urls.map((url) => fetch(url)); // fetch를 사용해 url을 프라미스로 매핑
-
-Promise.all(requests).then((responses) =>
-  responses.forEach((response) => alert(`${response.url}: ${response.status}`))
-); // Promise.all은 모든 작업이 이행될 때까지 기다림
-```
-
-```javascript
+let url = "https://api.github.com/users";
 let names = ["iliakan", "Violet-Bora-Lee", "jeresig"];
-let requests = names.map((name) =>
-  fetch(`https://api.github.com/users/${name}`)
-);
-
+let requests = names.map((name) => fetch(`${url}/${name}`));
 Promise.all(requests)
   .then((responses) => {
-    for (let response of responses)
-      alert(`${response.url}: ${response.status}`);
+    for (let { url, status } of responses) alert(`${url}: ${status}`);
     return responses;
   })
   .then((responses) => Promise.all(responses.map((r) => r.json())))
   .then((users) => users.forEach((user) => alert(user.name)));
 ```
 
-에러가 발생하면 다른 프라미스는 무시됨
+에러가 발생하는 경우
 
-- `Promise.all`에 전달되는 프라미스 중 하나라도 거부되면, `Promise.all`이 반환하는 프라미스는 에러와 함께 바로 거부됨
-- 배열에 저장된 다른 프라미스의 결과는 완전히 무시됨
-- 이행된 프라미스의 결과도 무시됨
+- `Promise.all`에 전달되는 프라미스 중 하나라도 거부되는 경우
+- `Promise.all`이 반환하는 프라미스는 에러와 함께 바로 거부됨
+- 배열에 저장된 다른 프라미스의 결과는 이행되었어도 완전히 무시됨
 - `fetch`를 사용해 호출 여러 개를 만들면 그중 하나가 실패해도 호출은 계속 일어남
   - 그렇더라도 `Promise.all`은 다른 호출을 더는 신경쓰지 않음
   - 프라미스가 처리되긴 하겠지만 그 결과는 무시됨
@@ -93,11 +78,12 @@ Promise.all([
 ]).catch(alert); // Error: 에러 발생!
 ```
 
-이터러블 객체가 아닌 일반 값도 `Promise.all(iterable)`에 넘길 수 있음
+프라미스가 아닌 객체를 인수로 전달하는 경우
 
-- `Promise.all`은 대개 프라미스가 요소인 객체(대부분 배열)를 받음
-- 요소가 프라미스가 아닌 객체일 경우에는 요소 그대로 배열에 전달됨
-- 이미 결과를 알고 있는 값은 이 특징을 이용해 `Promise.all`에 그냥 전달하면 됨
+- 요소 그대로 배열에 전달됨
+- 이 특징을 이용해 이미 결과를 알고 있는 값은 `Promise.all`에 그냥 전달하면 됨
+- 이터러블 객체가 아닌 일반 값도 넘길 수 있음
+- 대개 프라미스가 요소인 객체(대부분 배열)를 받음
 
 ```javascript
 Promise.all([
@@ -106,19 +92,18 @@ Promise.all([
   }),
   2,
   3
-]).then(alert); // 1,2,3
-// [1, 2, 3]이 리턴됨
+]).then(alert); // 1,2,3. [1, 2, 3]을 받음
 ```
 
 ### Promise.allSettled
 
 `Promise.allSettled`
 
-- 모든 프라미스가 처리될 때까지 기다림
-- 반환되는 배열은 다음과 같은 요소를 가짐
+- 여러 요청 중 하나가 실패해도 다른 요청 결과는 여전히 필요한 경우 사용
+- 모든 프라미스가 처리될 때까지 대기
+- 반환되는 배열이 갖는 요소
   - 응답 성공: `{ status: "fulfilled", value: result }`
   - 에러 발생: `{ status: "rejected", reason: error }`
-- 여러 요청 중 하나가 실패해도 다른 요청 결과는 여전히 필요한 경우 사용
 
 ```javascript
 let urls = [
@@ -127,14 +112,12 @@ let urls = [
   "https://no-such-url"
 ];
 Promise.allSettled(urls.map((url) => fetch(url))).then((results) => {
-  results.forEach((result, num) => {
-    if (result.status == "fulfilled") {
-      alert(`${urls[num]}: ${result.value.status}`);
-    }
-    if (result.status == "rejected") {
-      alert(`${urls[num]}: ${result.reason}`);
-    }
-  });
+  for (let [index, result] of results.entries()) {
+    if (result.status == "fulfilled")
+      console.log(`${urls[index]}: ${result.value.status}`);
+    if (result.status == "rejected")
+      console.log(`${urls[index]}: ${result.reason}`);
+  }
 });
 ```
 
@@ -149,13 +132,15 @@ Promise.allSettled(urls.map((url) => fetch(url))).then((results) => {
 
 ### Promise.race
 
-`Promise.race`는 `Promise.all`과 비슷
-
-- 가장 먼저 처리되는 프라미스의 결과(혹은 에러)를 반환
+`Promise.race`
 
 ```javascript
 let promise = Promise.race(iterable);
 ```
+
+- `Promise.all`과 비슷
+- 가장 먼저 처리되는 프라미스의 결과(혹은 에러)를 반환
+- 다른 프라미스의 결과 또는 에러는 무시됨
 
 ```javascript
 Promise.race([
@@ -164,53 +149,44 @@ Promise.race([
     setTimeout(() => reject(new Error("에러 발생!")), 2000)
   ),
   new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000))
-]).then(alert); // 1
+]).then(alert); // 1. 가장 먼저 처리된 프라미스의 결과
 ```
-
-- 첫 번째 프라미스가 가장 빨리 처리상태가 되기 때문에 첫 번째 프라미스의 결과가 result 값이 됨
-- 다른 프라미스의 결과 또는 에러는 무시됨
 
 ### Promise.resolve와 Promise.reject
 
-`Promise.resolve`와 `Promise.reject`는 `async/await` 문법이 생긴 후로 쓸모 없어졌기 때문에 거의 사용하지 않음
-
 `Promise.resolve(value)`
-
-- 결괏값이 `value`인 이행 상태 프라미스를 생성
-- 호환성을 위해 함수가 프라미스를 반환하도록 해야 할 때 사용할 수 있음
-- 아래 코드와 동일한 일을 수행
 
 ```javascript
 let promise = new Promise((resolve) => resolve(value));
 ```
 
+- 결괏값이 `value`인 이행 상태 프라미스 생성
+- 호환성을 위해 함수가 프라미스를 반환하도록 해야 할 때 사용 가능
+- `async/await` 문법이 생긴 후로 쓸모 없어졌기 때문에 거의 사용하지 않음
+
 ```javascript
 let cache = new Map();
-
 function loadCached(url) {
-  if (cache.has(url)) return Promise.resolve(cache.get(url)); // (*)
-
+  if (cache.has(url)) return Promise.resolve(cache.get(url)); // 프라미스 반환을 보장
   return fetch(url)
     .then((response) => response.text())
     .then((text) => {
       cache.set(url, text);
       return text;
     });
-}
+} // loadCached는 프라미스를 반환
+loadCached(url).then();
 ```
 
-- `loadCached`를 호출하면 프라미스가 반환된다는 것이 보장되기 때문에 `loadCached(url).then()`을 사용할 수 있음
-- `(*)`로 표시한 줄에서 `Promise.resolve`를 사용한 이유임
-
 `Promise.reject(error)`
-
-- 결괏값이 `error`인 거부 상태 프라미스를 생성
-- 실무에서 쓸 일이 거의 없음
-- 아래 코드와 동일한 일을 수행
 
 ```javascript
 let promise = new Promise((resolve, reject) => reject(error));
 ```
+
+- 결괏값이 `error`인 거부 상태 프라미스를 생성
+- 실무에서 쓸 일이 거의 없음
+- `async/await` 문법이 생긴 후로 쓸모 없어졌기 때문에 거의 사용하지 않음
 
 ## 프라미스화
 
@@ -226,9 +202,7 @@ function loadScript(src, callback) {
   script.onerror = () => callback(new Error(`${src} 로드 에러`));
   document.head.append(script);
 }
-```
 
-```javascript
 let loadScriptPromise = function (src) {
   return new Promise((resolve, reject) => {
     loadScriptPromise(src, (err, script) => {
@@ -277,88 +251,87 @@ loadScriptPromise(...).then(...);
 
 ## 마이크로태스크
 
-프라미스 핸들러 `.then/catch/finally`는 항상 비동기적으로 실행됨
+프라미스 핸들러 `.then/catch/finally`
 
-- 프라미스가 즉시 이행되더라도 `.then/catch/finally` 아래에 있는 코드는 이 핸들러들이 실행되기 전에 실행됨
+- 항상 비동기적으로 실행
+- 프라미스가 즉시 이행되었어도 마찬가지
+- `.then/catch/finally` 아래에 있는 코드는 이 핸들러들이 실행되기 전에 실행됨
 
 ```javascript
-let promise = Promise.resolve();
+let promise = Promise.resolve(); // 즉시 이행 상태
 promise.then(() => alert("프라미스 성공!"));
 alert("코드 종료"); // 가장 먼저 출력됨
 ```
 
-- 프라미스는 즉시 이행상태가 되었는데도 `.then`이 나중에 트리거된 이유?
-
 ### 마이크로태스크 큐
 
-비동기 작업을 처리하려면 적절한 관리가 필요
+마이크로태스크 큐(microtask queue)
 
-- 이를 위해 ECMA에서는 `PromiseJobs`라는 내부 큐(internal queue)를 명시함
-- V8 엔진에서는 이를 마이크로태스크(microtask queue)라고 부름
-- 모든 프라미스 동작은 마이크로태스크 큐라 불리는 내부 프라미스 잡(promise job) 큐에 들어가서 처리되기 때문에 프라미스 핸들링은 항상 비동기로 처리됨
-  - 따라서 `.then/catch/finally` 핸들러는 항상 현재 코드가 종료되고 난 후에 호출됨
-
-명세서의 설명
-
+- 비동기 작업 처리를 위해서는 적절한 관리가 필요
+- 이를 위해 ECMA에서는 `PromiseJobs`라는 내부 큐를 명시
+  - 내부 프라미스 잡 큐(internal promise job queue)
+- V8 엔진에서는 마이크로태스크 큐라고 부름
+- 모든 프라미스 동작은 내부 프라미스 잡 큐에 들어가서 처리됨
+- 따라서 프라미스 핸들링은 항상 비동기로 처리됨
+  - `.then/catch/finally` 핸들러는 항상 현재 코드가 종료되고 난 후에 호출됨
+- 실행할 것이 아무것도 남아있지 않을 때만 마이크로태스크 큐에 있는 작업 실행
 - 마이크로태스크 큐는 먼저 들어온 작업을 먼저 실행(FIFO)
-- 실행할 것이 아무것도 남아있지 않을 때만 마이크로태스크 큐에 있는 작업이 실행되기 시작
 
-어떤 프라미스가 준비되었을 때 이 프라미스의 `.then/catch/finally` 핸들러가 큐에 들어감
+어떤 프라미스가 준비된 경우
 
+- 이 프라미스의 `.then/catch/finally` 핸들러가 큐에 들어감
 - 이때 핸들러들은 여전히 실행되지 않음
 - 현재 코드에서 자유로운 상태가 되었을 때에서야 자바스크립트 엔진은 큐에서 작업을 꺼내 실행
+- 프라미스 핸들러는 항상 내부 큐를 통과
 
 ```
 promise.then(handler); // 핸들러가 큐에 저장됨(enqueue)
 ...
 alert("코드 종료");
-// 스크립트 실행이 끝나야
-// 큐에 저장된 핸들러가 실행됨
+// 스크립트 실행이 끝나야 큐에 저장된 핸들러가 실행됨
 ```
 
-프라미스 핸들러는 항상 내부 큐를 통과하게 됨
+여러 개의 `.then/catch/finally`를 사용해 만든 체인의 경우
 
-여러 개의 `.then/catch/finally`를 사용해 만든 체인의 경우, 각 핸들러는 비동기적으로 실행됨
-
+- 각 핸들러는 비동기적으로 실행됨
 - 큐에 들어간 핸들러 각각은 현재 코드가 완료되고, 큐에 적체된 이전 핸들러의 실행이 완료되었을 때 실행됨
-
-실행 순서가 중요한 경우에는 `.then`을 사용해 체인에 추가하고 큐에 넣으면 됨
+- 실행 순서가 중요한 경우에는 `.then`으로 체인에 추가하고 큐에 넣으면 됨
 
 ### 처리되지 못한 거부
 
-이제 자바스크립트 엔진이 어떻게 처리되지 못한 거부(unhandled rejection)를 찾는지 정확히 알 수 있음
+처리되지 못한 거부(unhandled rejection)
 
-- '처리되지 못한 거부'는 마이크로태스크 큐 끝에서 프라미스 에러가 처리되지 못할 때 발생
-- 정상적인 경우라면 개발자는 에러가 생길 것을 대비해 프라미스 체인에 `.catch`를 추가해 에러를 처리
+- 마이크로태스크 큐 끝에서 프라미스 에러가 처리되지 못할 때 발생
+- 정상적인 경우, 개발자는 에러를 대비해 프라미스 체인에 `.catch`를 추가해 에러를 처리
+- `.catch`가 없으면 엔진은 마이크로태스크 큐가 빈 이후에 `unhandledrejection` 이벤트를 트리거
+
+`unhandledrejection` 이벤트
+
+- 마이크로태스크 큐에 있는 작업 모두가 완료되었을 때 생성됨
+- 엔진은 프라미스들을 검사
+- 이 중 하나라도 거부(rejected) 상태이면 `unhandledrejection` 핸들러를 트리거
+- `setTimeout`으로 추가된 `.catch`는 `unhandledrejection` 발생 후에 트리거
 
 ```javascript
 let promise = Promise.reject(new Error("프라미스 실패!"));
 promise.catch((err) => alert("잡았다!")); // 잡았다!
 window.addEventListener("unhandledrejection", (event) => alert(event.reason)); // 에러가 잘 처리되었으므로 실행되지 않음
-```
 
-```javascript
+// 처리되지 못한 거부
 let promise = Promise.reject(new Error("프라미스 실패!"));
 window.addEventListener("unhandledrejection", (event) => alert(event.reason)); // Error: 프라미스 실패!
-```
 
-- `.catch`를 추가해주는 것을 잊은 경우, 엔진은 마이크로태스크 큐가 빈 이후에 `unhandledrejection` 이벤트를 트리거 함
-
-```javascript
+// setTimeout으로 에러를 나중에 처리하는 경우
 let promise = Promise.reject(new Error("프라미스 실패!"));
-setTimeout(() => promise.catch((err) => alert("잡았다!")), 1000); // 잡았다!
-window.addEventListener("unhandledrejection", (event) => alert(event.reason)); // Error: 프라미스 실패!
+setTimeout(() => promise.catch((err) => alert("잡았다!")), 1000); // 잡았다!. 나중에 출력
+window.addEventListener("unhandledrejection", (event) => alert(event.reason)); // Error: 프라미스 실패!. 먼저 출력
 ```
 
-- `setTimeout`을 이용해 에러를 나중에 처리하면 '프라미스 실패!'가 먼저, '잡았다!'가 나중에 출력
-- `unhandledrejection`은 마이크로태스크 큐에 있는 작업 모두가 완료되었을 때 생성됨
-- 엔진은 프라미스들을 검사하고 이 중 하나라도 거부(rejected) 상태이면 `unhandledrejection` 핸들러를 트리거 함
-- 위 예시를 실행하면 `setTimeout`을 사용해 추가한 `.catch` 역시 트리거 됨
-- 다만 `.catch`는 `unhandledrejection`이 발생한 이후에 트리거 되므로 '프라미스 실패!'가 출력됨
+이벤트 루프(event loop), 매크로태스크
 
-브라우저와 Node.js를 포함한 대부분의 자바스크립트 엔진에서는 마이크로태스크가 이벤트 루프(event loop)와 매크로태스크(macrotask)와 깊은 연관 관계를 맺음
-
-- 이 둘(이벤트 루프, 매크로태스크)은 프라미스와는 직접적인 연관성이 없음
+- 마이크로태스크가 이벤트 루프와 매크로태스크와 깊은 연관 관계를 맺음
+  - 브라우저와 Node.js를 포함하는 대부분의 자바스크립트 엔진의 경우
+- 이벤트 루프와 매크로태스크는 프라미스와는 직접적인 연관성이 없음
 
 마이크로태스크 큐(microtask queue)
 
@@ -380,65 +353,61 @@ window.addEventListener("unhandledrejection", (event) => alert(event.reason)); /
 
 ## async와 await
 
-`async`와 `await`라는 특별한 문법을 사용하면 프라미스를 좀 더 편하게 사용할 수 있음
+특별한 문법 `async`와 `await`
+
+- 프라미스를 좀 더 편하게 사용할 수 있음
 
 ### async 함수
 
-`async` 키워드는 function 앞에 위치
-
-- function 앞에 `async`를 붙이면 해당 항수는 항상 프라미스를 반환
-- 프라미스가 아닌 값을 반환하더라도 이행 상태의 프라미스(resolved promise)로 값을 감싸 이행된 프라미스가 반환되도록 함
+`async`
 
 ```javascript
-async function f() {
+async function f() {}
+```
+
+- `async` 키워드는 function 앞에 위치
+- function 앞에 `async`를 붙이면 해당 항수는 항상 프라미스를 반환
+- 프라미스가 아닌 값을 반환하는 경우
+- 이행 상태의 프라미스(resolved promise)로 값을 감싸 반환
+
+```javascript
+async function f1() {
   return 1;
 }
-f().then(alert); // 1
-```
+f1().then(alert); // 1. result가 1인 이행 프라미스 반환
 
-- `result`가 `1`인 이행 프라미스가 반환됨
-
-```javascript
-async function f() {
+async function f2() {
   return Promise.resolve(1);
 }
-f().then(alert); // 1
+f2().then(alert); // 1. 명시적으로 프라미스 반환
 ```
-
-- 명시적으로 프라미스 반환
 
 ### await
 
-`await` 키워드는 `async` 함수 안에서만 동작
-
-- 자바스크립트는 `await` 키워드를 만나면 프라미스가 처리될 때까지 기다림
-- 결과는 그 이후 반환됨
+`await`
 
 ```javascript
 let value = await promise;
 ```
+
+- `await` 키워드는 `async` 함수 안에서만 동작
+- 자바스크립트는 `await` 키워드를 만나면 프라미스가 처리될 때까지 대기
+- 프라미스가 처리되면 그 결과를 반환하며 실행 재개
+- `promise.then`보다 쓰기 쉽고 가독성 좋음
+- 일반 함수에는 `await` 사용 불가
+- 프라미스가 처리되길 기다리는 동안, 엔진이 다른 일을 할 수 있어 CPU 리소스가 낭비되지 않음
+  - 다른 스크립트를 실행, 이벤트 처리 등의 다른 일
 
 ```javascript
 async function f() {
   let promise = new Promise((resolve, reject) => {
     setTimeout(() => resolve("완료!"), 1000);
   });
-  let result = await promise; // 프라미스가 이행될 때까지 기다림 (*)
-  console.log(result); // 완료!
+  let result = await promise; // (*). 프라미스가 이행될 때까지 대기
+  console.log(result); // 완료!. 프라미스 객체의 result 값이 들어있음
 }
 f();
 ```
-
-- 함수를 호출하고 함수 본문이 실행되는 도중에 `(*)`로 표시한 줄에서 실행이 잠시 중단되었다가 프라미스가 처리되면 실행이 재개됨
-  - 프라미스 객체의 `result` 값이 변수 result에 할당됨
-- `await`는 프라미스가 처리될 때까지 함수 실행을 기다리게 만듦
-- 프라미스가 처리되면 그 결과와 함께 실행이 재개됨
-- 프라미스가 처리되길 기다리는 동안에는 엔진이 다른 일(다른 스크립트를 실행, 이벤트 처리 등)을 할 수 있기 때문에 CPU 리소스가 낭비되지 않음
-- `await`는 `promise.then`보다 가독성 좋고 쓰기 쉬움
-
-일반 함수에는 `await`를 사용할 수 없음
-
-- `async` 함수가 아닌데 `await`를 사용하면 문법 에러 발생
 
 ```javascript
 function f() {
@@ -447,29 +416,31 @@ function f() {
 }
 ```
 
-`await`는 최상위 레벨 코드(top-level code)에서 작동하지 않음
+top-level await
 
-- 익명 `async` 함수로 코드를 감싸면 최상위 레벨 코드에도 `await`를 사용할 수 있음
-- ES2022부터는 top-level await가 가능
+- `await`는 최상위 레벨 코드(top-level code)에서 작동하지 않음
+- 익명 `async` 함수로 코드를 감싸면 최상위 레벨 코드에도 `await` 사용 가능
+- ES2022부터는 top-level await 가능
 
 ```javascript
+// SyntaxError: await is only valid in async functions and the top level bodies of modules
 let response = await fetch("/article/promise-chaining/user.json");
 let user = await response.json();
-// SyntaxError: await is only valid in async functions and the top level bodies of modules
-```
 
-```javascript
+// 익명 async 함수로 코드를 감싸 top-level await 사용
 (async () => {
   let response = await fetch("/article/promise-chaining/user.json");
   let user = await response.json();
 })();
 ```
 
-`await`는 thenable 객체를 받음
+`await`와 thenable 객체
 
-- `promise.then`처럼 `await`에도 thenable 객체(`then` 메서드가 있는 호출 가능한 객체)를 사용할 수 있음
-- thenable 객체는 서드파티 객체가 프라미스가 아니지만 프라미스와 호환 가능한 객체를 제공할 수 있다는 점에서 생긴 기능
-- 서드파티에서 받은 객체가 `.then`을 지원하면 이 객체를 `await`와 함께 사용할 수 있음
+- `await`는 thenable 객체를 받음
+- thenable 객체는 `then` 메서드가 있는 호출 가능한 객체
+- `promise.then`처럼, `await`에도 thenable 객체 사용 가능
+- 서드파티 객체가 프라미스가 아니지만 프라미스와 호환 가능한 객체를 제공할 수 있다는 점에서 생긴 기능
+- 서드파티에서 받은 객체가 `.then`을 지원하면 이 객체를 `await`와 함께 사용 가능
 
 ```javascript
 class Thenable {
@@ -482,20 +453,16 @@ class Thenable {
   }
 }
 async function f() {
-  let result = await new Thenable(1);
+  let result = await new Thenable(1); // then 메서드를 호출하고 resolve나 reject를 기다림
   alert(result);
 }
 f();
 ```
 
-- `await`는 `.then`이 구현되어 있으면서 프라미스가 아닌 객체를 받으면, 내장 함수 `resolve`와 `reject`를 인수로 제공하는 메서드인 `.then`을 호출
-  - 일반 `Promise` executor가 하는 일과 동일
-- 그러고 `await`는 `resolve`와 `reject` 중 하나가 호출되길 기다렸다가(`(*)`로 표시한 줄) 호출 결과를 가지고 다음 일을 진행
-
 `async` 클래스 메서드
 
-- 메서드 이름 앞에 `async`를 추가하면 `async` 클래스 메서드를 선언할 수 있음
-- `async` 메서드와 `async` 함수는 프라미스를 반환하고 `await`를 사용할 수 있다는 점에서 동일
+- 메서드 이름 앞에 `async`를 추가해 `async` 클래스 메서드를 선언
+- 프라미스를 반환하고 `await` 사용 가능
 
 ```javascript
 class Waiter {
@@ -508,28 +475,24 @@ new Waiter().wait().then(alert); // 1
 
 ### 에러 핸들링
 
-프라미스가 정상적으로 이행되면 `await promise`는 프라미스 객체의 `result`에 저장된 값을 반환
+async-await 에러 핸들링
 
-프라미스가 거부되면 `throw`문을 작성한 것처럼 에러가 던져짐
-
-```javascript
-async function f() {
-  await Promise.reject(new Error("에러 발생!"));
-}
-```
-
-- 아래 코드와 동일
-
-```javascript
-async function f() {
-  throw new Error("에러 발생!");
-}
-```
-
+- 프라미스가 정상적으로 이행되면 `await promise`는 프라미스 객체의 `result` 값 반환
+- 프라미스가 거부되면 `throw`문을 작성한 것처럼 에러가 던져짐
+- `await`가 던진 에러는 `try..catch`를 사용해 잡음
+- 함수 내부에서 `await`의 에러를 잡지 못하면, 호출 시 `.catch`를 이용해 잡을 수 있음
 - 실제 상황에서는 프라미스가 거부되기 전에 약간의 시간이 지체되는 경우가 있음
 - 이런 경우에는 `await`가 에러를 던지기 전에 지연 발생
 
-`await`가 던진 에러는 `throw`가 던진 에러를 잡을 때처럼 `try..catch`를 사용해 잡을 수 있음
+```javascript
+async function f1() {
+  await Promise.reject(new Error("에러 발생!")); // 아래 코드와 동일
+}
+
+async function f2() {
+  throw new Error("에러 발생!");
+}
+```
 
 ```javascript
 async function f() {
@@ -541,29 +504,27 @@ async function f() {
   }
 }
 f();
-```
 
-```javascript
-async function f() {
+// try..catch가 없는 경우
+async function f2() {
   let response = await fetch("http://유효하지-않은-주소");
 }
-// f()는 거부 상태의 프라미스가 됨
-f().catch(alert); // TypeError: failed to fetch // (*)
+f2().catch(alert); // (*). f2()는 거부 상태의 프라미스가 되고, .catch로 처리 가능
+
+// .catch도 추가하지 않은 경우
+async function f3() {
+  let response = await fetch("http://유효하지-않은-주소");
+}
+f3(); // 처리되지 않은 프라미스 에러. unhandledrejection으로 잡을 수 있음
 ```
 
-- `try..catch`가 없으면 `async` 함수 `f()`를 호출해 만든 프라미스가 거부 상태가 됨
-- `f()`에 `.catch`를 추가하면 거부된 프라미스를 처리할 수 있음
-- `.catch`를 추가하는 걸 잊으면 처리되지 않은 프라미스 에러가 발생
-- 이런 에러는 전역 이벤트 핸들러 `unhandledrejection`을 사용해 잡을 수 있음
+`async/await` vs. `promise.then/catch`
 
-`async/await`와 `promise.then/catch`
-
-- `async/await`을 사용하면 `await`가 대기를 처리해주기 때문에 `.then`이 거의 필요하지 않음
-- `.catch` 대신 일반 `try..catch`를 사용할 수 있다는 장점도 생김
-- 그런데 문법 제약 때문에 `async` 함수 바깥의 최상위 레벨 코드에서는 `await`를 사용할 수 없음
+- `await`가 대기를 처리해주기 때문에 `.then`이 거의 필요하지 않음
+- `.catch` 대신 일반 `try..catch` 사용 가능
+- `async` 함수 바깥의 최상위 레벨 코드에서 `await` 사용 불가
   - 그렇기 때문에 관행처럼 `.then/catch`를 추가해 최종 결과나 처리되지 못한 에러를 다룸
-
-`async/await`는 `Promise.all`과도 함께 쓸 수 있음
+- `Promise.all`과도 함께 사용 가능
 
 ```javascript
 let results = await Promise.all([fetch(url1), fetch(url2), ...]);
@@ -573,7 +534,7 @@ let results = await Promise.all([fetch(url1), fetch(url2), ...]);
 
 async가 아닌 함수에서 async 함수 호출하기
 
-- 일반 함수가 하나 있는데, 여기서 async 함수를 호출하고 그 결과를 사용하는 방법
+- 일반 함수에서 async 함수를 호출하고 그 결과를 사용하는 방법
 - async 함수를 호출하면 프라미스가 반환되므로 `.then`을 붙이면 됨
 
 ```javascript

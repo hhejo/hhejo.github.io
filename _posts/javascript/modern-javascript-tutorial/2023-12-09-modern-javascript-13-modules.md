@@ -1,6 +1,6 @@
 ---
 title: 모던 JavaScript 튜토리얼 13 - 모듈
-date: 2023-12-04 16:42:46 +0900
+date: 2023-12-09 16:42:46 +0900
 last_modified_at: 2023-12-11 04:52:14 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]

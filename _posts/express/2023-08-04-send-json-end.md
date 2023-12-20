@@ -1,7 +1,7 @@
 ---
 title: Express.js의 응답 res.send(), res.json(), res.end()의 차이점
 date: 2023-08-04 00:00:00 +0900
-last_modified_at: 2023-08-18 00:00:00 +0900
+last_modified_at: 2023-12-20 19:55:38 +0900
 categories: [Express]
 tags: [express, nodejs]
 ---

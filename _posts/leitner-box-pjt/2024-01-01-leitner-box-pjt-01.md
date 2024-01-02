@@ -1,15 +1,15 @@
 ---
 title: Leitner Box Project 01
 date: 2024-01-01 15:14:34 +0900
-last_modified_at: 2024-01-02 08:03:12 +0900
+last_modified_at: 2024-01-02 22:45:43 +0900
 categories: [leitner-box-pjt]
 tags:
   [leitner-box-pjt, express, react, route, event, async, fetch, axios, objectid]
 ---
 
-라이트너 박스 프로젝트를 하면서 배운 것들 01
+express 라우트 async, React 이벤트 핸들러 async, fetch, axios, ObjectId
 
-## 서버 라우트 async
+## express 라우트 async
 
 ```javascript
 app.get('/', () => {

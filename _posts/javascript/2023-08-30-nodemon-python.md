@@ -3,7 +3,7 @@ title: nodemon을 이용해서 Python 파일 저장시 자동 재실행하기
 date: 2023-08-30 22:39:42 +0900
 last_modified_at: 2023-08-30 22:39:42 +0900
 categories: [JavaScript]
-tags: [javascript, nodemon, python]
+tags: [javascript, nodejs, nodemon, python]
 ---
 
 nodemon을 이용해 VSCode에서 Python으로 알고리즘을 풀이할 때, 파일 저장시 자동으로 재실행할 수 있게 합시다.

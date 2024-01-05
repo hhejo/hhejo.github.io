@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 15 - 문서 1
 date: 2024-01-04 18:41:59 +0900
-last_modified_at: 2024-01-04 18:41:59 +0900
+last_modified_at: 2024-01-05 08:22:13 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -335,6 +335,276 @@ alert(document.body.previousSibling); // HTMLHeadElement. <head>는 <body>의 �
 ```
 
 ### 요소 간 이동
+
+DOM 요소 노드 탐색
+
+- 실무에서는 텍스트 노드, 주석 노드는 거의 다루지 않고 요소 노드를 조작하는 작업이 대부분
+- 위에서 배운 프로퍼티들은 모든 종류의 노드 참조
+
+```
+[ document ]
+     ^
+     |
+[ document.documentElement ] <HTML>
+     ^
+     |
+[ document.body ] (if inside body)
+------------------------------------
+  ^
+  |
+[ parentElement ]
+  ^
+  |
+previousElementSibling <- <DIV> -> nextElementSibling
+                        children
+firstElementChild                        lastElementChild
+```
+
+`children` 프로퍼티
+
+- 해당 요소의 자식 노드 중 요소 노드
+
+`firstElementChild`, `lastElementChild` 프로퍼티
+
+- 첫 번째 자식 요소 노드, 마지막 자식 요소 노드
+
+`previousElementSibling`, `nextElementSibling` 프로퍼티
+
+- 형제 요소 노드
+
+`parentElement` 프로퍼티
+
+- 부모 요소 노드
+- `parentNode` 프로퍼티는 종류에 상관 없이 부모 노드 반환
+- 두 프로퍼티는 대개 같은 노드를 반환
+- 아래와 같은 상황에서는 다른 노드 반환
+
+```javascript
+alert(document.documentElement.parentNode); // document
+alert(document.documentElement.parentElement); // null
+```
+
+- `document.documentElement`의 부모는 `document`
+- `document` 노드는 요소 노드가 아님
+
+```javascript
+while ((elem = elem.parentElement)) alert(elem); // <html>까지 거슬러 올라가지만 document까지는 가지 않음
+```
+
+```html
+<html>
+  <body>
+    <div>시작</div>
+    <ul>
+      <li>항목</li>
+    </ul>
+    <div>끝</div>
+    <script>
+      for (let elem of document.body.children) {
+        alert(elem); // DIV, UL, DIV, SCRIPT
+      }
+    </script>
+    ...
+  </body>
+</html>
+```
+
+### 테이블 탐색하기
+
+일부 DOM 요소 노드는 편의를 위해 기본 프로퍼티 외에 추가적인 프로퍼티 지원
+
+`<table>` 요소
+
+- 기본 프로퍼티 외에 다음 프로퍼티 지원
+- `table.rows`
+  - `<tr>` 요소를 담은 컬렉션을 참조
+- `table.caption`, `table.tHead`, `table.tFoot`
+  - `<caption>`, `<tHead>`, `<tFoot>` 요소 참조
+- `table.tBodies`
+  - `<tbody>` 요소를 담은 컬렉션 참조
+  - 표준에 따르면 테이블 내에 여러 개의 `<tbody>`가 존재할 수 있음
+  - 최소한 하나의 `<tbody>`는 있어야 함
+  - HTML 문서에는 `<tbody>`가 없더라도 브라우저는 `<tbody>`를 DOM에 자동으로 추가
+
+`<thead>`, `<tfoot>`, `<tbody>` 요소
+
+- `rows` 프로퍼티 지원
+- `tbody.rows`
+  - tbody 내 `<tr>` 요소 컬렉션을 참조
+
+`<tr>` 요소
+
+- `tr.cells`
+  - 주어진 `<tr>` 안의 모든 `<td>`, `<th>`를 담은 컬렉션을 반환
+- `tr.sectionRowIndex`
+  - 주어진 `<tr>`이 `<thead>`, `<tbody>`, `<tfoot>` 안쪽에서 몇 번째 줄에 위치하는지를 나타내는 인덱스 반환
+- `tr.rowIndex`
+  - `<table>` 내에서 해당 `<tr>`이 몇 번째 줄인지를 나타내는 숫자 반환
+
+`<td>`, `<th>`
+
+- `td.cellIndex`
+  - `<td>`나 `<th>`가 속한 `<tr>`에서 해당 셀이 몇 번째인지를 나타내는 숫자 반환
+
+## getElement*, querySelector*로 요소 검색하기
+
+상대 위치를 이용하지 않으면서 웹 페이지 내에서 원하는 요소 노드에 접근하는 방법
+
+### document.getElementById 혹은 id를 사용해 요소 검색하기
+
+`document.getElementById(id)`
+
+- 요소에 `id` 속성이 있을 때 사용 가능한 메서드
+- 위치에 상관 없음
+- `document` 객체를 대상으로 해당 `id`를 가진 요소 노드를 찾음
+- 문서 노드가 아닌 다른 노드에는 호출 불가
+- 문서 내 요소의 `id` 속성값은 중복되면 안 됨
+  - `id`를 이용해 검색하는 메서드의 동작이 예측 불가해짐
+
+```html
+<div id="elem">
+  <div id="elem-content">Element</div>
+</div>
+<script>
+  let elem = document.getElementById("elem"); // 요소 얻기
+  elem.style.background = "red"; // 배경색 변경
+</script>
+```
+
+`id` 속성값을 그대로 딴 전역변수 사용도 가능
+
+- 그러나 요소 id를 따서 자동으로 선언된 전역변수는 동일한 이름을 가진 변수가 선언되면 무용지물
+- id를 따서 만들어진 전역 변수를 요소 접근 시 사용하지 않는 것이 좋음
+  - 하위 호환성을 위해 남긴 동작
+- `getElementById` 같은 메서드로 접근하는 것을 권장
+
+```html
+<script>
+  elem.style.background = "red"; // 변수 elem은 id가 'elem'인 요소를 참조
+  window["elem-content"]; // id가 elem-content인 요소는 하이픈(-) 때문에 변수 이름으로 사용 불가. 대괄호로 접근
+  let elem = 5; // elem은 더이상 <div id="elem">을 참조하지 않고 5가 됨
+  alert(elem); // 5
+</script>
+```
+
+### querySelectorAll
+
+`elem.querySelectorAll(css)`
+
+- `elem`의 자식 요소 중 주어진 CSS 선택자에 대응하는 요소 모두 반환
+- `:hover`, `:active` 등의 가상 클래스(pseudo-class) 사용 가능
+
+```html
+<ul>
+  <li>1-1</li>
+  <li>1-2</li>
+</ul>
+<ul>
+  <li>2-1</li>
+  <li>2-2</li>
+</ul>
+<script>
+  let elements = document.querySelectorAll("ul > li:last-child");
+  for (let elem of elements) alert(elem.innerHTML); // "1-2", "2-2"
+</script>
+```
+
+### querySelector
+
+`elem.querySelector(css)`
+
+- 주어진 CSS 선택자에 대응하는 요소 중 첫 번째 요소 반환
+- 해당하는 요소를 찾으면 검색을 멈춤
+  - 더 빠르고 코드 길이 짧음
+- `elem.querySelectorAll(css)[0]`과 동일
+  - 모든 요소를 검색해 첫 번째 요소 반환하는 차이
+
+### matches
+
+`elem.matches(css)`
+
+- DOM을 검색하는 일을 하지 않음
+- 요소 `elem`이 주어진 CSS 선택자와 일치하는지 판단
+- 요소가 담겨 있는 배열 등을 순회헤 원하는 요소만 걸러내고자 할 때 유용
+
+### closest
+
+조상 요소(ancestor node)
+
+- 부모 요소, 부모 요소의 부모 요소 등 DOM 트리에서 특정 요소의 상위에 있는 요소
+
+`elem.closest(css)`
+
+- CSS 선택자와 일치하는 가장 가까운 조상 요소를 찾음
+  - 찾으면 검색을 중단하고 해당 요소 반환
+- 자기 자신을 포함
+- DOM 트리를 한 단계씩 거슬러 올라가면서 원하는 요소 찾음
+
+### getElementsBy\*
+
+`elem.getElementsByTagName(tag)`
+
+- 주어진 태그에 해당하는 요소를 찾아 컬렉션에 담아 반환
+
+`elem.getElementsByClassName(className)`
+
+- class 속성값을 기준으로 요소를 찾아 컬렉션에 담아 반환
+
+`document.getElementsByName(name)`
+
+- 문서 전체를 대상으로 검색 수행
+- `name` 속성값을 기준으로 검색
+
+### 살아 있는 컬렉션
+
+`getElementsBy`로 시작하는 모든 메서드
+
+- 살아있는 컬렉션 반환
+- 문서에 변경이 있을 때마다 컬렉션이 자동 갱신되어 최신 상태를 유지
+
+```html
+<div>첫 번째 div</div>
+<script>
+  let divs = document.getElementsByTagName("div");
+  alert(divs.length); // 1
+</script>
+<div>두 번째 div</div>
+<script>
+  alert(divs.length); // 2
+</script>
+```
+
+`querySelectorAll`은 정적인 컬렉션을 반환
+
+- 컬렉션이 한번 확정되면 늘어나지 않음
+
+```html
+<div>첫 번째 div</div>
+<script>
+  let divs = document.querySelectorAll("div");
+  alert(divs.length); // 1
+</script>
+<div>두 번째 div</div>
+<script>
+  alert(divs.length); // 1
+</script>
+```
+
+### 요약
+
+|         메서드         | 검색 기준  | 호출 대상이 요소가 될 수 있음 | 컬렉션 갱신 |
+| :--------------------: | :--------: | :---------------------------: | :---------: |
+|     querySelector      | CSS 선택자 |               O               |      X      |
+|    querySelectorAll    | CSS 선택자 |               O               |      X      |
+|     getElementById     |     id     |               X               |      X      |
+|   getElementsByName    |    name    |               X               |      O      |
+|  getElementsByTagName  |  tag, \*   |               O               |      O      |
+| getElementsByClassName |   class    |               O               |      O      |
+
+`elemA.contains(elemB)`
+
+- `elemB`가 `elemA`에 속하거나
+- `elemA == elemB`일 때 참 반환
 
 ## 참고
 

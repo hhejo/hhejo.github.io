@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 18 - 폼과 폼 조작
 date: 2024-01-05 22:10:47 +0900
-last_modified_at: 2024-01-05 22:10:47 +0900
+last_modified_at: 2024-01-06 07:14:28 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -284,9 +284,128 @@ blur
 - `onblur`는 요소가 포커스를 잃고 난 후에 발생
 - `onblur` 안에서 `event.preventDefault()`를 호출해 포커스를 잃게 하는 것을 막을 수 없음
 
+자바스크립트로 인한 포커스 손실
+
+- 포커스는 손실은 많은 이유로 발생
+- 자바스크립트 자체가 이를 유발할 수 있음
+  - `alert`는 포커스를 자신에게 옮기고 해제되면 되돌아감
+  - 요소가 DOM에서 제거되면 포커스 손실이 발생하고, 다시 삽입돼도 포커스가 돌아오지 않음
+- 이러한 기능으로 `focus`, `blur` 핸들러가 오작동할 수 있음
+- 주의해서 사용할 것
+
+### tabindex를 사용해서 모든 요소 포커스 하기
+
+`tabindex` HTML 속성
+
+- 대다수의 요소는 기본적으로 포커싱을 지원하지 않음
+  - `<div>`, `<span>`, `<table>`, ...
+  - `elem.focus()`가 동작하지 않고 `focus`, `blur` 이벤트 트리거 되지 않음
+- 사용자가 웹 페이지와 상호작용할 수 있게 도와주는 요소는 `focus`,`blur`를 지원
+  - `<button>`, `<input>`, `<select>`, `<a>`, ...
+- 그래도 포커스를 하고 싶다면 `tabindex` HTML 속성 사용
+- `tabindex` 속성이 있는 요소는 종류와 상관 없이 포커스 가능
+- 속성값은 숫자로 Tab 키를 눌러 요소 사이를 이동할 때 순서가 됨
+- `tabindex` 속성이 없는 요소는 문서 내 순서에 따라 포커스 이동
+
+`tabindex` 주의 사항
+
+- `tabindex`가 `0`인 요소
+  - `tabindex` 속성이 없는 것처럼 동작
+  - 포커스를 이동시킬 때 `tabindex`가 `1`보다 크거나 같은 요소보다 나중에 포커스 받음
+  - `tabindex="0"`은 포커스 가능하게 만들지만 포커스 순서는 기본 순서 그대로 유지하고 싶을 때 사용
+  - 요소의 포커스 우선 순위를 일반 `<input>`과 같아지도록 함
+- `tabindex`가 `-1`인 요소
+  - 스크립트로만 포커스 하고 싶은 요소에 사용
+  - Tab 키를 사용하면 이 요소는 무시되지만 `elem.focus()` 메서드를 사용하면 잘 포커싱 됨
+- `elem.tabIndex` 프로퍼티를 사용해도 `tabindex` 속성을 사용한 것과 동일 효과
+
+### focusin과 focusout을 사용해 이벤트 위임하기
+
+`focus`, `blur` 이벤트
+
+- 버블링 되지 않음
+- 이벤트 위임 효과를 주는 방법 2가지
+  - `focus`, `blur`는 버블링 되지 않지만 캡처링은 됨
+  - `focusin`, `focusout` 사용하기
+
+`focusin`, `focusout` 이벤트
+
+- `focus`, `blur`와 동일하나 버블링 됨
+- `elem.addEventListener` 방식으로 핸들러 추가
+- `on<event>` 방식으로 추가하면 안 됨
+
 ## 이벤트: change, input, cut, copy, paste
 
+데이터가 변경될 때 실행되는 다양한 이벤트
+
+### 이벤트: change
+
+`chage` 이벤트
+
+- `onchange` 속성
+- 요소 변경이 끝나면 발생
+- 텍스트 입력 요소의 경우
+  - 요소 변경이 끝날 때가 아니라 포커스를 잃을 때 이벤트 발생
+- `select`, `input type=checkbox`, `input type=radio`의 경우
+  - 선택 값이 변경된 직후 이벤트 발생
+
+### 이벤트: input
+
+`input` 이벤트
+
+- `oninput` 속성
+- 사용자가 값을 수정할 때마다, 수정하자마자 발생
+- 키보드 이벤트와 달리, 어떤 방법으로든 값을 변경할 때 발생
+- 키보드가 아닌 다른 수단을 사용해 값을 변경해도 발생
+  - 마우스로 글자 붙여넣기
+  - 음성인식 기능으로 글자 입력
+- 수정이 일어날 때마다 이벤트를 실행하고 싶다면 사용
+- <-, -> 키 같이 값을 변경시키지 않는 키보드 입력, 동작에는 반응하지 않음
+- 그 무엇도 `oninput`을 막을 수 없음
+  - `event.preventDefault()`로 기본 동작을 막아도 값이 수정되면 그 즉시 `input` 이벤트 발생
+  - `event.preventDefault()`를 써봤자 효과 없음
+
+### 이벤트: cut, copy, paste
+
+`cut`, `copy`, `paste` 이벤트
+
+- `oncut`, `oncopy`, `onpaste` 속성
+- 값을 잘라내기·복사하기·붙여넣기 할 때 발생
+- `ClipboardEvent` 클래스의 하위 클래스
+- `event.clipboardData` 프로퍼티로 클립보드에 저장된 데이터 읽고 쓰기 가능
+  - `event.clipboardData.getData('text/plain')`
+- 복사하거나 붙여넣기 한 데이터에 접근 가능
+- `event.preventDefault()`로 기본 동작을 막을 수 있음
+  - 아무것도 복사·붙여넣기 할 수 없음
+- 텍스트뿐만 아니라 파일 등 모든 것 가능
+- 클립보드는 전역 OS 레벨
+- 대부분의 브라우저는 안전을 위해 특정 사용자 동작의 범위에서만 클립보드의 읽기·쓰기에 대한 접근 허용
+- 모든 브라우저에서 `dispatchEvent`를 사용해 커스텀 클립보드 이벤트 생성을 금지
+  - Firefox 제외
+
 ## submit 이벤트와 메서드
+
+### submit 이벤트
+
+`submit` 이벤트
+
+- 폼을 제출할 때 트리거 됨
+- 폼을 서버로 전송하기 전에 내용 검증 시, 폼 전송 취소 시 사용
+
+폼을 전송하는 방법
+
+- `<input type="submit">`, `<input type="image">` 클릭
+- 인풋 필드에서 Enter 키 누르기
+  - `click` 이벤트도 트리거 됨
+- 두 방법 모두 `submit` 이벤트 트리거
+
+### submit 메서드
+
+`form.submit()`
+
+- 자바스크립트로 직접 폼을 서버에 전송
+- 호출된 다음에는 `submit` 이벤트 생성되지 않음
+  - 개발자가 호출했다면, 스크립트에서 이미 필요한 모든 조치를 했다고 가정하기 때문
 
 ## 참고
 

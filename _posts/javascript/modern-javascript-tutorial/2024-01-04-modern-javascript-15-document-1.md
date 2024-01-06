@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 15 - 문서 1
 date: 2024-01-04 18:41:59 +0900
-last_modified_at: 2024-01-05 08:22:13 +0900
+last_modified_at: 2024-01-06 22:01:42 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---

@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 15 - 문서 2
 date: 2024-01-05 09:34:27 +0900
-last_modified_at: 2024-01-05 09:34:27 +0900
+last_modified_at: 2024-01-07 12:44:05 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -14,16 +14,17 @@ tags: [javascript]
 
 DOM 노드
 
-- 종류에 따라 각각 다른 프로퍼티 지원
-- 모든 DOM 노드는 공통 조상으로부터 생성
-- 노드 종류는 다르지만 모든 DOM 노드는 공통된 프로퍼티와 메서드 지원
-- DOM 노드는 종류에 따라 대응하는 내장 클래스가 다름
 - 프로토타입을 기반으로 상속 관계를 갖는 일반 자바스크립트 객체
+- 모든 DOM 노드는 공통 조상으로부터 생성
+  - 공통된 프로퍼티와 메서드 지원
+- 종류에 따라 각각 다른 프로퍼티 지원
+- DOM 노드는 종류에 따라 대응하는 내장 클래스가 다름
 
 `console.dir(elem)`, `console.log(elem)`
 
-- `elem`이 자바스크립트 객체인 경우, 대개 같은 결과 출력
-- `elem`이 DOM 요소인 경우,
+- `elem`: 자바스크립트 객체
+  - 대개 같은 결과 출력
+- `elem`: DOM 요소
   - `console.log(elem)`: 요소의 DOM 트리 출력
   - `console.dir(elem)`: 요소를 DOM 객체처럼 취급해 출력
     - 프로퍼티 확인 쉬움
@@ -43,20 +44,19 @@ DOM 노드
 `EventTarget`
 
 - 루트에 있는 추상(abstract) 클래스
-- 이 클래스에 대응하는 객체는 실제로 만들어지지 않음
-- `EventTarget`이 모든 DOM 노드의 베이스에 있기 때문에 DOM 노드에서 이벤트 사용 가능
+  - 이 클래스의 객체는 실제로 생성되지 않음
 - 이벤트 관련 기능 제공
+- 모든 DOM 노드의 베이스에 있기 때문에 DOM 노드에서 이벤트 사용 가능
 
 `Node`
 
-- 추상 클래스
-- `Node` 클래스의 객체는 절대 생성되지 않음
-- DOM 노드의 베이스 역할
+- 추상 클래스로, 해당하는 객체는 절대 생성되지 않음
 - 공통 DOM 노드 프로퍼티 제공
+- DOM 노드의 베이스 역할
 - 주요 트리 탐색 기능 제공
   - `parentNode`, `nextSibling`, `childNodes` 등
-- `Text` 클래스, `Element` 클래스, `Comment` 클래스가 `Node` 클래스를 상속받음
-  - 각각 텍스트 노드, 요소 노드, 주석 노드를 위한 클래스들
+- `Text`, `Element`, `Comment` 클래스에게 상속
+  - 각각 텍스트, 요소, 주석 노드를 위한 클래스들
 
 `Element`
 
@@ -64,25 +64,25 @@ DOM 노드
 - 요소 노드 메서드 제공
 - 요소 전용 탐색을 도와주는 프로퍼티, 메서드가 기반함
   - `nextElementSibling`, `children`, `getElementsByTagName`, `querySelector` 등
-- 브라우저는 HTML 뿐만 아니라 XML, SVG도 지원
-- `Element` 클래스가 이와 관련된 `SVGElement`, `XMLElement`, `HTMLElement` 클래스의 베이스 역할을 함
+- `SVGElement`, `XMLElement`, `HTMLElement` 클래스의 베이스 역할
+  - 브라우저는 HTML 뿐만 아니라 XML, SVG도 지원
 
 `HTMLElement`
 
 - HTML 요소 노드의 베이스 클래스
-- `HTMLElement`를 상속받는 각 태그에 해당하는 클래스는 고유한 프로퍼티와 메서드 지원
 - HTML 요소 메서드와 getter, setter 제공
+- 각 태그에 해당하는 클래스에 고유한 프로퍼티와 메서드 지원
 
 예시: `<input>` 요소
 
 - HTMLInputElement 클래스를 기반으로 생성
-- 아래 나열한 클래스에서 프로퍼티와 메서드를 상속받음
-- `HTMLInputElement`: 입력 관련 프로퍼티를 제공하는 클래스
-- `HTMLElement`: HTML 요소 메서드와 getter, setter를 제공하는 클래스
-- `Element`: 요소 노드 메서드를 제공하는 클래스
-- `Node`: 공통 DOM 노드 프로퍼티를 제공하는 클래스
-- `EventTarget`: 이벤트 관련 기능을 제공하는 클래스
-- `Object`: hasOwnProperty같이 ‘일반 객체’ 메서드를 제공하는 클래스
+- 아래 클래스들에서 프로퍼티와 메서드를 상속받음
+- `HTMLInputElement`: 입력 관련 프로퍼티 제공
+- `HTMLElement`: HTML 요소 메서드와 getter, setter 제공
+- `Element`: 요소 노드 메서드 제공
+- `Node`: 공통 DOM 노드 프로퍼티 제공
+- `EventTarget`: 이벤트 관련 기능 제공
+- `Object`: 일반 객체 메서드 제공
 
 DOM 노드 클래스 이름 확인
 
@@ -128,12 +128,12 @@ Interface Description Language(IDL)
 
 ### nodeName과 tagName으로 태그 이름 확인하기
 
-`nodeName`, `tageName` 프로퍼티
+`nodeName`, `tagName` 프로퍼티
 
 - DOM 노드의 태그 이름 확인
-- `tagName`: 요소 노드에만 존재하는 프로퍼티
+- `tagName`: 요소 노드에만 존재
 - `nodeName`: 모든 노드에 존재
-  - 요소 노드를 대상으로 하면 `tageName`과 같은 역할
+  - 요소 노드를 대상으로 하면 `tagName`과 같음
   - 텍스트 노드, 주석 노드 등에서는 노드 타입을 나타내는 문자열 반환
 
 ```html
@@ -152,8 +152,9 @@ Interface Description Language(IDL)
 </body>
 ```
 
-태그 이름은 XML 모드를 제외하고 항상 대문자
+태그 이름은 항상 대문자
 
+- XML 모드는 제외
 - 브라우저에서 HTML과 XML을 처리하는 모드는 다름
 - 웹 페이지는 대개 HTML 모드로 처리됨
 - 헤더가 `Content-Type: application/xml+xhtml`인 HTML 문서를 받으면 XML 모드로 문서 처리
@@ -164,12 +165,12 @@ Interface Description Language(IDL)
 
 ### innerHTML로 내용 조작하기
 
-`innerHTML`
+`innerHTML` 프로퍼티
 
-- 요소 안의 HTML을 문자열 형태로 받을 수 있는 프로퍼티
-- 요소 안의 HTML 수정도 가능
-- 문법이 틀린 HTML을 넣으면 브라우저가 자동으로 고쳐줌
+- 요소 안의 HTML을 문자열 형태로 받을 수 있고 수정도 가능
+- 문법이 틀린 HTML을 넣으면 브라우저가 자동으로 수정
 - `<script>` 태그를 삽입하면 해당 태그는 HTML의 일부가 되나 실행은 되지 않음
+- 요소 노드에만 사용 가능
 
 ```html
 <body>
@@ -184,16 +185,15 @@ Interface Description Language(IDL)
 
 `elem.innerHTML += "추가 html"`
 
-- 요소에 HTML 추가
-- 추가가 아니라 내용을 덮어쓰기 때문에 주의
+- 요소에 HTML 추가가 아니라 내용을 덮어씀
 - `elem.innerHTML = elem.innerHTML + "추가 html"`의 축약
-- 기존 내용을 삭제하고 기존 내용과 새로운 내용을 합친 새로운 내용을 씀
-- 기존 내용이 완전히 삭제된 후 밑바닥부터 다시 내용이 써지기 때문에, 이미지 등의 리소스 전부가 다시 로딩됨
+- 기존 내용을 완전히 삭제하고 기존 내용과 새로운 내용을 합친 새로운 내용을 밑바닥부터 씀
+- 이미지 등의 리소스 전부 다시 로딩
   - 텍스트와 이미지가 많았다면 버벅임
   - 텍스트 드래그가 있었다면 해제
   - 입력 태그에 입력한 값이 있었다면 없어짐
   - 등등의 다양한 부작용 사례
-- `innerHTML` 말고 HTML을 추가하는 방법으로 부작용 없애기
+- `innerHTML` 말고 HTML을 추가하는 방법으로 부작용을 없앨 수 있음
 
 ### outerHTML로 요소의 전체 HTML 보기
 
@@ -201,27 +201,21 @@ Interface Description Language(IDL)
 
 - 요소 전체 HTML이 담긴 프로퍼티
 - `innerHTML`에 요소 자체를 더한 것이라 봐도 됨
-- `innerHTML`과 달리, `outerHTML`로 HTML을 쓸 때는 요소 자체가 바뀌지 않고 DOM 안의 요소를 교체
+- `innerHTML`과 달리 `outerHTML`로 HTML을 쓰면 요소 자체가 바뀌지 않고 DOM 안의 요소를 교체
+- `outerHTML`에 하는 할당 연산이 DOM 요소를 수정하지 않기 때문
+  - `outerHTML` 연산의 대상으로, 아래에서는 변수 `div`
+- 할당 연산은 요소를 DOM에서 제거하고 새로운 HTML 조각을 넣음
 
 ```html
 <div id="elem">Hello <b>World</b></div>
-<script>
-  alert(elem.outerHTML); // <div id="elem">Hello <b>World</b></div>
-</script>
-```
-
-```html
 <div>Hello, world!</div>
 <script>
+  alert(elem.outerHTML); // <div id="elem">Hello <b>World</b></div>
   let div = document.querySelector("div");
-  div.outerHTML = "<p>새로운 요소</p>"; // (*)
-  alert(div.outerHTML); // <div>Hello, world!</div> (**)
+  div.outerHTML = "<p>새로운 요소</p>";
+  alert(div.outerHTML); // <div>Hello, world!</div>
 </script>
 ```
-
-- `outerHTML`에 하는 할당 연산이 DOM 요소를 수정하지 않기 때문
-  - `outerHTML` 연산의 대상으로, 위에서는 변수 `div`
-- 할당 연산은 요소를 DOM에서 제거하고 새로운 HTML 조각을 넣음
 
 `div.outerHTML = ...`이 하는 일
 
@@ -231,9 +225,9 @@ Interface Description Language(IDL)
 
 ### nodeValue/data로 텍스트 노드 내용 조작하기
 
-`nodeValue`, `data`
+`nodeValue`, `data` 프로퍼티
 
-- 텍스트 노드 같은 다른 타입의 노드에 `innerHTML`과 유사한 역할을 해주는 프로퍼티
+- 텍스트 노드 같은 다른 타입의 노드에 `innerHTML`과 유사한 역할
 - 두 프로퍼티는 거의 유사하나 명세서상의 작은 차이가 있음
 - `innerHTML` 프로퍼티는 요소 노드에만 사용 가능
 
@@ -249,6 +243,14 @@ Interface Description Language(IDL)
   </script>
 </body>
 ```
+
+```html
+<!-- if isAdmin -->
+<div>관리자로 로그인하였습니다!</div>
+<!-- /if -->
+```
+
+- `data`로 주석 노드의 내용을 읽고 삽입된 지시사항을 처리하면 유용
 
 ### textContent로 순수한 텍스트만
 
@@ -277,7 +279,7 @@ Interface Description Language(IDL)
 
 - 사용자가 입력한 문자열이 순수 텍스트 형태로 저장
 - 태그를 구성하는 특수문자들이 문자열로 처리됨
-- 예상치 못한 HTML이 사이트에 침투하는 것을 방지
+  - 예상치 못한 HTML이 사이트에 침투하는 것을 방지
 - `innerText`와 달리 해당 노드가 가진 텍스트 값을 그대로 읽음
 - `Node`의 속성
 
@@ -288,7 +290,7 @@ Interface Description Language(IDL)
 
 ### hidden 프로퍼티
 
-`hidden`속성, 프로퍼티
+`hidden`속성·프로퍼티
 
 - 요소를 보여줄지 말지 지정
 - HTML 안에서도, JavaScript 안에서도 사용 가능
@@ -322,6 +324,62 @@ Interface Description Language(IDL)
 
 `console.dir(elem)`으로 해당 요소에서 지원하는 프로퍼티 목록 확인 가능
 
+대부분의 표준 HTML 속성은 대응하는 DOM 프로퍼티를 가짐
+
+- 하지만 HTML 요소와 DOM 프로퍼티가 항상 같은 것은 아님
+
+### 예제
+
+노드 타입 맞추기
+
+```html
+<html>
+  <body>
+    <script>
+      alert(document.body.lastChild.nodeType); // 1
+    </script>
+  </body>
+</html>
+```
+
+- `<script>`가 실행되는 시점에는 브라우저가 `<script>` 아래 문서를 처리하지 못했음
+- 가장 마지막 노드는 `<script>` 자기 자신
+
+주석 안의 태그
+
+```html
+<script>
+  let body = document.body;
+  body.innerHTML = "<!--" + body.tagName + "-->";
+  alert(body.firstChild.data); // BODY
+</script>
+```
+
+1. `<body>`의 컨텐츠가 `<!--BODY-->`로 대체됨
+2. 주석이 유일한 자식 노드가 됨
+3. 주석 노드의 `data` 프로퍼티에는 주석 내용(`"BODY"`)이 저장됨
+
+DOM 계층 구조와 'document'
+
+- `document`는 `HTMLDocument` 클래스의 인스턴스
+- `HTMLDocument` 클래스는 DOM 계층 구조에서 어디에 있을까?
+
+```javascript
+alert(document); // [object HTMLDocument]
+alert(document.constructor.name); // HTMLDocument
+alert(HTMLDocument.prototype.constructor === HTMLDocument); // true
+alert(HTMLDocument.prototype.constructor.name); // HTMLDocument
+alert(HTMLDocument.prototype.__proto__.constructor.name); // Document
+alert(HTMLDocument.prototype.__proto__.__proto__.constructor.name); // Node
+```
+
+```
+[ Node ]
+[ Element ]     [ Document ]     [ CharacterData ] [ Attr ]
+[ HTMLElement ] [ HTMLDocument ] [ Text ]
+                                 [ Comment ]
+```
+
 ## 속성과 프로퍼티
 
 브라우저가 웹 페이지를 만날 때
@@ -334,27 +392,23 @@ Interface Description Language(IDL)
 HTML 속성
 
 - HTML 안에 쓰임
-- 모든 타입 가능
-- 대소문자 구분
+- 문자열만 가능
+- 대소문자 가리지 않음
 
 DOM 프로퍼티
 
 - DOM 객체 안에 쓰임
-- 문자열
-- 대소문자 구분하지 않음
-- 속성보다 프로퍼티를 사용하는 것을 권장
-  - 비표준 속성이 필요한 경우 HTML 속성 사용
-    - 속성이 `data-`로 시작하는 경우에는 `dataset` 사용
-  - HTML 적힌 값 그대로를 읽고 싶은 경우 HTML 속성 사용
+- 모든 값 가능
+- 대소문자 가림
+- HTML 속성보다 DOM 프로퍼티를 사용하는 것을 권장
 
 ### DOM 프로퍼티
 
-자신만의 DOM 프로퍼티 생성 가능
-
 DOM 프로퍼티와 메서드
 
+- 자신만의 DOM 프로퍼티 생성 가능
 - 일반 자바스크립트 객체처럼 행동
-- 어떤 값이든 가질 수 있음
+- 어떤 값이든 가능
 - 대소문자를 가림
 
 ```javascript
@@ -364,7 +418,7 @@ document.body.sayTagName = function () {
   alert(this.tagName);
 };
 
-document.body.sayTagName(); // BODY (sayTagName의 'this'에 document.body가 저장됨)
+document.body.sayTagName(); // BODY. sayTagName의 'this'에 document.body가 저장됨
 Element.prototype.sayHi = function () {
   alert(`Hello, I'm ${this.tagName}`);
 };
@@ -377,19 +431,20 @@ document.body.sayHi(); // Hello, I'm BODY
 
 HTML 속성의 특징
 
+- HTML 태그는 복수의 속성을 가질 수 있음
 - 대소문자를 가리지 않음
 - 값은 항상 문자열
 
-브라우저가 HTML을 파싱해 DOM 객체를 만들 때
+HTML 표준 속성
 
+- 브라우저가 HTML을 파싱해 DOM 객체를 만들 때
 - HTML 표준 속성을 인식
 - 이 표준 속성을 사용해 DOM 프로퍼티 생성
-- HTML 태그는 복수의 속성을 가질 수 있음
 
-표준이 아닌 속성인 경우
+비표준 속성
 
 - 비표준 속성은 프로퍼티로 전환되지 않음
-  - 이에 매핑하는 DOM 프로퍼티가 생성되지 않음
+- 이에 매핑하는 DOM 프로퍼티가 생성되지 않음
 - 한 요소에서는 표준인 속성이 다른 요소에서는 표준이 아닐 수 있음
 
 ```html
@@ -428,7 +483,7 @@ HTML 속성의 특징
 ```html
 <body something="non-standard">
   <script>
-    alert(document.body.getAttribute("something")); // 비표준 속성에 접근
+    alert(document.body.getAttribute("something")); // non-standard. 비표준 속성에 접근
   </script>
 </body>
 ```
@@ -480,6 +535,7 @@ DOM 프로퍼티는 항상 문자열이 아님
 DOM 프로퍼티 값이 문자열이더라도 속성값과 다른 경우
 
 - `href` 속성이 상대 URL이나 `#hash`더라도 `href` DOM 프로퍼티에는 항상 URL 전체가 저장됨
+- HTML 내에 명시된 `href` 속성을 정확히 얻고 싶다면 `getAttribute` 사용
 
 ```html
 <a id="a" href="#hello">link</a>
@@ -546,9 +602,7 @@ DOM 프로퍼티 값이 문자열이더라도 속성값과 다른 경우
 
 ## 문서 수정하기
 
-적시에 요소를 새롭게 생성하는 방법
-
-페이지에 있는 기존 컨텐츠를 수정하는 방법
+적시에 요소를 새롭게 생성하거나 페이지에 있는 기존 컨텐츠를 수정하는 방법
 
 ### 예제: 메시지 보여주기
 
@@ -668,8 +722,7 @@ HTML 그 자체를 삽입하고 싶은 경우
 
 `node.remove()`
 
-요소 노드를 다른 곳으로 옮길 때, 기존에 있던 노드를 지울 필요 없음
-
+- 요소 노드를 다른 곳으로 옮길 때, 기존에 있던 노드를 지울 필요 없음
 - 모든 노드 삽입 메서드는 자동으로 기존에 있던 노드를 삭제하고 새로운 곳으로 노드를 옮김
 
 ### cloneNode로 노드 복제하기
@@ -713,12 +766,11 @@ let fragment = new DocumentFragment();
 `document.write(html)`
 
 - `html`이 페이지 그 자리에 즉시 추가됨
-- 웹 페이지에 뭔가를 더할 때 쓰는 아주 오래된 메서드
 - DOM도 없고 그 어떤 표준도 존재하지 않았던 과거에 만들어진 메서드
   - 표준에 정의된 메서드가 아님
-- `document.write`는 페이지를 불러오는 도중에만 작동
+- 페이지를 불러오는 도중에만 작동
 - 페이지가 다 로드되고 나서 `document.write`를 호출하면 기존에 있던 문서 내용이 사라짐
-  - 그래서 지금까지 배운 메서드와는 달리 페이지 로드가 다 끝난 후에는 사용 불가
+  - 그래서 페이지 로드가 다 끝난 후에는 사용 불가
 - 브라우저는 HTML을 읽는(파싱하는) 도중에 `document.write(HTML)`를 만나면 텍스트 형식의 HTML을 마치 원래 페이지에 있었던 것처럼 해석
   - 중간에 DOM 조작을 하지 않기 때문에 속도가 아주 빨라지는 장점
   - DOM 구조가 완성되기 전에 페이지에 내용이 삽입되기 때문
@@ -740,13 +792,84 @@ let fragment = new DocumentFragment();
 </script>
 ```
 
+### 예제
+
+createTextNode vs innerHTML vs textContent
+
+1. `elem.append(document.createTextNode(text))`
+2. `elem.innerHTML = text`
+3. `elem.textContent = text`
+
+- 1과 3은 같은 동작을 수행
+
+요소 삭제하기
+
+```html
+<ol id="elem">
+  <li>Hello</li>
+  <li>World</li>
+</ol>
+<script>
+  function clear(elem) {} // 작성
+  clear(elem); // elem 내부 리스트를 삭제
+</script>
+```
+
+```javascript
+function clear(elem) {
+  for (let i = 0; i < elem.childNodes.length; i++) {
+    elem.childNodes[i].remove();
+  }
+}
+```
+
+- 잘못된 방법
+- `remove()`는 `elem.childNodes`를 변화시키기 때문에 반복문을 실행할 때마다 `0`번째 인덱스부터 시작해야 함
+- 그러나 `i`는 계속해서 증가하기 때문에 일부 원소들을 지나침
+- `for..of` 반복문도 동일한 문제가 있음
+
+```javascript
+function clear(elem) {
+  while (elem.firstChild) {
+    elem.firstChild.remove();
+  }
+}
+
+function clear(elem) {
+  elem.innerHTML = "";
+}
+```
+
+- 올바른 방법 2가지
+
+왜 'aaa'가 남아 있을까요
+
+```html
+<table id="table">
+  aaa
+  <tr>
+    <td>Test</td>
+  </tr>
+</table>
+<script>
+  alert(table); // table은 삭제할 테이블의 id
+  table.remove(); // 삭제해도 문서 안에 aaa가 남아있음
+</script>
+```
+
+- 주어진 HTML이 잘못되었기 때문
+- 브라우저는 이를 자동으로 고침
+- 그러나 명세서에 따르면 `<table>` 안에는 표와 관련된 특정 태그만이 존재할 수 있어 텍스트가 있어서는 안 됨
+- 따라서 브라우저는 `aaa`를 `<table>` 앞에 추가
+- 그래서 테이블을 삭제해도 텍스트가 남아있음
+
 ## 스타일과 클래스
 
 요소에 스타일을 적용할 수 있는 방법 두 가지
 
 1. CSS에 클래스를 만들고 요소에 클래스 추가하기
    - `<div class="...">`
-2. 프로퍼티를 `style`에 바로 써주기
+2. 프로퍼티를 `style`에 바로 쓰기
    - `<div style="...">`
 
 자바스크립트로 클래스와 `style` 프로퍼티 둘 다 수정 가능

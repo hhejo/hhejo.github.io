@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 17 - UI 이벤트
 date: 2024-01-05 21:12:15 +0900
-last_modified_at: 2024-01-11 10:27:42 +0900
+last_modified_at: 2024-01-12 21:14:25 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---

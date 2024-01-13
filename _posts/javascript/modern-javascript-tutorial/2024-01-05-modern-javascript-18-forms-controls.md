@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 18 - 폼과 폼 조작
 date: 2024-01-05 22:10:47 +0900
-last_modified_at: 2024-01-06 07:14:28 +0900
+last_modified_at: 2024-01-13 09:42:00 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -16,10 +16,8 @@ tags: [javascript]
 
 `document.forms`
 
-- 특수한 컬렉션
-- 폼(form)이 이것의 구성원
+- 특수한 컬렉션으로 폼(form)이 이것의 구성원
 - 이름과 순서가 있는 기명 컬렉션(named collection)
-- 개발자는 이 이름이나 순서를 사용해 문서 내의 폼에 접근 가능
 
 ```javascript
 document.forms.my; // 이름이 'my'인 폼
@@ -78,19 +76,19 @@ document.forms[0]; // 문서 내의 첫 번째 폼
     alert(form.elements.login); // <input name="login">
     let fieldset = form.elements.userFields;
     alert(fieldset); // HTMLFieldSetElement
-    // 이름을 사용해 form과 fieldset 모두에서 input을 구할 수 있음
-    alert(fieldset.elements.login == form.elements.login); // true
+    alert(fieldset.elements.login == form.elements.login); // true. 이름을 사용해 form과 fieldset 모두에서 input을 구할 수 있음
   </script>
 </body>
 ```
 
-짧은 표기법: `form.name`
+`form.name`
 
+- 짧은 표기법
 - `form[index/name]`으로도 요소에 접근 가능
   - `form.elements.login` 대신 `form.login`
-- `form.name`을 사용한 표기법은 잘 작동하나 요소에 접근해 `name` 속성을 변경해도 변경 전 이름을 계속 사용할 수 있는 문제가 있음
+- 요소에 접근해 `name` 속성을 변경해도 변경 전 이름을 계속 사용할 수 있는 문제가 있음
   - 새로운 이름도 물론 사용 가능
-- 그러나 폼 요소의 이름을 변경하는 일은 드물어 보통은 문제되지 않음
+  - 그러나 폼 요소의 이름을 변경하는 일은 드물어 보통은 문제되지 않음
 
 ```html
 <form id="form">
@@ -109,7 +107,9 @@ document.forms[0]; // 문서 내의 첫 번째 폼
 
 ### element.form으로 역참조하기
 
-모든 요소는 `element.form`으로 폼에 접근 가능
+`element.form`
+
+- 모든 요소는 `element.form`으로 폼에 접근 가능
 
 ```html
 <form id="form">
@@ -123,15 +123,13 @@ document.forms[0]; // 문서 내의 첫 번째 폼
 
 ### 폼 요소
 
-폼 조작에 사용되는 요소들
-
 input과 textarea
 
 - 요소의 값 얻기
 - `input.value`(string)
 - `input.checked`(boolean)
 - `textarea.value`
-  - `textarea.innerHTML`에는 페이지를 처음 열 당시의 HTML만 저장됨
+- `textarea.innerHTML`: 페이지를 처음 열 당시의 HTML만 저장됨
   - 최신 값을 구할 수 없기 때문에 사용하지 말 것
 
 ```javascript
@@ -142,7 +140,6 @@ input.checked = true; // 체크박스나 라디오 버튼에서 사용 가능
 
 select와 option
 
-- `<select>` 요소의 세 가지 중요 프로퍼티
 - `select.options`: `<option>` 하위 요소를 담은 컬렉션
 - `select.value`: 현재 선택된 `<option>` 값
 - `select.selectedIndex`: 현재 선택된 `<option>`의 인덱스
@@ -153,7 +150,7 @@ select와 option
   3. `select.selectedIndex`를 원하는 option 번호로 설정
      - 2, 3번 방법이 더 편리
 - `multiple` 속성이 있는 경우 option을 다중 선택 가능
-- 쓰게 된다면 첫 번째 방법으로 `<option>` 하위 요소에 있는 `selected` 프로퍼티를 추가·제거해야 함
+  - 쓰게 된다면 첫 번째 방법으로 `<option>` 하위 요소에 있는 `selected` 프로퍼티를 추가·제거해야 함
 
 ```html
 <select id="select">
@@ -197,8 +194,10 @@ option = new Option(text, value, defaultSelected, selected);
 
 focus
 
-- 사용자가 폼 요소를 클릭하거나 Tab 키를 눌러 요소로 이동하면 해당 요소가 포커스(focus) 됨
-- 요소를 포커싱한다는 것은 일반적으로 '여기에 데이터를 입력할 준비를 하라'는 것을 의미
+- 요소로 이동하면 해당 요소 포커스
+  - 사용자가 폼 요소 클릭
+  - Tab 키를 눌러 요소로 이동
+- 일반적으로 '여기에 데이터를 입력할 준비를 하라'는 것을 의미
 
 `autofocus`
 
@@ -295,17 +294,20 @@ blur
 
 ### tabindex를 사용해서 모든 요소 포커스 하기
 
-`tabindex` HTML 속성
+요소의 포커스
 
 - 대다수의 요소는 기본적으로 포커싱을 지원하지 않음
   - `<div>`, `<span>`, `<table>`, ...
   - `elem.focus()`가 동작하지 않고 `focus`, `blur` 이벤트 트리거 되지 않음
 - 사용자가 웹 페이지와 상호작용할 수 있게 도와주는 요소는 `focus`,`blur`를 지원
   - `<button>`, `<input>`, `<select>`, `<a>`, ...
-- 그래도 포커스를 하고 싶다면 `tabindex` HTML 속성 사용
-- `tabindex` 속성이 있는 요소는 종류와 상관 없이 포커스 가능
-- 속성값은 숫자로 Tab 키를 눌러 요소 사이를 이동할 때 순서가 됨
-- `tabindex` 속성이 없는 요소는 문서 내 순서에 따라 포커스 이동
+
+`tabindex` HTML 속성
+
+- `tabindex`가 있는 요소는 종류와 상관 없이 포커스 가능
+- 속성값은 숫자
+- Tab 키를 눌러 요소 사이를 이동할 때의 순서
+- `tabindex`가 없는 요소는 문서 내 순서에 따라 포커스 이동
 
 `tabindex` 주의 사항
 
@@ -319,14 +321,36 @@ blur
   - Tab 키를 사용하면 이 요소는 무시되지만 `elem.focus()` 메서드를 사용하면 잘 포커싱 됨
 - `elem.tabIndex` 프로퍼티를 사용해도 `tabindex` 속성을 사용한 것과 동일 효과
 
+```html
+첫 번째 항목을 클릭하고 Tab 키를 눌러보면서 포커스 된 요소 순서를 눈여겨보세요.
+참고로 탭을 많이 누르면 예시 밖으로 포커스가 이동하니, 주의하세요.
+<ul>
+  <li tabindex="1">일</li>
+  <li tabindex="0">영</li>
+  <li tabindex="2">이</li>
+  <li tabindex="-1">음수 일</li>
+</ul>
+<style>
+  li {
+    cursor: pointer;
+  }
+  :focus {
+    outline: 1px dashed green;
+  }
+</style>
+```
+
+- `1` -> `2` -> `0` 순서로 이동
+- `-1`은 무시됨
+
 ### focusin과 focusout을 사용해 이벤트 위임하기
 
 `focus`, `blur` 이벤트
 
 - 버블링 되지 않음
 - 이벤트 위임 효과를 주는 방법 2가지
-  - `focus`, `blur`는 버블링 되지 않지만 캡처링은 됨
-  - `focusin`, `focusout` 사용하기
+  1. `focus`, `blur`는 버블링 되지 않지만 캡처링은 됨
+  2. `focusin`, `focusout` 사용하기
 
 `focusin`, `focusout` 이벤트
 
@@ -344,10 +368,8 @@ blur
 
 - `onchange` 속성
 - 요소 변경이 끝나면 발생
-- 텍스트 입력 요소의 경우
-  - 요소 변경이 끝날 때가 아니라 포커스를 잃을 때 이벤트 발생
-- `select`, `input type=checkbox`, `input type=radio`의 경우
-  - 선택 값이 변경된 직후 이벤트 발생
+- 텍스트 입력 요소는 요소 변경이 끝날 때가 아니라 포커스를 잃을 때 이벤트 발생
+- `select`, `input type=checkbox`, `input type=radio`의 경우, 선택 값이 변경된 직후 이벤트 발생
 
 ### 이벤트: input
 
@@ -356,7 +378,6 @@ blur
 - `oninput` 속성
 - 사용자가 값을 수정할 때마다, 수정하자마자 발생
 - 키보드 이벤트와 달리, 어떤 방법으로든 값을 변경할 때 발생
-- 키보드가 아닌 다른 수단을 사용해 값을 변경해도 발생
   - 마우스로 글자 붙여넣기
   - 음성인식 기능으로 글자 입력
 - 수정이 일어날 때마다 이벤트를 실행하고 싶다면 사용
@@ -375,8 +396,7 @@ blur
 - `event.clipboardData` 프로퍼티로 클립보드에 저장된 데이터 읽고 쓰기 가능
   - `event.clipboardData.getData('text/plain')`
 - 복사하거나 붙여넣기 한 데이터에 접근 가능
-- `event.preventDefault()`로 기본 동작을 막을 수 있음
-  - 아무것도 복사·붙여넣기 할 수 없음
+- `event.preventDefault()`로 기본 동작을 막아 아무것도 복사·붙여넣기 할 수 없게 가능
 - 텍스트뿐만 아니라 파일 등 모든 것 가능
 - 클립보드는 전역 OS 레벨
 - 대부분의 브라우저는 안전을 위해 특정 사용자 동작의 범위에서만 클립보드의 읽기·쓰기에 대한 접근 허용
@@ -392,12 +412,29 @@ blur
 - 폼을 제출할 때 트리거 됨
 - 폼을 서버로 전송하기 전에 내용 검증 시, 폼 전송 취소 시 사용
 
-폼을 전송하는 방법
+폼을 전송하는 2가지 방법
 
 - `<input type="submit">`, `<input type="image">` 클릭
 - 인풋 필드에서 Enter 키 누르기
   - `click` 이벤트도 트리거 됨
 - 두 방법 모두 `submit` 이벤트 트리거
+
+input 필드에서 Enter 키를 눌러 폼을 전송하면 `<input type="submit">`에 있는 `click` 이벤트가 트리거 됨
+
+```html
+<form onsubmit="return false">
+  <input
+    type="text"
+    size="30"
+    value="여기에 포커스를 준 다음에 Enter 키 누르기"
+  />
+  <input
+    type="submit"
+    value="제출"
+    onclick="alert('클릭 이벤트가 트리거 되었습니다!')"
+  />
+</form>
+```
 
 ### submit 메서드
 

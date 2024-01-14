@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 11 - 프라미스와 async, await 1
 date: 2023-11-26 07:42:19 +0900
-last_modified_at: 2023-12-10 09:47:02 +0900
+last_modified_at: 2024-01-14 22:27:45 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -591,8 +591,7 @@ new Promise((resolve, reject) => {
 
 처리되지 못한 거부
 
-- 에러가 발생하고 이를 `try..catch`에서 처리하지 못한 경우
-- 스크립트가 죽고 콘솔 창에 메시지가 출력됨
+- 발생한 에러를 `try..catch`에서 처리하지 못하면 스크립트가 죽고 콘솔 창에 메시지가 출력됨
 - 거부된 프라미스를 처리하지 못했을 때도 유사한 일 발생
 - 자바스크립트 엔진은 프라미스 거부를 추적하다가 아래와 같은 상황이 발생하면 전역 에러를 생성
 - 브라우저 환경에서는 이런 에러를 `unhandledrejection` 이벤트로 처리 가능
@@ -608,7 +607,7 @@ new Promise(function () {
 - HTML 명세서에 정의된 표준 이벤트
 - 브라우저 환경에서 에러가 발생했는데 `.catch`가 없으면 `unhandledrejection` 핸들러 동작
 - 에러 정보가 담긴 `event` 객체를 받음
-- `event` 객체는 두 개의 특수 프로퍼티를 가짐
+- `event` 객체의 특수 프로퍼티 2가지
   - `promise`: 에러를 생성하는 프라미스
   - `reason`: 처리하지 못한 에러 객체
 

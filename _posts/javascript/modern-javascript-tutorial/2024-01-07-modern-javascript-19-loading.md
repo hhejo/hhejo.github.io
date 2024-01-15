@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 19 - 문서와 리소스 로딩
 date: 2024-01-07 08:15:11 +0900
-last_modified_at: 2024-01-13 10:20:36 +0900
+last_modified_at: 2024-01-14 08:26:09 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -309,9 +309,11 @@ document.addEventListener("readystatechange", () =>
 
 스크립트를 페이지 맨 아래 놓기
 
+- `<body>` 태그 맨 아래, `</body>` 태그 바로 위
 - 스크립트 위에 있는 요소에 접근 가능
 - 페이지 컨텐츠 출력을 막지 않음
 - HTML 문서 자체가 아주 큰 경우, 브라우저가 HTML 문서 전체를 다운로드한 다음 스크립트를 다운받게 하면 페이지가 정말 느려짐
+- 스크립트를 다운받는 도중에 사용자가 버튼을 클릭하는 등 페이지와 상호작용을 시도하면 제대로 동작하지 않음
 
 `async`, `defer` 속성 사용하기
 
@@ -367,6 +369,8 @@ document.addEventListener("readystatechange", () =>
 - 사용자는 그래픽 관련 컴포넌트들이 준비되지 않은 상태에서 화면을 보게 될 수 있음
 - 사용자에게 현재 어떤 것은 사용할 수 있고, 어떤 것은 사용할 수 없는지 알려주기
   - 지연 스크립트가 영향을 주는 영역에 로딩 인디케이터 배치, 관련 버튼 사용 불가(disabled) 처리
+
+`<head>` 태그 마지막에 `<script defer src="...">` 넣기
 
 ### async
 
@@ -630,6 +634,82 @@ cross-origin access의 세 가지 level
 Load images with a callback
 
 - 일반적으로 이미지는 생성될 때 로드됨
+- 우리가 `<img>`를 페이지에 추가하면 사용자에게 사진이 즉시 표시되지 않음
+- 브라우저가 이를 먼저 로드해야 함
+
+```javascript
+let img = document.createElement("img");
+img.src = "my.jpg";
+```
+
+- 이미지를 즉시 표시하려면 위와 같이 미리 생성하면 됨
+- 브라우저는 이미지 로드를 시작하고 이를 캐시에 기억
+- 나중에 문서에 동일한 이미지가 나타나면(어떻게든) 즉시 나타남
+
+`preloadImages(sources, callback)` 함수를 생성
+
+- 배열 `sources`에서 모든 이미지를 로드하고 준비되면 `callback`을 실행
+
+```javascript
+function loaded() {
+  alert("Images loaded");
+}
+preloadImages(["1.jpg", "2.jpg", "3.jpg"], loaded); // 이미지 로드 시 loaded 실행
+```
+
+- 에러가 발생한 경우에도 함수는 그림이 로드된 것으로 가정해야함
+- 즉, 모든 이미지들이 로드되거나 에러가 발생하면 `callback` 실행됨
+- 예를 들어 스크롤 가능한 이미지가 많은 갤러리를 표시할 계획이고, 모든 이미지가 로드되었는지 확인하고 싶은 경우 이 함수는 유용
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <script>
+      function preloadImages(sources, callback) {
+        let counter = 0;
+        function onLoad() {
+          counter++;
+          if (counter == sources.length) callback();
+        }
+        for (let source of sources) {
+          let img = document.createElement("img");
+          img.onload = img.onerror = onLoad;
+          img.src = source;
+        }
+      }
+
+      // ---------- The test ----------
+
+      let sources = [
+        "https://en.js.cx/images-load/1.jpg",
+        "https://en.js.cx/images-load/2.jpg",
+        "https://en.js.cx/images-load/3.jpg"
+      ];
+
+      // add random characters to prevent browser caching
+      for (let i = 0; i < sources.length; i++)
+        sources[i] += "?" + Math.random();
+
+      // for each image, let's create another img with the same src and check that we have its width
+      function testLoaded() {
+        let widthSum = 0;
+        for (let i = 0; i < sources.length; i++) {
+          let img = document.createElement("img");
+          img.src = sources[i];
+          widthSum += img.width;
+        }
+        alert(widthSum);
+      }
+
+      preloadImages(sources, testLoaded); // should output 300
+    </script>
+  </body>
+</html>
+```
 
 ## 참고
 

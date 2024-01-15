@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 20 - 기타 2
 date: 2024-01-11 09:07:43 +0900
-last_modified_at: 2024-01-15 08:29:17 +0900
+last_modified_at: 2024-01-15 23:41:59 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript]
 ---
@@ -304,3 +304,13 @@ loop  |         [ mousemove ]
 > [[번역] 자바스크립트 이벤트 루프](https://chanmi-lee.github.io/articles/2020-06/JavaScript-Visualized-Event-Loop)
 
 > [자바스크립트와 이벤트 루프](https://meetup.nhncloud.com/posts/89)
+
+> [Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
+
+> [Philip Roberts Help I'm stuck in an event loop](https://www.youtube.com/watch?v=6MXRNXXgP_0)
+
+> [어쨌든 이벤트 루프는 무엇입니까? | Philip Roberts | JSConf EU](https://www.youtube.com/watch?v=8aGhZQkoFbQ)
+
+> [Difference between microtask and macrotask within an event loop context](https://stackoverflow.com/questions/25915634/difference-between-microtask-and-macrotask-within-an-event-loop-context)
+
+> [Nodejs Event Loop](https://stackoverflow.com/questions/10680601/nodejs-event-loop)

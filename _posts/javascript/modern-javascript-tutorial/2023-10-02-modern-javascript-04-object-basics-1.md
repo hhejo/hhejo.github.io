@@ -1,9 +1,10 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 1
 date: 2023-10-02 12:01:57 +0900
-last_modified_at: 2023-12-05 07:34:25 +0900
+last_modified_at: 2024-01-17 14:36:13 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags:
+  [javascript, object, property, in, for-in, garbage-collection, method, this]
 ---
 
 객체, 참조에 의한 객체 복사, 가비지 컬렉션, 메서드와 this
@@ -14,15 +15,14 @@ tags: [javascript]
 
 - 몇 가지 특수한 기능을 가진 연관 배열(associative array)
 - 일반 객체는 순수 객체(plain object)라고 불림
-- 일반 객체 외에도 다양한 객체(`Array`, `Date`, `Error`, ...) 존재
+- 일반 객체 외에도 다양한 객체 존재
+  - `Array`, `Date`, `Error` 등
 
 프로퍼티(property)
 
 - `키(key): 값(value)` 쌍으로 구성
-- `key`: 문자형만 가능
-  - 프로퍼티 이름
-- `value`: 모든 자료형 가능
-  - 원시형, 객체 등 데이터 집합이나 복잡한 개체(entity)
+- `key`: 프로퍼티 이름. 문자형만 가능
+- `value`: 모든 자료형(데이터 집합(원시형, 객체 등)이나 복잡한 개체(entity)) 가능
 - 객체 안에 프로퍼티 여러 개가 들어갈 수 있음
 
 빈 객체 생성하기
@@ -48,12 +48,12 @@ let user = new Object(); // 객체 생성자
 
 ```javascript
 let user = { age: 30, "like birds": true };
-user.name = "John"; // 점 표기법으로 프로퍼티 값 읽고 쓰기
-alert(user["like birds"]); // 대괄호 표기법으로 프로퍼티 값 읽기
+user.name = "John"; // 점 표기법
+alert(user["like birds"]); // 대괄호 표기법
 delete user.age; // 프로퍼티 삭제
 key = "name";
 alert(user[key]); // John
-alert(user.key); // undefined, (user["key"]와 같음)
+alert(user.key); // undefined (user["key"]와 같음)
 ```
 
 상수 객체는 수정될 수 있음
@@ -65,7 +65,9 @@ user.name = "Pete";
 
 ### 계산된 프로퍼티
 
-`{ [key]: value }`
+```javascript
+let obj = { [key]: value };
+```
 
 - 객체를 만들 때 객체 리터럴 안의 프로퍼티 키를 대괄호로 둘러 쌈
 - 복잡한 표현식 가능
@@ -92,7 +94,7 @@ let user = makeUser("John", 30);
 
 ### 프로퍼티 이름의 제약 사항
 
-예약어를 키로 사용 가능
+1 예약어를 키로 사용 가능
 
 - `for`, `let`, `return` 등
 
@@ -101,15 +103,15 @@ let obj = { for: 1, let: 2, return: 3 };
 alert(obj.for + obj.let + obj.return); // 6
 ```
 
-문자형, 심볼형이 아닌 값은 문자열로 자동 형 변환
+2 문자형, 심볼형이 아닌 값은 문자열로 자동 형 변환
 
 ```javascript
-let obj = { 0: "test" }; // 0은 "0"으로 자동 형 변환됨
+let obj = { 0: "test" }; // 0은 "0"으로 자동 형 변환
 alert(obj["0"]); // test
 alert(obj[0]); // test (동일한 프로퍼티)
 ```
 
-객체 프로퍼티 키의 `__proto__`는 특별 취급
+3 객체 프로퍼티 키의 `__proto__`는 특별 취급
 
 ```javascript
 let obj = {};
@@ -121,7 +123,7 @@ alert(obj.__proto__); // [object Object] (값이 변하지 않았음)
 
 존재하지 않는 프로퍼티에 접근
 
-- `undefined` 반환 (에러가 발생하지 않음)
+- `undefined` 반환. 에러가 발생하지 않음
 
 ```javascript
 "use strict";
@@ -131,27 +133,15 @@ user.name; // undefined
 
 프로퍼티 존재 여부 확인
 
-- `===`
-  - 키가 존재하는지 아닌지 알 수 없음
-- `"key" in object`
-  - 키의 존재 여부를 정확히 알 수 있음
-
-```javascript
-let user = {};
-alert(user.noSuchProperty === undefined); // true
-```
-
-- 키 `noSuchProperty`가 존재하고 그 값이 `undefined`
-- 키 `noSuchProperty`가 존재하지 않음
+- `===`: 키가 존재하는지 아닌지 알 수 없음
+- `"key" in object`: 키의 존재 여부를 정확히 알 수 있음
 
 ```javascript
 let obj = { test: undefined };
-alert(obj.test); // undefined (1)
-alert("test" in obj); // true (2)
+alert(obj.x === undefined); // true (키 x가 존재하고 값이 undefined 혹은 키 x가 존재하지 않음)
+alert(obj.test); // undefined (키 test의 값이 undefiend 혹은 키 test가 없음)
+alert("test" in obj); // true (키 test 확실히 있음)
 ```
-
-- (1) 키 `test`가 존재하고 값이 `undefined`인지, 키 `test`가 존재하지 않는지 모름
-- (2) 키가 존재하는지 정확히 알 수 있음
 
 ### 'for...in' 반복문
 
@@ -167,15 +157,11 @@ for (let key in user) {
 }
 ```
 
-객체 정렬 방식
+객체는 특별한 방식으로 정렬됨
 
-- 객체는 특별한 방식으로 정렬됨
 - 키가 정수인 경우, 자동 정렬
 - 키가 정수가 아닌 경우, 작성된 순서대로 프로퍼티 나열
-
-정수 프로퍼티
-
-- 변형 없이 정수에서 왔다 갔다 할 수 있는 문자열
+- 정수 프로퍼티: 변형 없이 정수에서 왔다 갔다 할 수 있는 문자열
 
 ```javascript
 String(Math.trunc(Number("49"))); // 49, 정수 프로퍼티 o
@@ -188,8 +174,7 @@ String(Math.trunc(Number("1.2"))); // 1, 정수 프로퍼티 x
 객체는 참조에 의해(by reference) 저장되고 복사됨
 
 - 변수에 객체 자체가 아닌 메모리 상의 주소인 참조가 저장됨
-
-원시값은 값 그대로 저장, 할당되고 복사됨
+- 원시값은 값 그대로 저장, 할당되고 복사됨
 
 참조에 의한 비교
 
@@ -211,9 +196,11 @@ alert(a == b); // false
 
 ### 객체 복사, 병합과 Object.assign
 
-자바스크립트는 객체 복사 내장 메서드를 지원하지 않음
+객체 복사
 
-- 새로운 객체를 생성한 후, 기존 객체의 프로퍼티들을 순회해 원시 수준까지 복사하면 됨
+- 자바스크립트는 객체 복사 내장 메서드를 지원하지 않음
+- 새로운 객체를 생성하고 기존 객체의 프로퍼티들을 순회해 원시 수준까지 복사하면 됨
+- `Object.assign`을 사용할 수도 있음
 
 ```javascript
 let user = { name: "John", age: 30 };
@@ -238,8 +225,7 @@ let clone = Object.assign({}, user); // { name: "John", age: 30 }
 user.canView = false; // { name: "John", age: 30, canView: false }
 let permissions1 = { canView: true };
 let permissions2 = { canEdit: true };
-Object.assign(user, permissions1, permissions2);
-user; // { name: "John", age: 30, canView: true, canEdit: true }
+Object.assign(user, permissions1, permissions2); // { name: "John", age: 30, canView: true, canEdit: true }
 ```
 
 ### 중첩 객체 복사
@@ -275,10 +261,8 @@ let user = { name: "John" }; // user에 객체 참조 값 저장
                  name: "John"
 ```
 
-`user`의 값을 다른 값으로 덮어쓰면 참조가 사라짐
-
 ```javascript
-user = null;
+user = null; // user의 값을 덮어쓰면 참조가 사라짐
 ```
 
 ```
@@ -288,18 +272,14 @@ user: null    name: "John"
 
 ### 도달할 수 없는 섬
 
-객체들이 연결되어 섬 같은 구조를 형성했는데, 이 섬에 도달할 방법이 없는 경우
-
+- 객체들이 연결되어 섬 같은 구조를 형성했는데, 이 섬에 도달할 방법이 없는 경우
 - 섬을 구성하는 객체 전부가 메모리에서 삭제됨
 
 ```javascript
 function marry(man, woman) {
   woman.husband = man;
   man.wife = woman;
-  return {
-    father: man,
-    mother: woman
-  };
+  return { father: man, mother: woman };
 }
 let family = marry({ name: "John" }, { name: "Ann" });
 family = null; // 이제 도달할 수 없음
@@ -312,7 +292,7 @@ family = null; // 이제 도달할 수 없음
 1. 가비지 컬렉터는 루트(root) 정보를 수집하고 이를 기억(mark)
 2. 루트가 참조하고 있는 모든 객체를 방문하고 이것들을 mark
 3. mark된 모든 객체에 방문하고 그 객체들이 참조하는 객체도 mark
-   - 한번 방문한 객체는 전부 mark하기 때문에 같은 객체를 다시 방문하지 않음
+   - 한 번 방문한 객체는 전부 mark하기 때문에 같은 객체를 다시 방문하지 않음
 4. 루트에서 도달 가능한 모든 객체를 방문할 때까지 위 과정을 반복
 5. mark되지 않은 모든 객체를 메모리에서 삭제
 
@@ -337,51 +317,40 @@ idle-time collection(유휴 시간 수집)
 
 ## 메서드와 this
 
-실제 존재하는 개체(entity)를 표현하고자 할 때 객체를 생성
+실제 존재하는 개체(entity)(사용자, 주문 등)를 표현하고자 할 때 객체를 생성
 
-- 사용자, 주문 등
-
-객체 프로퍼티에 함수를 할당
-
-- 객체에게 행동할 수 있는 능력 부여
+- 객체 프로퍼티에 함수를 할당해 객체에게 행동할 수 있는 능력 부여
 
 ### 메서드 만들기
 
 메서드(method)
 
 - 객체 프로퍼티에 할당된 함수
+- 메서드 단축 구문으로 메서드 생성
+  - 일반적인 방법과 완전히 동일하지는 않음
+  - 객체 상속 관련 미묘한 차이 존재
+- 이미 정의된 함수 붙여 메서드 생성
 
 ```javascript
 let user = {
   sayHi: function () {}
+  sayBye() {} // 메서드 단축 구문
 };
 ```
-
-메서드 단축 구문
-
-- 일반적인 방법과 완전히 동일하지는 않음
-- 객체 상속 관련 미묘한 차이 존재
-
-```javascript
-let user = {
-  sayHi() {}
-};
-```
-
-이미 정의된 함수를 붙일 수도 있음
 
 ```javascript
 let user = { name: "John", age: 30 };
-user.sayHi = function () {
-  alert("안녕하세요!");
-};
-user.sayHi(); // 안녕하세요!
-```
 
-```javascript
-function sayHi() { ... }
-user.sayHi = sayHi;
-user.sayHi(); // 안녕하세요!
+user.sayHi = function () {
+  alert("Hi");
+}; // 외부에서 메서드 생성하기
+user.sayHi();
+
+function sayBye() {
+  alert("Bye");
+}
+user.sayBye = sayBye; // 이미 정의된 함수 붙이기
+user.sayBye();
 ```
 
 객체 지향 프로그래밍(object-oriented programming, OOP)
@@ -390,8 +359,9 @@ user.sayHi(); // 안녕하세요!
 
 ### 메서드와 this
 
-메서드 내부에서 `this` 키워드를 사용해 객체 내부의 정보에 접근
+`this`
 
+- 메서드 내부에서 `this` 키워드를 사용해 객체 내부의 정보에 접근
 - 점 앞의 `this`는 메서드를 호출할 때 사용된 객체를 나타냄
 
 ```javascript
@@ -418,8 +388,8 @@ let user = {
   }
 };
 let admin = user;
-user = null;
-admin.sayHi();
+user = null; // 덮어써짐
+admin.sayHi(); // 에러
 ```
 
 ### 자유로운 this
@@ -462,23 +432,18 @@ admin["f"](); // Admin (점과 대괄호는 동일하게 동작)
 
 객체가 없어도 함수 호출 가능
 
-엄격 모드 X
-
-- `this`가 전역 객체를 참조
+- 엄격 모드 X: `this`가 전역 객체를 참조
   - 브라우저: `window` 전역 객체
   - Node.js: `global` 전역 객체
   - 전역 객체 참조는 대개 실수인 경우가 많음
-
-엄격 모드 O
-
-- `this`가 `undefined`가 됨
-  - `this`가 `undefined`이기 때문에 `this.name` 같이 접근하려고 하면 에러 발생
+- 엄격 모드 O: `this`가 `undefined`가 됨
+  - `this.name` 같이 접근하려고 하면 에러 발생(`undefined.name`)
 
 ```javascript
 function sayHi() {
   alert(this);
 }
-sayHi(); // [object Window]
+sayHi(); // [object Window] (전역 객체)
 ```
 
 ```javascript
@@ -504,7 +469,7 @@ sayHi(); // undefined
 화살표 함수
 
 - 일반 함수와는 달리 고유한 `this`를 가지지 않음
-- 화살표 함수에서 `this`를 참조하는 경우, 화살표 함수가 아닌 평범한 외부 함수에서 `this` 값을 가져옴
+- 화살표 함수에서 `this`를 참조하면 화살표 함수가 아닌 평범한 외부 함수에서 `this` 값을 가져옴
 - 별개의 `this`가 만들어지는 건 원하지 않고, 외부 컨텍스트에 있는 `this`를 이용하고 싶은 경우 유용
 
 ```javascript
@@ -512,29 +477,20 @@ sayHi(); // undefined
 let obj = {
   name: "test object",
   objMethod() {
-    let arrow = () => alert(this); // [object Object] (obj 객체)
-    arrow();
+    let arrow = () => alert(this);
+    arrow(); // [object Object] (obj 객체)
     function notArrow() {
-      return alert(this); // [object Window] (전역 Window 객체)
+      return alert(this);
     }
-    notArrow();
+    notArrow(); // undefined
+    function f() {
+      let fArrow = () => alert(this);
+      fArrow();
+    }
+    f(); // undefined
   }
 };
 obj.objMethod();
-```
-
-```javascript
-"use strict";
-let obj = {
-  objMethod() {
-    function f() {
-      let arrow = () => alert(this);
-      arrow();
-    }
-    f();
-  }
-};
-obj.objMethod(); // undefined
 ```
 
 ### 예제
@@ -546,32 +502,22 @@ obj.objMethod(); // undefined
 
 ```javascript
 "use strict";
+
+// 1
 function makeUser() {
-  return { name: "John", ref: this };
+  return { name: "John", ref: this }; // this=undefined
 }
 let user = makeUser();
 alert(user.ref.name); // TypeError: Cannot read properties of undefined
-```
 
-- `makeUser()` 내 `this`는 `undefined`
-  - 메서드로써 호출된 게 아니라 함수로써 호출되었기 때문
-- `this` 값은 전체 함수가 됨
-  - 코드 블록과 객체 리터럴은 여기에 영향을 주지 않음
-- 따라서 `ref: this`는 함수의 현재 `this` 값을 가져옴
-
-```javascript
-"use strict";
-function makeUser() {
-  return this;
+// 2
+function makeUser2() {
+  return this; // undefined
 }
-alert(makeUser().name); // TypeError: Cannot read properties of undefined
-```
+alert(makeUser2().name); // TypeError: Cannot read properties of undefined
 
-- `this`의 값이 `undefined`가 되는 함수
-- `alert(makeUser().name)`와 `alert(user.ref.name)`의 결과가 같음
-
-```javascript
-function makeUser() {
+// 3
+function makeUser3() {
   return {
     name: "John",
     ref() {
@@ -579,11 +525,9 @@ function makeUser() {
     }
   };
 }
-let user = makeUser();
-alert(user.ref().name); // John
+let user = makeUser3();
+alert(user.ref().name); // John (user.ref()는 메서드. this는 . 앞의 객체)
 ```
-
-- `user.ref()`가 메서드가 되고 `this`는 `.` 앞의 객체가 되기 때문에 에러가 발생하지 않음
 
 ```javascript
 let obj = {
@@ -594,13 +538,12 @@ let obj = {
     return this;
   }
 };
-console.log(obj.ref.name); // undefined
-console.log(obj.ref); // {}
+console.log(obj.ref, obj.ref.name); // {}, undefined
 let temp = obj.f(); // { name: "test", ref: {}, f: [Function: f] }
 console.log(temp); // { name: "test", ref: {}, f: [Function: f] }
-```
 
-```javascript
+//
+
 function func() {
   console.log(this);
   return this;

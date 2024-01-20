@@ -1,9 +1,9 @@
 ---
 title: 모던 JavaScript 튜토리얼 09 - 클래스 2
 date: 2023-11-11 09:22:46 +0900
-last_modified_at: 2023-12-08 12:49:45 +0900
+last_modified_at: 2024-01-19 13:28:09 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags: [javascript, static, protected, private]
 ---
 
 정적 메서드와 정적 프로퍼티, private, protected 프로퍼티와 메서드
@@ -12,16 +12,13 @@ tags: [javascript]
 
 정적 메서드(static method)
 
-- 클래스 함수 자체에 메서드를 설정 가능
-  - `prototype`이 아님
+- 클래스 함수 자체에 메서드를 설정 가능 (`prototype`이 아님)
 - 클래스 안에서 `static` 키워드를 붙여 생성
 - 어떤 특정한 객체가 아닌 클래스에 속한 함수를 구현하고자 할 때 주로 사용
 - 메서드를 프로퍼티 형태로 직접 할당하는 것과 동일한 일을 함
 - `User.staticMethod()`가 호출될 때 `this`의 값은 클래스 생성자인 `User` 자체가 됨
-  - 점 앞 객체
-- 정적 메서드는 데이터베이스 관련 클래스에도 사용됨
-  - 항목 검색, 저장, 삭제 등을 수행
-  - `Database.remove({ id: 12345 })`
+- 예로 정적 메서드는 데이터베이스 관련 클래스에도 사용됨
+  - 항목 검색, 저장, 삭제 등을 수행 (`Database.remove({ id: 12345 })`)
 
 ```javascript
 class User {
@@ -40,8 +37,7 @@ User2.staticMethod(); // true
 
 객체 `Article`이 여러 개 있고, 이들을 비교해줄 함수가 필요한 경우
 
-- `Article.compare`를 추가할 수 있음
-- `Article.compare`는 `article`을 비교해주는 수단
+- `Article.compare`를 추가할 수 있음. `Article.compare`는 `article`을 비교해주는 수단
 - 글 전체를 위에서 바라보며 비교를 수행
 - `Article.compare`가 글 하나의 메서드가 아닌 클래스의 메서드여야 하는 이유
 
@@ -68,8 +64,7 @@ alert(articles[0].title); // CSS
 
 팩토리 메서드
 
-- 다양한 방법을 사용해 조건에 맞는 `article` 인스턴스를 만들기
-
+0. 다양한 방법을 사용해 조건에 맞는 `article` 인스턴스를 만들기
 1. 매개변수(`title`, `date` 등)를 이용해 관련 정보가 담긴 `article` 생성
    - 생성자를 사용해 구현 가능
 2. 오늘 날짜를 기반으로 비어있는 `article` 생성
@@ -93,10 +88,7 @@ alert(article.title); // Today's digest
 
 ### 정적 프로퍼티
 
-정적 프로퍼티(static property)
-
-- 일반 클래스 프로퍼티와 유사하게 생김
-- 앞에 `static`이 붙는다는 점만 다름
+- 정적 프로퍼티(static property): 일반 클래스 프로퍼티와 유사하나 앞에 `static`이 붙는다는 점만 다름
 - 클래스에 프로퍼티를 직접 할당하는 것과 동일하게 동작
 
 ```javascript
@@ -112,12 +104,10 @@ alert(Article2.publisher); // Ilya Kantor
 
 ### 정적 프로퍼티와 메서드 상속
 
-정적 프로퍼티와 정적 메서드는 상속됨
-
+- 정적 프로퍼티와 정적 메서드는 상속됨
 - `Animal.compare`와 `Animal.planet`은 상속됨
   - 각각 `Rabbit.compare`와 `Rabbit.planet`에서 접근 가능
-- `Rabbit.compare`를 호출하면 `Animal.compare`가 호출됨
-  - 프로토타입 때문에 가능
+- `Rabbit.compare`를 호출하면 `Animal.compare`가 호출됨. 프로토타입 덕분에 가능
 - `extends` 키워드는 `Rabbit`의 `[[Prototype]]`이 `Animal`을 참조하도록 해줌
 
 ```javascript
@@ -167,8 +157,7 @@ Rabbit                   Rabbit.prototype
 
 1. 함수 `Rabbit`은 프로토타입을 통해 함수 `Animal`을 상속 받음
 2. `Rabbit.prototype`은 프로토타입을 통해 `Animal.prototype`을 상속 받음
-
-- 이런 과정이 있기 때문에 일반 메서드 상속과 정적 메서드 상속이 가능
+3. 이런 과정이 있기 때문에 일반 메서드 상속과 정적 메서드 상속이 가능
 
 ```javascript
 class Animal {}
@@ -179,23 +168,17 @@ alert(Rabbit.prototype.__proto__ === Animal.prototype); // true
 
 ### 예제
 
-Object를 상속받는 클래스
-
-- 객체는 보통 `Object.prototype`을 상속받음
-- 일반 객체 메서드에 접근 가능
-  - `hasOwnProperty` 등
-
 Object 상속을 명시적으로 해주는 경우와 아닌 경우의 결과의 차이?
 
+- Object를 상속받는 클래스
+  - 객체는 보통 `Object.prototype`을 상속받고 일반 객체 메서드에 접근 가능
 - `class Rabbit extends Object` vs. `class Rabbit`
 - 상속 받는 클래스의 생성자는 `super()`를 반드시 호출해야 함
-  - 그렇지 않으면 `this`가 정의되지 않음
+- 그렇지 않으면 `this`가 정의되지 않음
 - `super()`를 추가해도 두 방식은 다른 점이 있음
-
-`extends` 문법은 두 개의 프로토타입을 설정
-
-- 생성자 함수의 `prototype` 사이(일반 메서드용)
-- 생성자 함수 자체(정적 메서드용)
+- `extends` 문법은 두 개의 프로토타입을 설정
+  - 생성자 함수의 `prototype` 사이(일반 메서드용)
+  - 생성자 함수 자체(정적 메서드용)
 
 ```javascript
 // class Rabbit
@@ -287,27 +270,21 @@ Rabbit  |                Object
 
 자바스크립트에는 두 가지 타입의 객체 필드(프로퍼티와 메서드)가 있음
 
-- public
-  - 어디서든지 접근할 수 있으며 외부 인터페이스를 구성
+- public: 어디서든지 접근할 수 있으며 외부 인터페이스를 구성
   - 지금까지 다룬 프로퍼티와 메서드는 모두 public
-- private
-  - 클래스 내부에서만 접근할 수 있으며, 내부 인터페이스를 구성할 때 쓰임
-
-protected
-
-- private과 비슷하나 자손 클래스에서도 접근 가능
-- 내부 인터페이스를 만들 때 유용
-- 자손 클래스의 필드에 접근해야 하는 경우가 많음
-  - private 필드보다 조금 더 광범위하게 사용됨
-- 자바스크립트 이외의 다수 언어에서 protected 필드를 지원
-- protected를 사용하면 편리한 점이 많음
-  - 자바스크립트에서 지원하지 않지만 모방해서 사용
+- private: 클래스 내부에서만 접근할 수 있으며, 내부 인터페이스를 구성할 때 쓰임
+- protected
+  - private과 비슷하나 자손 클래스에서도 접근 가능
+  - 내부 인터페이스를 만들 때 유용
+  - 자손 클래스의 필드에 접근해야 하는 경우가 많아 private 필드보다 더 광범위하게 사용됨
+  - 자바스크립트 이외의 다수 언어에서 protected 필드를 지원
+  - protected를 사용하면 편리한 점이 많아 자바스크립트에서 지원하지 않지만 모방해서 사용
 
 ### 프로퍼티 보호하기
 
 protected 프로퍼티
 
-- protected 프로퍼티 명 앞에는 밑줄 `_`이 붙음
+- 앞에 밑줄 `_`이 붙음
 - 자바스크립트에서 강제한 사항은 아님
 - 밑줄은 프로그래머들 사이에서 외부 접근이 불가능한 프로퍼티나 메서드를 나타낼 때 사용
 
@@ -332,8 +309,6 @@ coffeeMachine.waterAmount = -10; // Error: 물의 양은 음수가 될 수 없�
 
 ### 읽기 전용 프로퍼티
 
-읽기 전용 프로퍼티
-
 - 프로퍼티를 생성할 때만 값을 할당할 수 있고, 그 이후에는 값을 절대 수정하지 말아야 하는 경우 활용
 - setter 없이 getter만 만들어 읽기 전용 프로퍼티 생성
 
@@ -354,9 +329,8 @@ coffeeMachine.power = 10; // TypeError: Cannot set property power of #<CoffeeMac
 
 getter와 setter 함수
 
-- `get`, `set` 문법을 사용하는 방법보다 `get...`/`set...` 형식의 함수가 선호됨
+- `get`, `set` 문법을 사용하는 방법보다 `get.../set...` 형식의 함수가 선호됨
 - 다소 길어보이나 함수를 선언하면 다수의 인자를 받을 수 있어 좀 더 유용함
-- `get`, `set` 문법을 사용하면 코드가 짧아지는 장점이 있음
 
 ```javascript
 class CoffeeMachine {
@@ -383,8 +357,7 @@ protected 필드는 상속됨
 private 프로퍼티와 메서드
 
 - `#`으로 시작해 private 필드를 의미
-- 클래스 안에서만 접근 가능
-- 클래스 외부나 자손 클래스에서 접근 불가
+- 클래스 안에서만 접근 가능하고 클래스 외부나 자손 클래스에서는 접근 불가
 - private 필드는 `this[name]`로 사용 불가
 - private 필드는 public 필드와 상충하지 않음
   - private 프로퍼티 `#waterAmount`와 public 프로퍼티 `waterAmount`를 동시에 가질 수 있음

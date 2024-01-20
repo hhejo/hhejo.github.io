@@ -1,18 +1,16 @@
 ---
 title: 모던 JavaScript 튜토리얼 09 - 클래스 3
 date: 2023-11-15 10:03:12 +0900
-last_modified_at: 2023-12-09 10:59:32 +0900
+last_modified_at: 2024-01-19 18:30:46 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags: [javascript, instanceof, mixins]
 ---
 
 내장 클래스 확장하기, 'instanceof'로 클래스 확인하기, 믹스인
 
 ## 내장 클래스 확장하기
 
-내장 클래스도 확장 가능
-
-- 배열, 맵 등
+배열, 맵 등의내장 클래스도 확장 가능
 
 `Array`를 상속받는 `PowerArray`
 
@@ -21,7 +19,7 @@ tags: [javascript]
 - 이 객체를 구현할 때는 내부에서 객체의 `constructor` 프로퍼티를 사용
 - 따라서 `arr.constructor === PowerArray`의 관계를 가짐
 - `arr.filter` 호출 시, 내부에서 `arr.constructor`를 기반으로 새로운 배열이 생성되고 filter 결과가 담김
-  - 기본 `Array`에 기반하지 않음
+- 기본 `Array`에 기반하지 않음
 
 `Symbol.species`
 
@@ -30,8 +28,7 @@ tags: [javascript]
 - 메서드(`map`, `filter` 등)를 호출할 때 만들어지는 개체의 생성자 지정
   - 원하는 생성자를 반환하면 됨
 - `Symbol.species`가 `Array`를 반환하면 내장 메서드(`map`, `filter` 등)가 일반 배열을 반환
-- `Map`, `Set` 같은 컬렉션도 위와 같이 동작
-  - `Symbol.species`를 사용
+- `Map`, `Set` 같은 컬렉션도 위와 같이 `Symbol.species`를 사용해 동작
 
 ```javascript
 class PowerArray extends Array {
@@ -60,13 +57,9 @@ alert(filtered2.isEmpty()); // TypeError: filtered2.isEmpty is not a function
 
 ### 내장 객체와 정적 메서드 상속
 
-내장 클래스와 정적 메서드 상속
-
-- 내장 객체는 자체 정적 메서드를 가짐
-  - `Object.keys`, `Array.isArray` 등
+- 내장 객체는 자체 정적 메서드를 가짐 (`Object.keys`, `Array.isArray` 등)
 - 네이티브 클래스들은 서로 상속 관계를 맺음
-- 한 클래스가 다른 클래스를 상속받는 경우
-  - 일반적으로는 정적 메서드와 그렇지 않은 메서드 모두를 상속받음
+- 한 클래스가 다른 클래스를 상속받으면 일반적으로는 정적 메서드와 그렇지 않은 메서드 모두를 상속받음
 - 그러나 내장 클래스는 정적 메서드를 상속받지 못함
 - `Array`와 `Date`는 모두 `Object`를 상속받음
 - 두 클래스의 인스턴스에서 `Object.prototype`에 구현된 메서드 사용 가능
@@ -106,7 +99,7 @@ obj instanceof Class;
 - 인수의 타입에 따라 이를 다르게 처리하는 다형적인(polymorphic) 함수를 만드는 데 사용하기도 함
 - 생성자 함수, 내장 클래스에도 사용 가능
 - `instanceof` 연산자는 프로토타입 체인을 거슬러 올라가며 인스턴스 여부나 상속 여부를 확인
-- 정적 메서드 `Symbol.hasInstance`를 사용해 직접 확인 로직을 설정 가능
+- `Symbol.hasInstance`: 정적 메서드 `Symbol.hasInstance`를 사용해 직접 확인 로직을 설정 가능
 
 ```javascript
 class Rabbit {}
@@ -227,12 +220,10 @@ alert(s.call(alert)); // [object Function]
 
 `Symbol.toStringTag`
 
-- 특수 객체 프로퍼티
-- `toString`의 동작 커스터마이징 가능
+- 특수 객체 프로퍼티로, `toString`의 동작 커스터마이징 가능
 - 대부분의 호스트 환경은 자체 객체에 이와 유사한 프로퍼티를 구현
 - 호스트 환경 고유 객체의 `Symbol.toStringTag` 값은 `[object ...]`로 싸여진 값과 동일
-- `typeof` 연산자의 강력한 변형들(`toString`, `toStringTag`)은 원시 자료형 뿐만 아니라 내장 객체에서도 사용 가능
-- 커스터마이징도 가능
+- `typeof` 연산자의 강력한 변형들(`toString`, `toStringTag`)은 원시 자료형 뿐만 아니라 내장 객체에서도 사용·커스터마이징 가능
 - 내장 객체의 타입 확인을 넘어서 타입을 문자열 형태로 받고 싶다면 `instanceof` 대신 `{}.toString.call`을 사용
 
 ```javascript
@@ -257,12 +248,6 @@ alert({}.toString.call(new XMLHttpRequest())); // [object XMLHttpRequest]
 
 이상한 instanceof
 
-- `a`는 `B()`를 통해 생성하지 않았는데 `instanceof`가 `true`를 반환하는 이유
-- `instanceof`는 평가 시, 함수는 고려하지 않고 평가 대상의 `prototype`을 고려
-- 평가 대상의 `prototype`이 프로토타입 체인 상에 있는 프로토타입과 일치하는지 여부를 고려
-- `a.__proto__ == B.__proto__`이므로 `instanceof`는 `true`를 반환
-- `instanceof`의 내부 알고리즘에 의해 `prototype`은 생성자 함수가 아닌 타입을 정의함
-
 ```javascript
 function A() {}
 function B() {}
@@ -270,6 +255,12 @@ A.prototype = B.prototype = {};
 let a = new A();
 alert(a instanceof B); // true
 ```
+
+- `a`는 `B()`를 통해 생성하지 않았는데 `instanceof`가 `true`를 반환하는 이유
+- `instanceof`는 평가 시, 함수는 고려하지 않고 평가 대상의 `prototype`을 고려
+- 평가 대상의 `prototype`이 프로토타입 체인 상에 있는 프로토타입과 일치하는지 여부를 고려
+- `a.__proto__ == B.__proto__`이므로 `instanceof`는 `true`를 반환
+- `instanceof`의 내부 알고리즘에 의해 `prototype`은 생성자 함수가 아닌 타입을 정의함
 
 ## 믹스인
 

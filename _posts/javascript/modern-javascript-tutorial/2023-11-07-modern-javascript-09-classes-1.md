@@ -1,9 +1,19 @@
 ---
 title: 모던 JavaScript 튜토리얼 09 - 클래스 1
 date: 2023-11-07 20:11:03 +0900
-last_modified_at: 2023-12-08 08:17:25 +0900
+last_modified_at: 2024-01-19 12:16:55 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags:
+  [
+    javascript,
+    class,
+    class-field,
+    inheritance,
+    extends,
+    overriding,
+    super,
+    homeobject
+  ]
 ---
 
 클래스와 기본 문법, 클래스 상속
@@ -18,10 +28,9 @@ tags: [javascript]
 `new Function`, `class`
 
 - 실무에서는 동일한 종류의 객체를 여러 개 생성하는 경우가 많음
-  - 사용자, 물건 등
 - `new` 연산자와 생성자 함수로 객체 생성
 - 모던 자바스크립트에 도입된 클래스(class) 문법으로 객체 생성
-  - 객체 지향 프로그래밍에서 사용되는 다양한 기능을 자바스크립트에서도 사용 가능
+- 객체 지향 프로그래밍에서 사용되는 다양한 기능을 자바스크립트에서도 사용 가능
 
 ### 기본 문법
 
@@ -29,12 +38,8 @@ tags: [javascript]
 
 - 메서드 사이에는 쉼표가 없음
 - 클래스와 관련된 표기법은 객체 리터럴 표기법과 차이가 있음
-
-`constructor()` 메서드
-
-- 생성자 메서드로, 객체의 기본 상태를 설정
-- `new`에 의해 자동으로 호출됨
-- 특별한 절차 없이 객체를 초기화
+- `constructor()`: 객체의 기본 상태를 설정하는 생성자 메서드
+  - `new`에 의해 자동으로 호출되고 특별한 절차 없이 객체를 초기화
 
 ```javascript
 class MyClass {
@@ -54,23 +59,19 @@ class User {
     alert(this.name);
   }
 }
-let user = new User("John"); // 새로운 객체 생성 -> constructor가 넘겨받은 인수와 함께 자동 실행("John"이 this.name에 할당)
-user.sayHi();
+let user = new User("John"); // 새로운 객체 생성 -> constructor가 넘겨받은 인수와 함께 자동 실행됨
+user.sayHi(); // John
 ```
 
 ### 클래스란
 
-자바스크립트에서의 클래스
-
-- 새롭게 창안한 개체(entity)가 아님
-- 함수의 한 종류
+- 자바스크립트에서의 클래스는 새롭게 창안한 개체(entity)가 아닌, 함수의 한 종류
 
 `class User {...}` 문법 구조가 하는 일
 
-- 이름이 `User`인 함수 생성
-- 생성자 메서드 `constructor`에서 함수 본문 가져옴
+- 이름이 `User`인 함수를 생성하고, 생성자 메서드 `constructor`에서 함수 본문 가져옴
 - 생성자 메서드가 없으면 본문이 비워진 채로 함수 생성
-- `User.prototype`에 클래스 내에서 정의한 메서드(`sayHi`) 저장
+- `User.prototype`에 클래스 내에서 정의한 메서드 저장
 - 객체의 메서드를 호출하면 prototype 프로퍼티를 통해 가져옴
 
 ```javascript
@@ -99,34 +100,27 @@ User                                 User.prototype
 
 ### 클래스는 단순한 편의 문법이 아닙니다
 
-클래스는 단순한 편의 문법이 아님
-
 - `class` 키워드 없이도 클래스 역할을 하는 함수 선언 가능
-- 그렇기 때문에 클래스는 그저 편의 문법?
-- 하지만 클래스는 편의 문법이 아님
-
-편의 문법(syntactic sugar, 문법 설탕)
-
-- 기능은 동일하나 기존 문법을 쉽게 읽을 수 있게 만든 문법
+- 그렇기 때문에 클래스는 그저 편의 문법이라고 생각할 수 있지만, 클래스는 편의 문법이 아님
+- 편의 문법(syntactic sugar): 기능은 동일하나 기존 문법을 쉽게 읽을 수 있게 만든 문법
 
 `class User`와 동일한 기능을 하는 순수 함수
 
 - 모든 함수의 프로토타입은 `constructor` 프로퍼티를 기본으로 가짐
 - `constructor` 프로퍼티를 명시적으로 만들 필요 없음
-- 순수 함수로 클래스 역할을 하는 함수를 선언하는 방법의 결과
+- 순수 함수로 클래스 역할을 하는 함수를 선언하는 방법의 결과와
 - `class` 키워드를 사용하는 방법의 결과는 거의 같음
 
 `class`로 만든 함수
 
 1. 특수 내부 프로퍼티 `[[IsClassConstructor]]: true`가 이름표처럼 붙음
-   - `[[IsClassConstructor]]: true`가 활용되는 경우
-   - 클래스 생성자를 `new`와 함께 호출하지 않으면 에러
+   - 클래스 생성자를 `new`와 함께 호출하지 않으면 에러 발생
    - 클래스 생성자를 문자열로 형변환 시 `"class..."`로 시작하는 문자열이 됨
+   - 이때 `[[IsClassConstructor]]: true`가 활용됨
 2. 클래스에 정의된 메서드는 열거 불가(non-enumerable)
    - 클래스의 `prototype` 프로퍼티에 추가된 메서드의 `enumerable` 플래그는 `false`
    - `for..in`으로 객체 순회 시 메서드는 제외되어 유용
-3. 항상 엄격 모드로 실행(`use strict`)
-   - 클래스 생성자 안 코드 전체에는 자동으로 엄격 모드 적용
+3. 항상 엄격 모드로 실행: 클래스 생성자 안 코드 전체에는 자동으로 엄격 모드 적용
 4. 이외에도 `class`를 사용하면 다양한 기능이 따라옴
 
 ```javascript
@@ -140,9 +134,7 @@ User.prototype.sayHi = function () {
 };
 let user = new User("John");
 user.sayHi();
-```
 
-```javascript
 class User {
   constructor() {}
 }
@@ -153,10 +145,11 @@ alert(User); // class User { ... }
 
 ### 클래스 표현식
 
-클래스 표현식
-
 - 클래스도 함수처럼 다른 표현식 내부에서 정의, 전달, 반환, 할당 가능
 - 필요에 따라 동적으로 클래스 생성 가능
+- 클래스 표현식에 붙은 이름: 오직 클래스 내부에서만 사용 가능
+  - 기명 함수 표현식(Named Function Expression)과 유사
+  - 기명 클래스 표현식(Named Class Expression)은 명세서에는 없는 용어
 
 ```javascript
 let ClassExpression = class {
@@ -172,17 +165,8 @@ function makeClass(phrase) {
 }
 let User = makeClass("안녕하세요."); // 동적으로 클래스 생성
 new User().sayHi(); // 안녕하세요.
-```
 
-클래스 표현식에 이름 붙이기
-
-- 기명 함수 표현식(Named Function Expression)과 유사
-- 클래스 표현식에 붙은 이름은 오직 클래스 내부에서만 사용 가능
-- 기명 클래스 표현식(Named Class Expression)
-  - 명세서에는 없는 용어
-  - 기명 함수 표현식과 유사하게 동작
-
-```javascript
+// 클래스 표현식에 이름 붙이기
 let User = class MyClass {
   sayHi() {
     alert(MyClass); // 클래스 안에서만 이름 MyClass 사용 가능
@@ -194,9 +178,8 @@ alert(MyClass); // 에러
 
 ### getter와 setter
 
-클래스도 getter, setter, 계산된 프로퍼티(computed property) 지원
-
-- getter, setter는 `User.prototype`에 정의됨
+- 클래스도 getter, setter, 계산된 프로퍼티(computed property) 지원
+- getter, setter는 해당 프로토타입에 정의됨
 
 ```javascript
 class User {
@@ -222,8 +205,7 @@ user = new User(""); // 이름이 너무 짧습니다.
 
 ### 계산된 메서드 이름 `[...]`
 
-계산된 메서드 이름(computed method name)
-
+- 계산된 메서드 이름(computed method name)
 - 대괄호 `[...]`로 생성
 
 ```javascript
@@ -237,14 +219,10 @@ new User.sayHi(); // Hello
 
 ### 클래스 필드
 
-클래스 필드(class field)
-
-- 클래스를 정의할 때 `<프로퍼티 이름> = <값>` 작성
+- 클래스 필드(class field): 클래스를 정의할 때 `<프로퍼티 이름> = <값>` 작성
 - `User.prototype`이 아닌 개별 객체에만 클래스 필드가 설정됨
-- 어떤 종류의 프로퍼티도 클래스에 추가 가능
-  - 복잡한 표현식
-  - 함수 호출 결과 등
-- 클래스 필드는 최근에 더해진 기능
+- 복잡한 표현식, 함수 호출 결과 등 어떠한 종류의 프로퍼티도 클래스에 추가 가능
+- 클래스 필드는 최근에 추가된 기능
 
 ```javascript
 class User {
@@ -267,10 +245,8 @@ alert(user2.name); // John
 
 잃어버린 `this`(losing `this`)
 
-- `this`의 컨텍스트를 알 수 없게 되는 문제
-- 자바스크립트에서 `this`는 동적으로 결정됨
-- 객체 메서드를 전달해 전혀 다른 컨텍스트에서 호출하는 경우
-  - `this`는 메서드가 정의된 객체를 참조하지 않음
+- `this`의 컨텍스트를 알 수 없게 되는 문제. 자바스크립트에서 `this`는 동적으로 결정됨
+- 객체 메서드를 전달해 전혀 다른 컨텍스트에서 호출할 때, `this`는 메서드가 정의된 객체를 참조하지 않음
 
 ```javascript
 class Button {
@@ -299,18 +275,14 @@ setTimeout(button2.click, 1000); // 안녕하세요
 
 해결 방법
 
-1. 래퍼 함수를 전달하기
-   - `setTimeout(() => button.click(), 1000)`
-2. 메서드를 객체에 바인딩하기
-   - 생성자 내부 등에서
-3. 클래스 필드를 사용하기
-   - `class Button { click = () => { ... } }`
+1. 래퍼 함수를 전달하기: `setTimeout(() => button.click(), 1000)`
+2. 생성자 내부 등에서 메서드를 객체에 바인딩하기
+3. 클래스 필드를 사용하기: `class Button { click = () => { ... } }`
 
 클래스 필드로 `this` 문제 해결하기
 
 - 클래스 필드 `click = () => { ... }`는 각 `Button` 객체마다 독립적인 함수를 생성
-- 이 함수의 `this`를 해당 객체에 바인딩
-- 따라서 `button.click`을 아무 곳에나 전달 가능
+- 이 함수의 `this`를 해당 객체에 바인딩해 `button.click`을 아무 곳에나 전달 가능
   - `this`에는 항상 의도한 값이 들어감
 - 클래스 필드의 이런 기능은 브라우저 환경에서 메서드를 이벤트 리스너로 설정해야 할 때 유용
 
@@ -332,18 +304,16 @@ setTimeout(button2.click, 1000); // 안녕하세요
 
 ### extends 키워드
 
-클래스 확장 문법 `extends`
-
-- 키워드 `extends`는 프로토타입을 기반으로 동작
-- `extends` 뒤에 표현식 작성 가능
-  - 조건에 따라 다른 클래스를 상속받고 싶을 때 유용
-- `extends`는 `Child.prototype.[[Prototype]]`을 `Parent.prototype`으로 설정
-- `Child.prototype`에서 메서드를 찾지 못하면 `Parent.prototype`에서 메서드 탐색
-  - `Child`의 객체는 `Child`의 메서드와 `Parent`의 메서드 접근 가능
-
 ```javascript
 class Child extends Parent {}
 ```
+
+- 클래스 확장 문법 `extends`
+- 키워드 `extends`는 프로토타입을 기반으로 동작
+- `extends` 뒤에 표현식을 작성할 수 있어 조건에 따라 다른 클래스를 상속받고 싶을 때 유용
+- `extends`는 `Child.prototype.[[Prototype]]`을 `Parent.prototype`으로 설정
+- `Child.prototype`에서 메서드를 찾지 못하면 `Parent.prototype`에서 메서드 탐색
+- `Child`의 객체는 `Child`의 메서드와 `Parent`의 메서드 접근 가능
 
 ```javascript
 function f(phrase) {
@@ -430,27 +400,17 @@ Rabbit                       Rabbit.prototype
 
 ### 메서드 오버라이딩
 
-메서드 오버라이딩
-
 - 특별한 사항이 없다면 `class Child`는 `class Parent`에 있는 메서드를 그대로 상속받음
 - 그런데 `Child`에서 `Parent`의 메서드를 자체적으로 정의하면, 상속받은 메서드가 아닌 자체 메서드가 사용됨
-  - `Rabbit`에서 `stop()` 등의 메서드를 자체적으로 정의하는 경우
-
-이럴 때 커스텀 메서드를 만들어 작업
-
-- 부모 메서드를 토대로 일부 기능만 변경하고 싶을 때
-- 부모 메서드의 기능을 확장하고 싶을 때
-- 이미 커스텀 메서드를 만들었더라도 이 과정 전·후에 부모 메서드를 호출하고 싶은 경우?
-
-키워드 `super`
-
-- `super.method(...)`
-  - 부모 클래스에 정의된 메서드 `method`를 호출
-- `super(...)`
-  - 부모 생성자를 호출
-- 자식 생성자 내부에서만 사용 가능
-- 화살표 함수에는 `super`가 없음
-  - `super`에 접근하면 `super`를 외부 함수에서 가져옴
+- 이럴 때 커스텀 메서드를 만들어 작업
+  - 부모 메서드를 토대로 일부 기능만 변경하고 싶을 때
+  - 부모 메서드의 기능을 확장하고 싶을 때
+  - 이미 커스텀 메서드를 만들었더라도 이 과정 전·후에 부모 메서드를 호출하고 싶은 경우?
+- `super` 키워드
+  - `super.method(...)`: 부모 클래스에 정의된 메서드 `method`를 호출
+  - `super(...)` 부모 생성자를 호출
+  - 자식 생성자 내부에서만 사용 가능
+  - 화살표 함수에는 `super`가 없음. `super`에 접근하면 `super`를 외부 함수에서 가져옴
 
 ```javascript
 class Animal {
@@ -501,12 +461,8 @@ class Rabbit2 extends Animal {
 
 ### 생성자 오버라이딩
 
-생성자 오버라이딩
-
-- 클래스가 다른 클래스를 상속받고 `constructor`가 없는 경우
-- 비어있는 `constructor`가 생성됨
-- 생성자는 기본적으로 부모 `constructor`를 호출
-- 이때 부모 `constructor`에도 인수를 모두 전달
+- 클래스가 다른 클래스를 상속받는데 `constructor`가 없으면 비어있는 `constructor`가 생성됨
+- 생성자는 기본적으로 부모 `constructor`를 호출하고, 이때 부모 `constructor`에도 인수를 모두 전달
 - 클래스에 자체 생성자가 없는 경우에는 이런 일이 모두 자동으로 발생
 
 ```javascript
@@ -526,15 +482,13 @@ class Child extends Parent {
 일반 클래스의 생성자 함수와 상속 클래스의 생성자 함수 간 차이
 
 - 일반 클래스가 `new`와 함께 실행될 때
-  - 빈 객체가 생성됨
-  - `this`에 이 객체를 할당
+  - 빈 객체가 생성되고 `this`에 이 객체를 할당
 - 상속 클래스의 생성자 함수가 실행될 때
   - 일반 클래스에서 일어난 일이 일어나지 않음
-  - 빈 객체가 생성됨
-  - 부모 클래스의 생성자가 `this`에 이 객체를 할당해주는 것을 기대
+  - 빈 객체가 생성되고 부모 클래스의 생성자가 `this`에 이 객체를 할당해주는 것을 기대
 - 상속 클래스의 생성자에서는 반드시 `super`를 호출해 부모 생성자를 실행해 주어야 함
   - 그렇지 않으면 `this`가 될 객체가 만들어지지 않아 에러 발생
-  - `super(...)`는 `this`를 사용하기 전에 반드시 호출해야 함
+- `super(...)`는 `this`를 사용하기 전에 반드시 호출해야 함
 
 ```javascript
 class Animal {
@@ -560,8 +514,8 @@ let rabbit = new Rabbit("흰 토끼", 10); // ReferenceError: Must call super co
 클래스 필드 오버라이딩
 
 - 오버라이딩은 메서드뿐만 아니라 클래스 필드를 대상으로도 적용 가능
-- 부모 클래스의 생성자 안에 있는 오버라이딩한 필드에 접근하려고 할 때
-  - 자바스크립트는 다른 프로그래밍 언어와는 다르게 조금 까다로움
+- 부모 클래스의 생성자 안에 있는 오버라이딩한 필드에 접근하려고 할 때,
+- 자바스크립트는 다른 프로그래밍 언어와는 다르게 조금 까다로움
 
 ```javascript
 // 1. 클래스 필드 오버라이딩: 생각한 대로 동작하지 않음
@@ -600,35 +554,25 @@ new Rabbit2(); // rabbit. 생각한 대로 출력됨
   - `Rabbit`에는 따로 생성자가 정의되어 있지 않기 때문
 - `new Animal()`과 `new Rabbit()`을 실행할 때 모두 `(*)`이 실행되어 `animal` 출력
 - 부모 생성자는 자식 클래스에서 오버라이딩한 값이 아닌, 부모 클래스 안의 필드 값을 사용
-- 상속을 받고, 필드 값을 오버라이딩 했는데 새로운 값 대신 부모 클래스 안에 있는 기존 필드 값을 사용하는 이유?
 - 메서드 오버라이딩(2번)은 생각한 대로 출력됨
-
-클래스 필드 오버라이딩과 메서드 오버라이딩 동작이 다른 이유
-
-- 필드 초기화 순서 때문
-
-클래스 필드는 다음 규칙에 따라 초기화 순서가 달라짐
-
-- 아무것도 상속받지 않는 베이스 클래스의 경우
-  - 생성자 실행 이전에 초기화
-- 부모 클래스가 있는 경우
-  - `super()` 실행 직후에 초기화
+- 상속을 받고, 필드 값을 오버라이딩 했는데 새로운 값 대신 부모 클래스 안에 있는 기존 필드 값을 사용하는 이유?
+- 클래스 필드 오버라이딩과 메서드 오버라이딩 동작이 다른 이유는 필드 초기화 순서 때문
+- 클래스 필드는 다음 규칙에 따라 초기화 순서가 달라짐
+  - 아무것도 상속받지 않는 베이스 클래스의 경우: 생성자 실행 이전에 초기화
+  - 부모 클래스가 있는 경우: `super()` 실행 직후에 초기화
 
 오버라이딩한 클래스 필드 값이 사용되지 않은 이유
 
 - `Rabbit`은 하위 클래스이고 `constructor()`가 정의되어 있지 않음
-  - 이런 경우 생성자는 비어있는데, 그 안에 `super(...args)`만 있는 것과 동일
+- 이런 경우 생성자는 비어있는데, 그 안에 `super(...args)`만 있는 것과 동일
 - `new Rabbit()` 실행 -> `super()` 호출 -> 부모 생성자 실행
 - 하위 클래스 필드 초기화 순서에 의해 `Rabbit`의 필드는 `super()` 실행 후에 초기화
 - 부모 생성자가 실행될 때 `Rabbit`의 필드는 아직 존재하지 않음
 - 그래서 필드를 오버라이딩했을 때 `Animal`에 있는 필드가 사용된 것
-
-이렇게 자바스크립트는 오버라이딩 시 필드와 메서드의 동작 방식이 미묘하게 다름
-
-- 이런 문제는 오버라이딩한 필드를 부모 생성자에서 사용할 때만 발생
-- 개발 시 필드 오버라이딩이 문제가 되는 상황이 발생할 때
-  - 필드 대신 메서드를 사용
-  - getter나 setter를 사용
+- 이렇게 자바스크립트는 오버라이딩 시 필드와 메서드의 동작 방식이 미묘하게 다름
+  - 이런 문제는 오버라이딩한 필드를 부모 생성자에서 사용할 때만 발생
+  - 개발 시 필드 오버라이딩이 문제가 되는 상황이 발생할 때,
+  - 필드 대신 메서드를 사용. getter나 setter를 사용
 
 ```javascript
 class Parent {
@@ -656,8 +600,7 @@ from Child: Child { x: undefined }
 
 ### super 키워드와 `[[HomeObject]]`
 
-`super`에 대해 좀 더 깊이 파고들기
-
+- `super`에 대해 좀 더 깊이 파고들기
 - 지금까지 배운 내용만으로는 `super`가 제대로 동작하지 않음
 
 내부에서 `super`의 동작 방식
@@ -666,8 +609,7 @@ from Child: Child { x: undefined }
 - 이 상태에서 `super.method()`를 호출하면 엔진은 현재 객체의 프로토타입에서 `method`를 찾아야 함
 - 이런 과정들은 어떻게 일어나나?
 - 엔진은 현재 객체 `this`를 알고 있음
-- 그래서 `this.__proto__.method`를 통해 부모 객체의 `method`를 찾을 수 있을 것 같음
-  - 하지만 아님
+- 그래서 `this.__proto__.method`를 통해 부모 객체의 `method`를 찾을 수 있을 것 같지만 아니
 
 ```javascript
 let animal = {
@@ -693,8 +635,7 @@ rabbit.eat(); // 토끼 이/가 먹이를 먹습니다.
 - 그리고 현재 컨텍스트에 기반해 `eat.call(this)` 호출
 - 예상한 내용 `토끼 이/가 먹이를 먹습니다.`가 출력됨
 - `this.__proto__.eat()`이면 현재 객체가 아닌 프로토타입의 컨텍스트에서 부모 `eat`을 실행
-  - `동물 이/가 먹이를 먹습니다.`가 출력됨
-  - `.call(this)`을 사용해야 함
+- `동물 이/가 먹이를 먹습니다.`가 출력되기 때문에 `.call(this)`을 사용해야 함
 - 그러나 체인에 객체를 하나 더 추가하면 문제가 발생하기 시작
 
 ```javascript
@@ -786,13 +727,10 @@ longEar.eat(); // 귀가 긴 토끼 이/가 먹이를 먹습니다.
 
 - 자바스크립트에서 함수는 대개 객체에 묶이지 않고 자유로움
   - `this`가 달라도 객체 간 메서드를 복사하는 것이 가능
-- 그런데 `[[HomeObject]]`는 그 존재만으로도 함수의 자유도를 파괴
-  - 메서드가 객체를 기억하기 때문
-- 개발자가 `[[HomeObject]]`를 변경할 방법은 없음
-  - 한번 바인딩 된 함수는 더이상 변경되지 않음
+- 그런데 `[[HomeObject]]`는 그 존재만으로도 함수의 자유도를 파괴함. 메서드가 객체를 기억하기 때문
+- 개발자가 `[[HomeObject]]`를 변경할 방법은 없음. 한번 바인딩 된 함수는 더이상 변경되지 않음
 - 다행히 `[[HomeObject]]`는 오직 `super` 내부에서만 유효
-- 그렇기 때문에 `super`를 사용하지 않는 경우에는 메서드의 자유성이 보장됨
-  - 객체간 복사도 가능
+- 그렇기 때문에 `super`를 사용하지 않는 경우에는 메서드의 자유성이 보장됨. 객체간 복사도 가능
   - 메서드에서 `super`를 사용하면 이야기가 달라짐
 
 ```javascript
@@ -826,8 +764,7 @@ tree.sayHi(); // 나는 동물입니다.
 - 객체 간 메서드를 잘못 복사해 `super`가 제대로 동작하지 않음
 - `(*)`에서 메서드 `tree.sayHi`는 중복 코드를 방지하기 위해 `rabbit`에서 메서드를 복사해옴
 - 그런데 복사해온 메서드는 `rabbit`에서 생성됨
-  - 이 메서드의 `[[HomeObject]]`는 `rabbit`
-  - 개발자는 `[[HomeObject]]` 변경 불가
+  - 이 메서드의 `[[HomeObject]]`는 `rabbit`이고 개발자는 `[[HomeObject]]` 변경 불가
 - `tree.sayHi()`의 코드 내부에는 `super.sayHi()`가 있음
 - `rabbit`의 프로토타입은 `animal`이므로 `super`는 체인 위에 있는 `animal`로 올라가 `sayHi`를 찾음
 
@@ -845,11 +782,10 @@ rabbit                      tree
 - `[[HomeObject]]`는 클래스와 일반 객체의 메서드에서 정의됨
 - 그런데 객체 메서드의 경우, 메서드를 반드시 `method()` 형태로 정의해야 `[[HomeObject]]`가 제대로 동작
   - `method: function(){}` 형태로 정의하면 안 됨
-- 메서드 문법이 아닌(non-method syntax) 함수 프로퍼티를 사용하는 경우
-  - `[[HomeObject]]` 프로퍼티가 설정되지 않기 때문에 상속이 제대로 되지 않음
+- 메서드 문법이 아닌(non-method syntax) 함수 프로퍼티를 사용하는 경우,
+- `[[HomeObject]]` 프로퍼티가 설정되지 않기 때문에 상속이 제대로 되지 않음
 - 자바스크립트에게 두 방법의 차이는 중요
-- 화살표 함수는 `this`나 `super`를 갖지 않음
-  - 주변 컨텍스트에 잘 들어맞음
+- 화살표 함수는 `this`나 `super`를 갖지 않아 주변 컨텍스트에 잘 들어맞음
 
 ```javascript
 // 메서드 문법이 아닌 함수 프로퍼티 작성
@@ -873,8 +809,6 @@ rabbit.eat(); // SyntaxError: 'super' keyword unexpected here. [[HomeObject]]가
 
 인스턴스 생성 오류
 
-- 자식 클래스의 생성자에서 `super()`를 호출하지 않아 에러 발생
-
 ```javascript
 class Animal {
   constructor(name) {
@@ -893,6 +827,8 @@ class Rabbit extends Animal {
 let rabbit = new Rabbit("White Rabbit"); // ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor
 alert(rabbit.name);
 ```
+
+- 자식 클래스의 생성자에서 `super()`를 호출하지 않아 에러 발생
 
 ## 참고
 

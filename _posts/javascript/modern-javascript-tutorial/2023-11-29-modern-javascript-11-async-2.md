@@ -1,9 +1,17 @@
 ---
 title: 모던 JavaScript 튜토리얼 11 - 프라미스와 async, await 2
 date: 2023-11-29 13:01:02 +0900
-last_modified_at: 2024-01-14 16:47:22 +0900
+last_modified_at: 2024-01-21 10:20:06 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags:
+  [
+    javascript,
+    promise-api,
+    promisification,
+    microtask,
+    unhandledrejection,
+    async-await
+  ]
 ---
 
 프라미스 API, 프라미스화, 마이크로태스크, async와 await
@@ -19,8 +27,6 @@ tags: [javascript]
 - `Promise.reject`
 
 ### Promise.all
-
-`Promise.all`
 
 ```javascript
 let promise = Promise.all([...promises...]);
@@ -97,8 +103,6 @@ Promise.all([
 
 ### Promise.allSettled
 
-`Promise.allSettled`
-
 - 여러 요청 중 하나가 실패해도 다른 요청 결과는 여전히 필요한 경우 사용
 - 모든 프라미스가 처리될 때까지 대기
 - 반환되는 배열이 갖는 요소
@@ -131,8 +135,6 @@ Promise.allSettled(urls.map((url) => fetch(url))).then((results) => {
 ```
 
 ### Promise.race
-
-`Promise.race`
 
 ```javascript
 let promise = Promise.race(iterable);
@@ -253,8 +255,7 @@ loadScriptPromise(...).then(...);
 
 프라미스 핸들러 `.then/catch/finally`
 
-- 항상 비동기적으로 실행
-- 프라미스가 즉시 이행되었어도 마찬가지
+- 항상 비동기적으로 실행. 프라미스가 즉시 이행되었어도 마찬가지
 - `.then/catch/finally` 아래에 있는 코드는 이 핸들러들이 실행되기 전에 실행됨
 
 ```javascript
@@ -301,9 +302,7 @@ alert("코드 종료");
 
 ### 처리되지 못한 거부
 
-처리되지 못한 거부(unhandled rejection)
-
-- 마이크로태스크 큐 끝에서 프라미스 에러가 처리되지 못할 때 발생
+- 처리되지 못한 거부(unhandled rejection): 마이크로태스크 큐 끝에서 프라미스 에러가 처리되지 못할 때 발생
 - 정상적인 경우, 개발자는 에러를 대비해 프라미스 체인에 `.catch`를 추가해 에러를 처리
 - `.catch`가 없으면 엔진은 마이크로태스크 큐가 빈 이후에 `unhandledrejection` 이벤트를 트리거
 
@@ -331,15 +330,14 @@ window.addEventListener("unhandledrejection", (event) => alert(event.reason)); /
 
 이벤트 루프(event loop), 매크로태스크
 
+- 브라우저와 Node.js를 포함하는 대부분의 자바스크립트 엔진의 경우
 - 마이크로태스크가 이벤트 루프와 매크로태스크와 깊은 연관 관계를 맺음
-  - 브라우저와 Node.js를 포함하는 대부분의 자바스크립트 엔진의 경우
 - 이벤트 루프와 매크로태스크는 프라미스와는 직접적인 연관성이 없음
 
 마이크로태스크 큐(microtask queue)
 
 - `process.nextTick()`
-- `Promise callback`
-  - `.then/catch/finally`
+- `Promise callback`: `.then/catch/finally`
 - `async functions`
 - `queueMicrotask`
 
@@ -361,16 +359,13 @@ window.addEventListener("unhandledrejection", (event) => alert(event.reason)); /
 
 ### async 함수
 
-`async`
-
 ```javascript
 async function f() {}
 ```
 
 - `async` 키워드는 function 앞에 위치
-- function 앞에 `async`를 붙이면 해당 항수는 항상 프라미스를 반환
-- 프라미스가 아닌 값을 반환하는 경우
-- 이행 상태의 프라미스(resolved promise)로 값을 감싸 반환
+- function 앞에 `async`를 붙이면 해당 함수는 항상 프라미스를 반환
+- 프라미스가 아닌 값을 반환하면 이행 상태의 프라미스(resolved promise)로 값을 감싸 반환
 
 ```javascript
 async function f1() {
@@ -385,8 +380,6 @@ f2().then(alert); // 1. 명시적으로 프라미스 반환
 ```
 
 ### await
-
-`await`
 
 ```javascript
 let value = await promise;
@@ -409,9 +402,7 @@ async function f() {
   console.log(result); // 완료!. 프라미스 객체의 result 값이 들어있음
 }
 f();
-```
 
-```javascript
 function f() {
   let promise = Promise.resolve(1);
   let result = await promise; // SyntaxError: await is only valid in async functions and the top level bodies of modules
@@ -525,7 +516,7 @@ f3(); // 처리되지 않은 프라미스 에러. unhandledrejection으로 잡�
 - `await`가 대기를 처리해주기 때문에 `.then`이 거의 필요하지 않음
 - `.catch` 대신 일반 `try..catch` 사용 가능
 - `async` 함수 바깥의 최상위 레벨 코드에서 `await` 사용 불가
-  - 그렇기 때문에 관행처럼 `.then/catch`를 추가해 최종 결과나 처리되지 못한 에러를 다룸
+- 그렇기 때문에 관행처럼 `.then/catch`를 추가해 최종 결과나 처리되지 못한 에러를 다룸
 - `Promise.all`과도 함께 사용 가능
 
 ```javascript
@@ -536,9 +527,6 @@ let results = await Promise.all([fetch(url1), fetch(url2), ...]);
 
 async가 아닌 함수에서 async 함수 호출하기
 
-- 일반 함수에서 async 함수를 호출하고 그 결과를 사용하는 방법
-- async 함수를 호출하면 프라미스가 반환되므로 `.then`을 붙이면 됨
-
 ```javascript
 async function wait() {
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -548,6 +536,45 @@ function f() {
   wait().then((result) => alert(result));
 }
 f(); // 10
+```
+
+- 일반 함수에서 async 함수를 호출하고 그 결과를 사용하는 방법
+- async 함수를 호출하면 프라미스가 반환되므로 `.then`을 붙이면 됨
+
+연습
+
+```javascript
+let promise = new Promise((resolve) =>
+  setTimeout(() => resolve("Hello, world!"), 500)
+);
+
+async function f() {
+  console.log("async start"); // 2
+  let res = await promise;
+  console.log(res); // 4
+  console.log("async end"); // 5
+}
+
+console.log("start"); // 1
+f();
+console.log("end"); // 3
+```
+
+```javascript
+let promise = new Promise((resolve) =>
+  setTimeout(() => resolve("Hello, world!"), 500)
+);
+
+async function f() {
+  console.log("async start"); // 2
+  let res = await promise;
+  console.log(res); // 3
+  console.log("async end"); // 4
+}
+
+console.log("start"); // 1
+await f();
+console.log("end"); // 5
 ```
 
 ## 참고

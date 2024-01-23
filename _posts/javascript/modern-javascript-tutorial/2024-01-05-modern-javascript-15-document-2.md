@@ -1,9 +1,9 @@
 ---
 title: 모던 JavaScript 튜토리얼 15 - 문서 2
 date: 2024-01-05 09:34:27 +0900
-last_modified_at: 2024-01-07 12:44:05 +0900
+last_modified_at: 2024-01-23 09:37:18 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags: [javascript, node, attribute, property, dataset, style, class]
 ---
 
 주요 노드 프로퍼티, 속성과 프로퍼티, 문서 수정하기, 스타일과 클래스
@@ -15,19 +15,16 @@ tags: [javascript]
 DOM 노드
 
 - 프로토타입을 기반으로 상속 관계를 갖는 일반 자바스크립트 객체
-- 모든 DOM 노드는 공통 조상으로부터 생성
-  - 공통된 프로퍼티와 메서드 지원
+- 모든 DOM 노드는 공통 조상으로부터 생성되어 공통된 프로퍼티와 메서드 지원
 - 종류에 따라 각각 다른 프로퍼티 지원
 - DOM 노드는 종류에 따라 대응하는 내장 클래스가 다름
 
 `console.dir(elem)`, `console.log(elem)`
 
-- `elem`: 자바스크립트 객체
-  - 대개 같은 결과 출력
-- `elem`: DOM 요소
-  - `console.log(elem)`: 요소의 DOM 트리 출력
-  - `console.dir(elem)`: 요소를 DOM 객체처럼 취급해 출력
-    - 프로퍼티 확인 쉬움
+- `elem`이 자바스크립트 객체이면 대개 같은 결과 출력
+- `elem`이 DOM 요소이면,
+- `console.log(elem)`: 요소의 DOM 트리 출력
+- `console.dir(elem)`: 요소를 DOM 객체처럼 취급해 출력. 프로퍼티 확인 쉬움
 
 ```
 [ EventTarget ]
@@ -43,40 +40,30 @@ DOM 노드
 
 `EventTarget`
 
-- 루트에 있는 추상(abstract) 클래스
-  - 이 클래스의 객체는 실제로 생성되지 않음
-- 이벤트 관련 기능 제공
-- 모든 DOM 노드의 베이스에 있기 때문에 DOM 노드에서 이벤트 사용 가능
+- 루트에 있는 추상(abstract) 클래스. 이 클래스의 객체는 실제로 생성되지 않음
+- 이벤트 관련 기능 제공. 모든 DOM 노드의 베이스에 있기 때문에 DOM 노드에서 이벤트 사용 가능
 
 `Node`
 
 - 추상 클래스로, 해당하는 객체는 절대 생성되지 않음
-- 공통 DOM 노드 프로퍼티 제공
-- DOM 노드의 베이스 역할
-- 주요 트리 탐색 기능 제공
+- DOM 노드의 베이스 역할. 공통 DOM 노드 프로퍼티와 주요 트리 탐색 기능 제공
   - `parentNode`, `nextSibling`, `childNodes` 등
 - `Text`, `Element`, `Comment` 클래스에게 상속
-  - 각각 텍스트, 요소, 주석 노드를 위한 클래스들
 
 `Element`
 
-- DOM 요소를 위한 베이스 클래스
-- 요소 노드 메서드 제공
-- 요소 전용 탐색을 도와주는 프로퍼티, 메서드가 기반함
+- DOM 요소를 위한 베이스 클래스. 요소 전용 탐색을 도와주는 프로퍼티, 메서드가 기반함
   - `nextElementSibling`, `children`, `getElementsByTagName`, `querySelector` 등
-- `SVGElement`, `XMLElement`, `HTMLElement` 클래스의 베이스 역할
-  - 브라우저는 HTML 뿐만 아니라 XML, SVG도 지원
+- `SVGElement`, `XMLElement`, `HTMLElement` 클래스의 베이스 역할 (브라우저는 XML, SVG도 지원)
 
 `HTMLElement`
 
-- HTML 요소 노드의 베이스 클래스
-- HTML 요소 메서드와 getter, setter 제공
+- HTML 요소 노드의 베이스 클래스. HTML 요소 메서드와 getter, setter 제공
 - 각 태그에 해당하는 클래스에 고유한 프로퍼티와 메서드 지원
 
 예시: `<input>` 요소
 
-- HTMLInputElement 클래스를 기반으로 생성
-- 아래 클래스들에서 프로퍼티와 메서드를 상속받음
+- HTMLInputElement 클래스를 기반으로 생성되고 아래 클래스들에서 프로퍼티와 메서드를 상속받음
 - `HTMLInputElement`: 입력 관련 프로퍼티 제공
 - `HTMLElement`: HTML 요소 메서드와 getter, setter 제공
 - `Element`: 요소 노드 메서드 제공
@@ -84,18 +71,15 @@ DOM 노드
 - `EventTarget`: 이벤트 관련 기능 제공
 - `Object`: 일반 객체 메서드 제공
 
-DOM 노드 클래스 이름 확인
+DOM 노드 클래스 이름, 상속 여부 확인하기
 
-- `constructor.name`
-- `toString`
-
-상속 여부 확인
-
+- `constructor.name`, `toString`
 - `instanceof`
 
 ```javascript
 alert(document.body.constructor.name); // HTMLBodyElement
 alert(document.body); // [object HTMLBodyElement]
+
 alert(document.body instanceof HTMLBodyElement); // true
 alert(document.body instanceof HTMLElement); // true
 alert(document.body instanceof Element); // true
@@ -109,11 +93,8 @@ Interface Description Language(IDL)
 
 ### 'nodeType' 프로퍼티
 
-`nodeType` 프로퍼티
-
-- DOM 노드의 타입을 알아내는 구식 프로퍼티
-- 각 노드 타입은 상수값을 가짐
-- 타입 확인만 하고 변경하는 데 사용은 불가
+- `nodeType`: DOM 노드의 타입을 알아내는 구식 프로퍼티
+- 각 노드 타입은 상수값을 가짐. 타입을 변경하는 데 사용은 불가
 
 ```html
 <body>
@@ -128,13 +109,18 @@ Interface Description Language(IDL)
 
 ### nodeName과 tagName으로 태그 이름 확인하기
 
-`nodeName`, `tagName` 프로퍼티
-
 - DOM 노드의 태그 이름 확인
-- `tagName`: 요소 노드에만 존재
-- `nodeName`: 모든 노드에 존재
+- `tagName`: 요소 노드에만 존재하는 프로퍼티
+- `nodeName`: 모든 노드에 존재하는 프로퍼티
   - 요소 노드를 대상으로 하면 `tagName`과 같음
   - 텍스트 노드, 주석 노드 등에서는 노드 타입을 나타내는 문자열 반환
+
+태그 이름은 항상 대문자
+
+- XML 모드는 제외. 브라우저에서 HTML과 XML을 처리하는 모드는 다름
+- 헤더가 `Content-Type: application/xml+xhtml`인 HTML 문서를 받으면 XML 모드로 문서 처리
+- 웹 페이지는 대개 HTML 모드로 처리됨. HTML 모드에서는 `tagName`, `nodeName`이 대문자로 변경
+- XML 모드에서는 케이스가 그대로 유지되지만 XML 모드는 요즘에는 거의 사용되지 않음
 
 ```html
 <body>
@@ -152,25 +138,20 @@ Interface Description Language(IDL)
 </body>
 ```
 
-태그 이름은 항상 대문자
-
-- XML 모드는 제외
-- 브라우저에서 HTML과 XML을 처리하는 모드는 다름
-- 웹 페이지는 대개 HTML 모드로 처리됨
-- 헤더가 `Content-Type: application/xml+xhtml`인 HTML 문서를 받으면 XML 모드로 문서 처리
-- HTML 모드에서는 `tagName`, `nodeName`이 대문자로 변경
-  - `<body>`이든 `<BoDy>`이든 `BODY`가 됨
-- XML 모드에서는 케이스가 그대로 유지
-  - XML 모드는 요즘에는 거의 사용되지 않음
-
 ### innerHTML로 내용 조작하기
 
-`innerHTML` 프로퍼티
-
-- 요소 안의 HTML을 문자열 형태로 받을 수 있고 수정도 가능
-- 문법이 틀린 HTML을 넣으면 브라우저가 자동으로 수정
+- `innerHTML`: 요소 안의 HTML을 문자열 형태로 받을 수 있고 수정도 할 수 있는 프로퍼티
+- 요소 노드에만 사용 가능하고 문법이 틀린 HTML을 넣으면 브라우저가 자동으로 수정
 - `<script>` 태그를 삽입하면 해당 태그는 HTML의 일부가 되나 실행은 되지 않음
-- 요소 노드에만 사용 가능
+
+`elem.innerHTML += "추가 html"`
+
+- 요소에 HTML 추가가 아니라 내용을 덮어씀
+- `elem.innerHTML = elem.innerHTML + "추가 html"`의 축약
+- 기존 내용을 완전히 삭제하고 기존 내용과 새로운 내용을 합친 새로운 내용을 밑바닥부터 씀
+- 이미지 등의 리소스 전부 다시 로딩
+  - 텍스트와 이미지가 많았다면 버벅이고, 입력 태그에 입력한 값이 있었다면 없어짐 등의 부작용
+- `innerHTML` 말고 HTML을 추가하는 방법으로 부작용을 없앨 수 있음
 
 ```html
 <body>
@@ -183,23 +164,9 @@ Interface Description Language(IDL)
 </body>
 ```
 
-`elem.innerHTML += "추가 html"`
-
-- 요소에 HTML 추가가 아니라 내용을 덮어씀
-- `elem.innerHTML = elem.innerHTML + "추가 html"`의 축약
-- 기존 내용을 완전히 삭제하고 기존 내용과 새로운 내용을 합친 새로운 내용을 밑바닥부터 씀
-- 이미지 등의 리소스 전부 다시 로딩
-  - 텍스트와 이미지가 많았다면 버벅임
-  - 텍스트 드래그가 있었다면 해제
-  - 입력 태그에 입력한 값이 있었다면 없어짐
-  - 등등의 다양한 부작용 사례
-- `innerHTML` 말고 HTML을 추가하는 방법으로 부작용을 없앨 수 있음
-
 ### outerHTML로 요소의 전체 HTML 보기
 
-`outerHTML`
-
-- 요소 전체 HTML이 담긴 프로퍼티
+- `outerHTML`: 요소 전체 HTML이 담긴 프로퍼티
 - `innerHTML`에 요소 자체를 더한 것이라 봐도 됨
 - `innerHTML`과 달리 `outerHTML`로 HTML을 쓰면 요소 자체가 바뀌지 않고 DOM 안의 요소를 교체
 - `outerHTML`에 하는 할당 연산이 DOM 요소를 수정하지 않기 때문
@@ -217,16 +184,13 @@ Interface Description Language(IDL)
 </script>
 ```
 
-`div.outerHTML = ...`이 하는 일
-
-- 문서에서 `div` 삭제
-- 새로운 HTML 조각인 `<p>...</p>`를 삭제 후 생긴 공간에 삽입
+- `div.outerHTML = ...`이 하는 일
+- 문서에서 `div` 삭제를 삭제하고 새로운 HTML 조각인 `<p>...</p>`를 삭제 후 생긴 공간에 삽입
 - `div`에는 여전히 기존값이 저장되어 있고 새로운 HTML 조각은 어디에도 저장되어 있지 않음
 
 ### nodeValue/data로 텍스트 노드 내용 조작하기
 
-`nodeValue`, `data` 프로퍼티
-
+- `nodeValue`, `data` 프로퍼티
 - 텍스트 노드 같은 다른 타입의 노드에 `innerHTML`과 유사한 역할
 - 두 프로퍼티는 거의 유사하나 명세서상의 작은 차이가 있음
 - `innerHTML` 프로퍼티는 요소 노드에만 사용 가능
@@ -254,10 +218,7 @@ Interface Description Language(IDL)
 
 ### textContent로 순수한 텍스트만
 
-`textContent`
-
-- 요소 내의 텍스트에 접근
-- 태그는 제외하고 텍스트만 추출
+- `textContent`: 요소 내의 텍스트에 접근해 태그는 제외하고 텍스트만 추출
 - 텍스트를 안전한 방법으로 쓸 수 있기 때문에 유용
 
 ```html
@@ -270,31 +231,21 @@ Interface Description Language(IDL)
 </script>
 ```
 
-`innerHTML`
+`innerHTML`, `innerText`, `textContent`
 
-- 사용자가 입력한 문자열이 HTML 형태로 태그와 함께 저장
-- `Element`의 속성
-
-`textContent`
-
-- 사용자가 입력한 문자열이 순수 텍스트 형태로 저장
-- 태그를 구성하는 특수문자들이 문자열로 처리됨
-  - 예상치 못한 HTML이 사이트에 침투하는 것을 방지
-- `innerText`와 달리 해당 노드가 가진 텍스트 값을 그대로 읽음
-- `Node`의 속성
-
-`innerText`
-
-- 사용자에게 보이는 텍스트 값을 가져옴
-- `Element`의 속성
+- `innerHTML`: `Element`의 속성
+  - 사용자가 입력한 문자열이 HTML 형태로 태그와 함께 저장
+- `innerText`: `Element`의 속성
+  - 사용자에게 보이는 텍스트 값을 가져옴
+- `textContent`: `Node`의 속성
+  - `innerText`와 달리 해당 노드가 가진 텍스트 값을 그대로 읽음
+  - 사용자가 입력한 문자열이 순수 텍스트 형태로 저장
+  - 태그를 구성하는 특수문자들이 문자열로 처리되어 예상치 못한 HTML이 사이트에 침투하는 것을 방지
 
 ### hidden 프로퍼티
 
-`hidden`속성·프로퍼티
-
-- 요소를 보여줄지 말지 지정
-- HTML 안에서도, JavaScript 안에서도 사용 가능
-  - HTML의 `hidden` 속성, JS의 `hidden` 프로퍼티
+- `hidden`: 요소를 보여줄지 말지 지정
+- HTML의 `hidden` 속성, JS의 `hidden` 프로퍼티
 - 기술적으로 `style="display:none"`과 동일
 
 ```html
@@ -308,25 +259,12 @@ Interface Description Language(IDL)
 
 ### 기타 프로퍼티
 
-`value`
-
-- `<input>`, `<select>`, `<textarea>`의 값 저장
-
-`href`
-
-- `<a href="...">`의 href 속성값 저장
-
-`id`
-
-- id 속성값 저장
-
-기타 등등
-
-`console.dir(elem)`으로 해당 요소에서 지원하는 프로퍼티 목록 확인 가능
-
-대부분의 표준 HTML 속성은 대응하는 DOM 프로퍼티를 가짐
-
-- 하지만 HTML 요소와 DOM 프로퍼티가 항상 같은 것은 아님
+- `value`: `<input>`, `<select>`, `<textarea>`의 값 저장
+- `href`: `<a href="...">`의 href 속성값 저장
+- `id`: id 속성값 저장
+- 기타 등등
+- `console.dir(elem)`으로 해당 요소에서 지원하는 프로퍼티 목록 확인 가능
+- 대부분의 표준 HTML 속성은 대응하는 DOM 프로퍼티를 가지나 HTML 요소와 DOM 프로퍼티가 항상 같은 것은 아님
 
 ### 예제
 
@@ -404,8 +342,6 @@ DOM 프로퍼티
 
 ### DOM 프로퍼티
 
-DOM 프로퍼티와 메서드
-
 - 자신만의 DOM 프로퍼티 생성 가능
 - 일반 자바스크립트 객체처럼 행동
 - 어떤 값이든 가능
@@ -429,29 +365,21 @@ document.body.sayHi(); // Hello, I'm BODY
 
 ### HTML 속성
 
-HTML 속성의 특징
-
-- HTML 태그는 복수의 속성을 가질 수 있음
-- 대소문자를 가리지 않음
-- 값은 항상 문자열
-
-HTML 표준 속성
-
-- 브라우저가 HTML을 파싱해 DOM 객체를 만들 때
-- HTML 표준 속성을 인식
-- 이 표준 속성을 사용해 DOM 프로퍼티 생성
-
-비표준 속성
-
-- 비표준 속성은 프로퍼티로 전환되지 않음
-- 이에 매핑하는 DOM 프로퍼티가 생성되지 않음
-- 한 요소에서는 표준인 속성이 다른 요소에서는 표준이 아닐 수 있음
+- HTML 속성의 특징
+  - HTML 태그는 복수의 속성을 가질 수 있음
+  - 대소문자를 가리지 않음
+  - 값은 항상 문자열
+- HTML 표준 속성
+  - 브라우저가 HTML을 파싱해 DOM 객체를 만들 때 HTML 표준 속성을 인식하고 이것을 사용해 DOM 프로퍼티 생성
+- 비표준 속성
+  - 비표준 속성은 프로퍼티로 전환되지 않음. 이에 매핑하는 DOM 프로퍼티가 생성되지 않음
+  - 한 요소에서는 표준인 속성이 다른 요소에서는 표준이 아닐 수 있음
 
 ```html
 <body id="test" something="non-standard">
   <script>
     alert(document.body.id); // test
-    alert(document.body.something); // undefined. 비표준 속성은 프로퍼티로 전환되지 않음
+    alert(document.body.something); // undefined (비표준 속성은 프로퍼티로 전환되지 않음)
   </script>
 </body>
 
@@ -459,23 +387,18 @@ HTML 표준 속성
   <input id="input" type="text" />
   <script>
     alert(input.type); // text
-    alert(body.type); // undefined. type은 body의 표준 속성이 아니므로 DOM 프로퍼티가 생성되지 않음
+    alert(body.type); // undefined (type은 body의 표준 속성이 아니므로 DOM 프로퍼티가 생성되지 않음)
   </script>
 </body>
 ```
 
 비표준 속성에도 접근할 수 있는 메서드들
 
-- `elem.hasAttribute(name)`
-  - 속성 존재 여부 확인
-- `elem.getAttibute(name)`
-  - 속성값 가져오기
-- `elem.setAttribute(name, value)`
-  - 속성값 변경
-- `elem.removeAttribute(name)`
-  - 속성값 삭제
-- `elem.attributes`
-  - 모든 속성값 읽기
+- `elem.hasAttribute(name)`: 속성 존재 여부 확인
+- `elem.getAttibute(name)`: 속성값 가져오기
+- `elem.setAttribute(name, value)`: 속성값 변경
+- `elem.removeAttribute(name)`: 속성값 삭제
+- `elem.attributes`: 모든 속성값 읽기
   - 내장 클래스 `Attr`을 구현한 객체들이 담긴 열거 가능한 컬렉션 반환
   - 각 객체에는 `name`, `value` 프로퍼티 존재
 - `outerHTML`로 직접 추가한 속성을 포함한 모든 속성을 볼 수 있음
@@ -517,11 +440,13 @@ HTML 표준 속성
 
 ### DOM 프로퍼티 값의 타입
 
-DOM 프로퍼티는 항상 문자열이 아님
-
-- 대부분의 프로퍼티의 값은 문자열
-- 체크 박스에 사용되는 `input.checked` 프로퍼티는 불린값 가짐
-- `style` 속성은 문자열이지만 `style` 프로퍼티는 객체
+- DOM 프로퍼티는 항상 문자열이 아님
+  - 대부분의 프로퍼티의 값은 문자열
+  - 체크 박스에 사용되는 `input.checked` 프로퍼티는 불린값 가짐
+  - `style` 속성은 문자열이지만 `style` 프로퍼티는 객체
+- DOM 프로퍼티 값이 문자열이더라도 속성값과 다른 경우
+  - `href` 속성이 상대 URL이나 `#hash`더라도 `href` DOM 프로퍼티에는 항상 URL 전체가 저장됨
+  - HTML 내에 명시된 `href` 속성을 정확히 얻고 싶다면 `getAttribute` 사용
 
 ```html
 <div id="div" style="color:red;font-size:120%">Hello</div>
@@ -530,14 +455,7 @@ DOM 프로퍼티는 항상 문자열이 아님
   alert(div.style); // [object CSSStyleDeclaration]. 객체
   alert(div.style.color); // red
 </script>
-```
 
-DOM 프로퍼티 값이 문자열이더라도 속성값과 다른 경우
-
-- `href` 속성이 상대 URL이나 `#hash`더라도 `href` DOM 프로퍼티에는 항상 URL 전체가 저장됨
-- HTML 내에 명시된 `href` 속성을 정확히 얻고 싶다면 `getAttribute` 사용
-
-```html
 <a id="a" href="#hello">link</a>
 <script>
   alert(a.getAttribute("href")); // #hello. 속성
@@ -547,14 +465,12 @@ DOM 프로퍼티 값이 문자열이더라도 속성값과 다른 경우
 
 ### 비표준 속성, dataset
 
-비표준 속성
-
 - 사용자가 직접 지정한 데이터를 HTML에서 자바스크립트로 넘기고 싶은 경우
 - 자바스크립트를 사용해 조작할 HTML 요소를 표시하기 위해 사용하는 경우
 - 요소에 스타일을 적용하는 경우
-- 속성은 클래스보다 다루기 편리
-  - 새 클래스를 추가하거나 지우는 것보다 더 쉽게 상태 변경 가능
-  - `div.setAttribute('order-state', 'canceled')`
+- 새 클래스를 추가하거나 지우는 것보다 속성을 사용해 더 쉽게 상태 변경 가능
+- `dataset`: `data-`로 시작하는 속성을 사용할 수 있는 프로퍼티
+  - `data-`로 시작하는 속성 전체는 개발자가 용도에 맞게 사용하도록 별도로 예약됨
 
 ```html
 <div show-info="name"></div>
@@ -584,11 +500,6 @@ DOM 프로퍼티 값이 문자열이더라도 속성값과 다른 경우
 <div class="order" order-state="pending">A pending order.</div>
 <div class="order" order-state="canceled">A canceled order.</div>
 ```
-
-`dataset` 프로퍼티
-
-- `data-`로 시작하는 속성 전체는 개발자가 용도에 맞게 사용하도록 별도로 예약됨
-- `data-`로 시작하는 속성 사용 가능
 
 ```html
 <body data-about="Elephants">
@@ -644,10 +555,8 @@ document.body.append(div); // 삽입해야 페이지에 비로소 나타남
 - `node.before(노드 or 문자열)`: node 이전에 노드나 문자열 삽입
 - `node.after(노드 or 문자열)`: node 다음에 노드나 문자열 삽입
 - `node.replaceWith(노드 or 문자열)`: node를 새로운 노드나 문자열로 대체
-- 문자열을 넘기면 자동으로 텍스트 노드 생성
-  - HTML이 아닌 넘긴 문자열 그 형태로 삽입됨
-  - 특수문자는 이스케이프 처리
-  - `elem.textContent`처럼 안전한 방법으로 삽입됨
+- 문자열을 넘기면 자동으로 텍스트 노드 생성. `elem.textContent`처럼 안전한 방법으로 삽입됨
+  - HTML이 아닌 넘긴 문자열 그 형태로 삽입됨. 특수문자는 이스케이프 처리
 - 복수의 노드와 문자열 한번에 삽입 가능
 
 ```html
@@ -695,47 +604,28 @@ after
 
 ### insertAdjacentHTML/Text/Element
 
-HTML 그 자체를 삽입하고 싶은 경우
-
-- `elem.innerHTML`을 사용한 것처럼 태그가 정상적으로 동작
-
-`elem.insertAdjacentHTML(where, html)`
-
-- `where`: `elem`을 기준으로 하는 상대 위치
-- 아래 값 중 하나
-  - `'beforebegin'`: `elem` 바로 앞에 `html` 삽입
-  - `'afterbegin'`: `elem`의 첫 번째 자식 요소 바로 앞에 `html` 삽입
-  - `'beforeend'`: `elem`의 마지막 자식 요소 바로 다음에 `html` 삽입
-  - `'afterend'`: `elem` 바로 다음에 `html` 삽입
-- `html`: HTML 문자열
-- 이스케이프 처리되지 않고 그대로 삽입
-
-`elem.insertAdjacentText(where, text)`
-
-- HTML 대신 `text`를 문자 그대로 삽입
-
-`elem.insertAdjacentElement(where, elem)`
-
-- 요소를 삽입
+- HTML 그 자체를 삽입하고 싶은 경우 사용. `elem.innerHTML`을 사용한 것처럼 태그가 정상적으로 동작
+- `elem.insertAdjacentHTML(where, html)`: `elem`을 기준으로 하는 상대 위치 `where`에 HTML 문자열 `html`을 삽입
+  - `'beforebegin'`: `elem` 바로 앞
+  - `'afterbegin'`: `elem`의 첫 번째 자식 요소 바로 앞
+  - `'beforeend'`: `elem`의 마지막 자식 요소 바로 다음
+  - `'afterend'`: `elem` 바로 다음
+  - 이스케이프 처리되지 않고 그대로 삽입
+- `elem.insertAdjacentText(where, text)`: HTML 대신 `text`를 문자 그대로 삽입
+- `elem.insertAdjacentElement(where, elem)`: 요소를 삽입
 
 ### 노드 삭제하기
 
-`node.remove()`
-
+- `node.remove()`
 - 요소 노드를 다른 곳으로 옮길 때, 기존에 있던 노드를 지울 필요 없음
 - 모든 노드 삽입 메서드는 자동으로 기존에 있던 노드를 삭제하고 새로운 곳으로 노드를 옮김
 
 ### cloneNode로 노드 복제하기
 
-`elem.cloneNode(true)`
-
-- `elem`의 깊은 복제본 생성
-- 속성 전부와 자손 요소 전부 복사
+- `elem.cloneNode(true)`: `elem`의 깊은 복제본 생성. 속성 전부와 자손 요소 전부 복사
 - `false`를 전달하면 후손 노드 없이 `elem`만 복제
 
 ### DocumentFragment
-
-`DocumentFragment`
 
 ```javascript
 let fragment = new DocumentFragment();
@@ -743,37 +633,29 @@ let fragment = new DocumentFragment();
 
 - 특별한 DOM 노드 타입
 - 여러 노드로 구성된 그룹을 감싸 다른 곳으로 전달하게 해주는 래퍼처럼 동작
-
-문서에 있는 다른 노드를 `DocumentFragment`에 추가
-
-- `DocumentFragment`를 문서 어딘가에 삽입
-- `DocumentFragment`는 사라짐
-- `DocumentFragment`에 추가한 노드만 남음
+- 문서에 있는 다른 노드를 `DocumentFragment`에 추가하고 그것을 문서 어딘가에 삽입하는 경우
+- `DocumentFragment`는 사라지고 `DocumentFragment`에 추가한 노드만 남음
 
 ### 구식 삽입·삭제 메서드
 
-하위 호환성을 위해 남은 구식 DOM 조작 메서드
-
+- 하위 호환성을 위해 남은 구식 DOM 조작 메서드
 - `parentElem.appendChild(node)`: `parentElem`의 마지막 자식으로 `node` 추가
 - `parentElem.insertBefore(node, nextSibling)`: `parentElem` 안의 `nextSibling` 앞에 `node` 추가
 - `parentElem.replaceChild(node, oldChild)`: `parentElem`의 자식 노드 중 `oldChild`를 `node`로 교체
 - `parentElem.removeChild(node)`: `parentElem`에서 `node`를 삭제
-  - `node`가 `parentElem`의 자식이라는 가정 하
+- `node`가 `parentElem`의 자식이라는 가정 하
 - 위 메서드들은 모두 삽입하거나 삭제한 노드 반환
 
 ### 'document.write'에 대한 첨언
 
-`document.write(html)`
-
+- `document.write(html)`
 - `html`이 페이지 그 자리에 즉시 추가됨
-- DOM도 없고 그 어떤 표준도 존재하지 않았던 과거에 만들어진 메서드
-  - 표준에 정의된 메서드가 아님
+- DOM도 없고 그 어떤 표준도 존재하지 않았던 과거에 만들어진 메서드. 표준에 정의된 메서드가 아님
 - 페이지를 불러오는 도중에만 작동
-- 페이지가 다 로드되고 나서 `document.write`를 호출하면 기존에 있던 문서 내용이 사라짐
+- 페이지가 다 로드된 후 `document.write`를 호출하면 기존에 있던 문서 내용이 사라짐
   - 그래서 페이지 로드가 다 끝난 후에는 사용 불가
 - 브라우저는 HTML을 읽는(파싱하는) 도중에 `document.write(HTML)`를 만나면 텍스트 형식의 HTML을 마치 원래 페이지에 있었던 것처럼 해석
-  - 중간에 DOM 조작을 하지 않기 때문에 속도가 아주 빨라지는 장점
-  - DOM 구조가 완성되기 전에 페이지에 내용이 삽입되기 때문
+  - DOM 구조가 완성되기 전에 페이지에 내용이 삽입되어 중간에 DOM 조작을 하지 않기 때문에 속도가 아주 빨라지는 장점
   - 엄청나게 많은 글자를 HTML에 동적으로 추가해야 하는데 아직 페이지를 불러오는 중이고, 속도가 필요한 상황이면 유용
   - 하지만 이런 상황은 드물어서 잘 쓰지 않음
 
@@ -798,9 +680,7 @@ createTextNode vs innerHTML vs textContent
 
 1. `elem.append(document.createTextNode(text))`
 2. `elem.innerHTML = text`
-3. `elem.textContent = text`
-
-- 1과 3은 같은 동작을 수행
+3. `elem.textContent = text` (1과 3은 같은 동작을 수행)
 
 요소 삭제하기
 
@@ -810,17 +690,12 @@ createTextNode vs innerHTML vs textContent
   <li>World</li>
 </ol>
 <script>
-  function clear(elem) {} // 작성
+  function clear(elem) {
+    for (let i = 0; i < elem.childNodes.length; i++)
+      elem.childNodes[i].remove();
+  }
   clear(elem); // elem 내부 리스트를 삭제
 </script>
-```
-
-```javascript
-function clear(elem) {
-  for (let i = 0; i < elem.childNodes.length; i++) {
-    elem.childNodes[i].remove();
-  }
-}
 ```
 
 - 잘못된 방법
@@ -881,24 +756,18 @@ function clear(elem) {
 
 ### className과 classList
 
-`elem.class`
-
-- 과거 오래된 자바스크립트에는 `class` 같은 예약어는 객체의 프로퍼티로 사용 불가했음
-- 지금은 이런 제약사항은 없음
-
-`elem.className`
-
-- 클래스를 위한 프로퍼티
-- `"class"` 속성에 대응
-- 무언가를 대입하면 전체가 바뀜
-
-`elem.classList`
-
-- 클래스 하나만 추가하거나 제거하고 싶을 경우 사용하는 프로퍼티
-- `elem.classList.add/remove("class")`: class를 추가하거나 제거
-- `elem.classList.toggle("class")`: class가 존재할 경우 class를 제거하고, 그렇지 않은 경우 추가
-- `elem.classList.contains("class")`: class 존재 여부 반환
-- 이터러블 객체이므로 `for..of` 사용 가능
+- `elem.class`
+  - 과거 오래된 자바스크립트에는 `class` 같은 예약어는 객체의 프로퍼티로 사용 불가했음
+  - 지금은 이런 제약사항은 없음
+- `elem.className`
+  - 클래스를 위한 프로퍼티로 `"class"` 속성에 대응
+  - 무언가를 대입하면 전체가 바뀜
+- `elem.classList`
+  - 클래스 하나만 추가하거나 제거하고 싶을 경우 사용하는 프로퍼티
+  - `elem.classList.add/remove("class")`: class를 추가하거나 제거
+  - `elem.classList.toggle("class")`: class가 존재할 경우 class를 제거하고, 그렇지 않은 경우 추가
+  - `elem.classList.contains("class")`: class 존재 여부 반환
+  - 이터러블 객체이므로 `for..of` 사용 가능
 
 ```html
 <body class="main page">
@@ -913,22 +782,16 @@ function clear(elem) {
 
 ### 요소의 스타일
 
-`elem.style`
-
-- 속성 `"style"`에 쓰인 값과 대응되는 객체
+- `elem.style`: 속성 `"style"`에 쓰인 값과 대응되는 객체
 - 여러 단어를 이어 만든 프로퍼티는 카멜 케이스 사용
 
 ### style 프로퍼티 재지정하기
 
-`delete`로 프로퍼티를 삭제하는 대신 빈 문자열 할당
-
+- `delete`로 프로퍼티를 삭제하는 대신 빈 문자열 할당
 - 빈 문자열을 할당하면 브라우저는 마치 프로퍼티가 없었던 것처럼 CSS 클래스와 브라우저 내장 스타일을 페이지에 적용
-
-`style.cssText`
-
-- 문자열을 사용해 전체 스타일을 설정할 때 사용
-- 기존 스타일에 스타일을 추가하는 것이 아닌 전체를 교체
-- `elem.setAttribute('style', '...')`로 속성을 설정해도 같은 효과
+- `style.cssText`: 문자열을 사용해 전체 스타일을 설정
+  - 기존 스타일에 스타일을 추가하는 것이 아닌 전체를 교체
+  - `elem.setAttribute('style', '...')`로 속성을 설정해도 같은 효과
 
 ```html
 <div id="div">버튼</div>
@@ -947,8 +810,19 @@ function clear(elem) {
 
 ### getComputedStyle로 계산된 스타일 얻기
 
-style 읽기
+```javascript
+getComputedStyle(element, [pseudo]);
+```
 
+- 프로퍼티의 결정값 반환. 프로퍼티 전체 이름이 필요
+- 계산값을 얻기 위해 만들어진 오래된 메서드이나 결정값이 더 편하기 때문에 표준이 개정됨
+- `element`: 값을 읽을 요소
+- `pseudo`: 의사 요소가 필요할 경우 명시. 값이 없거나 빈 문자열이면 요소 자체를 의미
+- `elem.style` 같이 스타일 정보가 들어 있는 객체를 반환하지만 `elem.style`과 달리 전체 CSS 클래스 정보도 함께 담김
+- `:visited` 링크 관련 스타일은 숨겨짐
+  - 방문한 적 있는 링크에 `:visited` CSS 의사 클래스 사용 가능
+  - 자바스크립트로는 `:visited`에 적용된 스타일을 얻을 수 없음
+  - 악의를 가진 페이지가 사용자가 링크를 방문했는지 여부를 테스트하고 사생활 침해를 방지하기 위함
 - `style` 프로퍼티는 `"style"` 속성의 값을 읽을 때만 사용 가능
 - `style` 프로퍼티만으로는 CSS 종속(CSS cascade) 값을 다룰 수 없음
 - `elem.style`만으로는 CSS 클래스를 사용해 적용한 스타일을 읽을 수 없음
@@ -967,38 +841,7 @@ style 읽기
   <script>
     alert(document.body.style.color); // 빈 문자열
     alert(document.body.style.marginTop); // 빈 문자열
-  </script>
-</body>
-```
 
-```javascript
-getComputedStyle(element, [pseudo]);
-```
-
-- 프로퍼티의 결정값 반환
-  - 계산값을 얻기 위해 만들어진 오래된 메서드이나 결정값이 더 편하기 때문에 표준이 개정됨
-- `element`: 값을 읽을 요소
-- `pseudo`: 의사 요소가 필요할 경우 명시
-  - 값이 없거나 빈 문자열이면 요소 자체를 의미
-- `elem.style` 같이 스타일 정보가 들어 있는 객체 반환
-- `elem.style`과 달리 전체 CSS 클래스 정보도 함께 담김
-- 프로퍼티 전체 이름이 필요
-- `:visited` 링크 관련 스타일은 숨겨짐
-  - 방문한 적 있는 링크에 `:visited` CSS 의사 클래스를 사용할 수 있음
-  - 자바스크립트로는 `:visited`에 적용된 스타일을 얻을 수 없음
-  - 악의를 가진 페이지가 사용자가 링크를 방문했는지 여부를 테스트하고 사생활 침해를 방지하기 위함
-
-```html
-<head>
-  <style>
-    body {
-      color: red;
-      margin: 5px;
-    }
-  </style>
-</head>
-<body>
-  <script>
     let computedStyle = getComputedStyle(document.body);
     alert(computedStyle.marginTop); // 5px
     alert(computedStyle.color); // rgb(255, 0, 0)
@@ -1008,11 +851,9 @@ getComputedStyle(element, [pseudo]);
 
 CSS 속성과 관련된 두 가지 개념
 
-1. 계산값(computed style value)
-   - CSS 규칙, CSS 상속이 모두 적용된 값
+1. 계산값(computed style value): CSS 규칙, CSS 상속이 모두 적용된 값
    - `height:1em`, `font-size:125%` 등
-2. 결정값(resolved style value)
-   - 요소에 최종적으로 적용되는 값
+2. 결정값(resolved style value): 요소에 최종적으로 적용되는 값
    - 브라우저는 계산값을 받아 고정 단위를 사용하는 절댓값으로 변환
    - `height:20px`, `font-size:16px` 등
 

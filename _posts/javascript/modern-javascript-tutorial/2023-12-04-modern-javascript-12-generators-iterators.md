@@ -1,9 +1,9 @@
 ---
 title: 모던 JavaScript 튜토리얼 12 - 제너레이터와 비동기 이터레이션
 date: 2023-12-04 08:07:03 +0900
-last_modified_at: 2023-12-10 16:16:45 +0900
+last_modified_at: 2024-01-21 12:19:19 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags: [javascript, generator, iterator, iterable, async]
 ---
 
 제너레이터, async 이터레이터와 제너레이터
@@ -18,19 +18,15 @@ tags: [javascript]
 
 ### 제너레이터 함수
 
-제너레이터 함수 `function*`
-
-- 제너레이터 함수라 불리는 특별한 문법 구조 `function*`
-- 제너레이터 생성
-- `yield <value>`문으로 값 반환
-- `value`를 생략하면 `undefined`가 됨
-
 ```javascript
 function* generateSequence() {
   yield value;
   ...
 }
 ```
+
+- 제너레이터 함수라 불리는 특별한 문법 구조 `function*`로 제너레이터 생성
+- `yield <value>`문으로 값 반환. `value`를 생략하면 `undefined`가 됨
 
 제너레이터 함수의 동작 방식
 
@@ -50,8 +46,7 @@ alert(generator); // [object Generator]
 
 `next()`
 
-- 제너레이터의 주요 메서드
-- 호출하면 가장 가까운 `yield <value>`문을 만날 때까지 실행 지속
+- 제너레이터의 주요 메서드로, 호출하면 가장 가까운 `yield <value>`문을 만날 때까지 실행
 - 이후 `yield <value>`문을 만나면 실행이 멈추고 바깥 코드로 반환
 - `next()`는 항상 아래 두 프로퍼티를 가진 객체를 반환
   - `value`: 산출값
@@ -75,20 +70,17 @@ alert(JSON.stringify(one)); // {"value":3,"done":false}
 
 `function* f(...)` vs. `function *f(...)`
 
-- 둘 다 맞음
-- `*`는 제너레이터 `함수`를 나타내므로 첫 번째 문법이 선호됨
+- 둘 다 맞지만 `*`는 제너레이터 `함수`를 나타내므로 첫 번째 문법이 선호됨
 - `*`는 종류를 나타내는 것이지 이름을 나타내는 것이 아니기 때문
 
 ### 제너레이터와 이터러블
 
-제너레이터는 이터러블
-
-- `next()` 메서드 존재
-- `for..of` 반복문 사용 가능
-- 전개 구문(`...`) 같은 관련 기능 사용 가능
+- 제너레이터는 이터러블
+- `next()` 메서드가 있고 `for..of` 반복문을 사용할 수 있고 전개 구문(`...`) 같은 관련 기능도 사용할 수 있음
 - `for..of` 이터레이션이 `done: true`일 때 마지막 `value`를 무시
 
 ```javascript
+// for..of
 function* generateSequence() {
   yield 1; // { done: false, value: 1}
   yield 2; // { done: false, value: 2}
@@ -97,12 +89,23 @@ function* generateSequence() {
 let generator = generateSequence();
 for (let value of generator) alert(value); // 1, 2. done: true일 때 value를 무시
 
+// spread ...
 function* generateSequence2() {
-  yield 1;
-  yield 2;
-  yield 3;
+  for (let i = 1; i < 3; i++) yield i;
 }
-let sequence = [0, ...generateSequence2()]; // [0, 1, 2, 3]
+let sequence = [0, ...generateSequence2()]; // [0, 1, 2]
+let sequence = [0, ...generateSequence2]; // ()로 호출하지 않으면 에러
+
+// next
+function* generateSequence3() {
+  for (let i = 0; i < 3; i++) yield i;
+}
+let gen = generateSequence3();
+while (true) {
+  let { done, value } = gen.next();
+  if (done) break;
+  console.log(value);
+}
 ```
 
 ### 이터러블 대신 제너레이터 사용하기
@@ -128,10 +131,8 @@ let range = {
 alert([...range]); // 1,2,3,4,5
 ```
 
-- `for..of` 최초 호출 시, `Symbol.iterator` 호출됨
-- `Symbol.iterator`는 이터레이터 객체 반환
-- `for..of`는 반환된 이터레이터 객체만을 대상으로 동작
-- `for..of` 반복문에 의해 이터레이션마다 `next()` 호출됨
+- `for..of` 최초 호출 시, `Symbol.iterator`가 호출되고, `Symbol.iterator`는 이터레이터 객체 반환
+- `for..of`는 반환된 이터레이터 객체만을 대상으로 동작하고, `for..of` 반복문에 의해 이터레이션마다 `next()` 호출됨
 
 `Symbol.iterator` 대신 제너레이터 함수를 사용해 제너레이터 함수로 반복 가능
 
@@ -150,18 +151,15 @@ alert([...range]); // 1,2,3,4,5
 
 ### 제너레이터 컴포지션
 
-제너레이터 컴포지션(generator composition)
-
+- 제너레이터 컴포지션(generator composition)은 제너레이터의 특별한 기능
 - 제너레이터 안에 제너레이터를 임베딩(embedding, composing)할 수 있게 함
-- 제너레이터의 특별한 기능
 - 한 제너레이터의 흐름을 자연스럽게 다른 제너레이터에 삽입 가능
 - 중간 결과 저장 용도의 추가 메모리가 필요하지 않음
 
 `yield*` 지시자
 
 - 실행을 다른 제너레이터에게 위임(delegate)
-- `yield* gen`이 제너레이터 `gen`을 대상으로 반복을 수행
-- 산출값들을 바깥으로 전달
+- `yield* gen`이 제너레이터 `gen`을 대상으로 반복을 수행하고 산출값들을 바깥으로 전달
 
 ```javascript
 function* generateSequence(start, end) {
@@ -193,8 +191,7 @@ function* generateAlphaNum() {
 - `yield`가 양방향 길과 같은 역할을 함
 - `generator.next(arg)` 호출해 값을 안·밖으로 전달
 - 인수 `arg`는 `yield`의 결과가 됨
-- `generator.next()`를 처음 호출할 때는 항상 인수가 없어야 함
-  - 넘어오더라도 무시되어야 함
+- `generator.next()`를 처음 호출할 때는 항상 인수가 없어야 함. 넘어오더라도 무시되어야 함
 
 ```javascript
 function* gen() {
@@ -229,12 +226,12 @@ true
 
 ### generator.throw
 
-`generator.throw`
-
 - 외부 코드가 제너레이터 안으로 에러를 만들거나 던질 수도 있음
-  - 에러는 결과의 한 종류이기 때문에 자연스러운 현상
+- 에러는 결과의 한 종류이기 때문에 자연스러운 현상
 - 에러를 `yield` 안으로 전달하려면 `generator.throw(err)`를 호출해야 함
 - `generator.throw(err)`를 호출하게 되면 `err`는 `yield`가 있는 줄로 던져짐
+- 제너레이터 안에서 예외를 처리하지 않은 경우
+- 예외는 여타 예외와 마찬가지로 제너레이터 호출 코드(외부 코드)로 떨어져 나옴
 
 ```javascript
 function* gen() {
@@ -249,10 +246,6 @@ let generator = gen();
 let question = generator.next().value;
 generator.throw(new Error("에러 발생")); // (2). 제너레이터 안으로 에러 던짐
 ```
-
-제너레이터 안에서 예외를 처리하지 않은 경우
-
-- 예외는 여타 예외와 마찬가지로 제너레이터 호출 코드(외부 코드)로 떨어져 나옴
 
 ```javascript
 function* gen() {
@@ -284,10 +277,8 @@ try {
 
 ### async 이터레이터
 
-비동기 이터레이터
-
-- 일반 이터레이터와 유사
-- 약간의 문법적 차이 존재
+- 비동기 이터레이터
+- 일반 이터레이터와 유사하지만 약간의 문법적 차이 존재
 
 이터러블 객체를 비동기적으로 만들기
 
@@ -338,18 +329,15 @@ alert([...range]); // TypeError: range is not iterable
 제너레이터
 
 - 이터러블 객체
-- 일반 제너레이터에서는 `await` 사용 불가
-- 일반 제너레이터는 동기적 문법
+- 일반 제너레이터는 동기적 문법이기 때문에 일반 제너레이터에서는 `await` 사용 불가
 - 모든 값은 동기적으로 생산됨
 
 async 제너레이터
 
-- 제너레이터 본문에서 `await`를 사용해야만 하는 상황이 발생하는 경우
-  - 네트워크 요청을 해야 하는 상황
+- 제너레이터 본문에서 네트워크 요청 등 `await`를 사용해야만 하는 상황이 발생하는 경우
 - 제너레이터 함수 앞에 `async`를 붙임
 - `asyncGenerator.next()` 메서드는 비동기적으로 동작하고 프라미스를 반환
-- async 제너레이터에서는 `await`를 붙여 값을 얻어야 함
-  - `result = await generator.next();`
+- async 제너레이터에서는 `await`를 붙여 값을 얻음. `result = await generator.next();`
 
 ```javascript
 function* generateSequence(start, end) {

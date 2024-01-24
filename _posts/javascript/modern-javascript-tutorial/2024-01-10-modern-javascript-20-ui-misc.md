@@ -1,9 +1,9 @@
 ---
 title: 모던 JavaScript 튜토리얼 20 - 기타 1
 date: 2024-01-10 13:44:25 +0900
-last_modified_at: 2024-01-14 08:45:16 +0900
+last_modified_at: 2024-01-24 09:42:04 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags: [javascript, mutation-observer, selection, range]
 ---
 
 Mutation observer, Selection and Range
@@ -13,6 +13,7 @@ Mutation observer, Selection and Range
 `MutationObserver`
 
 - DOM 요소를 관찰하고 변경 사항을 감지하면 콜백을 실행하는 내장 객체
+- `MutationObserver`는 DOM 하위 트리 내 모든 변경 사항에 반응할 수 있음
 
 ### Syntax
 
@@ -29,19 +30,15 @@ observer.observe(node, config); // DOM 노드에 연결
 - `attributes`: `node`의 속성들
 - `attributeFilter`: 선택된 속성만 관찰하기 위한 속성 이름의 배열
 - `characterData`: `node.data`(텍스트 내용) 관찰 여부
-- `attributeOldValue`
-  - `true`이면 속성의 이전과 새 값 모두 콜백에 전달
+- `attributeOldValue`: `true`이면 속성의 이전과 새 값 모두 콜백에 전달
   - 그렇지 않으면 새 값만 전달(`attributes` 옵션 필요)
-- `characterDataOldValue`
-  - `true`이면 `node.data`의 이전과 새 값 모두 콜백에 전달
+- `characterDataOldValue`: `true`이면 `node.data`의 이전과 새 값 모두 콜백에 전달
   - 그렇지 않으면 새 값만 전달(`characterData` 옵션 필요)
+- 이후 어떠한 변경에도 `callback`이 실행됨
+  - 변경 사항은 첫 번째 인수에 `MutationRecord` 객체의 리스트로 전달됨
+  - observer 자체는 두 번째 인수로 전달됨
 
-이후 어떠한 변경에도 `callback`이 실행됨
-
-- 변경 사항은 첫 번째 인수에 MutationRecord 객체의 리스트로 전달됨
-- observer 자체는 두 번째 인수로 전달됨
-
-MutationRecord 객체의 프로퍼티
+`MutationRecord` 객체의 프로퍼티
 
 - `type`: 다음 중 하나의 mutation type
   - `"attributes"`: 수정된 속성
@@ -99,8 +96,6 @@ mutationRecords = [{
 }];
 ```
 
-`MutationObserver`는 DOM 하위 트리 내 모든 변경 사항에 반응할 수 있음
-
 ### Usage for integration
 
 도움되는 경우
@@ -117,6 +112,32 @@ mutationRecords = [{
 Dynamic highlight demo
 
 ### Additional methods
+
+노드 관찰을 중지하기
+
+- `observer.disconnect()`: 관찰 중지
+- 관찰을 중지하면 observer가 일부 변경 사항을 아직 처리하지 않았을 수도 있음
+- `observer.takeRecords()`: 처리되지 않은 mutation record 목록을 가져옴
+- 발생했지만 콜백이 이를 처리하지 않은 record
+- `oberser.takeRecords()`에 의해 반환된 record들은 처리중인 큐에서 제거됨
+- 콜백은 `observer.takeRecords()`에 의해 반환된 record에 대해 호출되지 않음
+
+```javascript
+// get a list of unprocessed mutations
+// should be called before disconnecting,
+// if you care about possibly unhandled recent mutations
+let mutationRecords = observer.takeRecords();
+
+// 변경사항 추적 중지
+observer.disconnect();
+...
+```
+
+가비지 컬렉션 상호작용
+
+- observer는 내부적으로 노드에 대한 약한 참조를 사용
+- 즉, 노드가 DOM에서 제거되어 도달할 수 없게 되면 가비지 수집될 수 있음
+- DOM 노드가 관찰된다는 단순한 사실만으로는 가비지 수집을 방지할 수 없음
 
 ## Selection and Range
 

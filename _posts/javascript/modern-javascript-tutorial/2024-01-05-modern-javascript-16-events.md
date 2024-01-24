@@ -1,9 +1,19 @@
 ---
 title: 모던 JavaScript 튜토리얼 16 - 이벤트
 date: 2024-01-05 16:33:33 +0900
-last_modified_at: 2024-01-09 08:06:21 +0900
+last_modified_at: 2024-01-23 18:16:51 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags:
+  [
+    javascript,
+    event,
+    bubbling,
+    capturing,
+    event-delegation,
+    preventdefault,
+    custom-event,
+    dispatch
+  ]
 ---
 
 브라우저 이벤트 소개, 버블링과 캡처링, 이벤트 위임, 브라우저 기본 동작, 커스텀 이벤트 디스패치
@@ -18,33 +28,29 @@ tags: [javascript]
 
 ### 이벤트 핸들러
 
-이벤트 핸들러(event handler)
-
-- 이벤트가 발생했을 때 실행되는 함수(핸들러)
-- 여러 가지 방법으로 할당 가능
-
-HTML 속성
-
-- HTML 안의 `on<event>` 속성에 핸들러 할당
-- 브라우저가 속성값을 이용해 새로운 함수를 생성하고 DOM 프로퍼티에 할당
-- 대소문자를 구분하지 않으나 대개 `onclick` 같이 소문자로 작성
+- 이벤트가 발생했을 때 실행되는 함수(핸들러)로, 여러 가지 방법으로 할당 가능
+- HTML 속성
+  - HTML 안의 `on<event>` 속성에 핸들러 할당
+  - 브라우저가 속성값을 이용해 새로운 함수를 생성하고 DOM 프로퍼티에 할당
+  - 대소문자를 구분하지 않으나 대개 `onclick` 같이 소문자로 작성
+- DOM 프로퍼티
+  - DOM `on<event>` 프로퍼티에 핸들러 할당
+  - HTML 속성을 사용해 만든 핸들러와 동일하게 동작
+  - 대소문자를 구분. `elem.onclick`은 괜찮으나 `elem.ONCLICK`은 불가
+- `onclick` 프로퍼티는 단 하나만 존재
+  - 복수의 이벤트 핸들러 할당 불가. 하나 더 추가하면 기존 핸들러는 덮어써짐
+  - `elem.onclick = null`로 핸들러 제거
 
 ```html
+<!-- HTML 속성에 할당 -->
 <input value="클릭해 주세요." onclick="alert('클릭!')" type="button" />
 <script>
   function countRabbits()
     for (let i = 1; i <= 3; i++) alert(`토끼 ${i}마리`);
 </script>
 <input type="button" onclick="countRabbits()" value="토끼를 세봅시다!" />
-```
 
-DOM 프로퍼티
-
-- DOM `on<event>` 프로퍼티에 핸들러 할당
-- HTML 속성을 사용해 만든 핸들러와 동일하게 동작
-- 대소문자를 구분. `elem.onclick`은 괜찮으나 `elem.ONCLICK`은 불가
-
-```html
+<!-- DOM 프로퍼티에 할당 -->
 <input id="elem" type="button" value="클릭해 주세요." />
 <script>
   elem.onclick = function () {
@@ -53,22 +59,16 @@ DOM 프로퍼티
 </script>
 ```
 
-`onclick` 프로퍼티는 단 하나만 존재
-
-- 복수의 이벤트 핸들러 할당 불가
-- 하나 더 추가하면 기존 핸들러는 덮어써짐
-- `elem.onclick = null`로 핸들러 제거
-
 ### this로 요소에 접근하기
 
-핸들러 내부에 쓰인 `this`는 핸들러가 할당된 요소
+- 핸들러 내부에 쓰인 `this`는 핸들러가 할당된 요소
 
 ### 자주 하는 실수
 
-이미 존재하는 함수
-
-- 괄호 없이 직접 핸들러에 할당하기
-- 함수를 반환하지 않는다면
+- 이미 존재하는 함수는 괄호 없이 직접 핸들러에 할당하기
+- HTML 속성값에는 괄호가 필요
+  - 브라우저는 속성값을 읽고, 속성값을 함수 본문으로 하는 핸들러 함수를 생성
+- `setAttribute`로 핸들러 할당하지 않기
 
 ```javascript
 function sayThanks() {
@@ -77,12 +77,8 @@ function sayThanks() {
 elem.onclick = sayThanks; // sayThanks()가 아님
 ```
 
-HTML 속성값에는 괄호가 필요
-
-- 브라우저는 속성값을 읽고, 속성값을 함수 본문으로 하는 핸들러 함수를 생성
-
 ```html
-<input type="button" id="button" onclick="sayThanks()" />
+<input type="button" onclick="sayThanks()" />
 ```
 
 ```javascript
@@ -90,8 +86,6 @@ button.onclick = function () {
   sayThanks(); // HTML 속성값이 함수 본문
 };
 ```
-
-`setAttribute`로 핸들러 할당하지 않기
 
 ```javascript
 document.body.setAttribute("onclick", function () {
@@ -101,30 +95,25 @@ document.body.setAttribute("onclick", function () {
 
 ### addEventListener
 
-HTML 속성, DOM 프로퍼티를 이용한 이벤트 핸들러 할당 방식의 공통 문제점
-
-- 하나의 이벤트에 복수의 핸들러 할당 불가
-
 ```javascript
 element.addEventListener(event, handler, [options]);
 ```
 
-- `event`: 이벤트 이름
-- `handler`: 핸들러 함수
-- `options`: `once`, `capture`, `passive` 프로퍼티를 갖는 객체
+- HTML 속성, DOM 프로퍼티로는 하나의 이벤트에 복수의 핸들러 할당 불가
+- `event`, `handler`: 이벤트 이름, 핸들러 함수
+- `options`: 객체. `once`, `capture`, `passive` 프로퍼티를 가짐
   - `once`: `true`이면 이벤트가 트리거될 때 리스너가 자동으로 삭제됨
   - `capture`: 어느 단계(버블링, 캡처링)에서 이벤트를 다뤄야 하는지 알려주는 프로퍼티
-  - 호환성 유지를 위해 `options`를 객체가 아닌 `false/true`로 할당하는 것도 가능
-    - 이는 `{capture: false/true}`와 동일
   - `passive`: `true`이면 리스너에서 지정한 함수가 `preventDefault()`를 호출하지 않음
-- 여러번 호출하면 핸들러를 여러개 붙일 수 있음
+  - 호환성 유지를 위해 `options`를 `false/true`로 할당 가능. `{ capture: false/true }`와 동일
+- 여러번 호출해 핸들러를 여러개 붙일 수 있음
+- DOM 프로퍼티에 할당할 수 없는 몇몇 이벤트가 있는데 `addEventListener`로 이벤트를 다룰 수 있음
 
 ```javascript
 element.removeEventListener(event, handler, [options]);
 ```
 
-- 핸들러 삭제
-- 삭제는 동일한 함수만 가능
+- 핸들러 삭제. 삭제는 동일한 함수만 가능
 - 변수에 핸들러 함수를 저장해 놓지 않으면 핸들러 삭제 불가
 
 ```javascript
@@ -153,15 +142,10 @@ input.removeEventListener("click", handler); // 삭제됨. 동일한 함수
 </script>
 ```
 
-DOM 프로퍼티에 할당할 수 없는 몇몇 이벤트 존재
-
-- `addEventListener`를 써서 할당
-
 ```javascript
 document.onDOMContentLoaded = function () {
   alert("DOM이 완성되었습니다."); // 이 얼럿창은 절대 뜨지 않음
 };
-
 document.addEventListener("DOMContentLoaded", function () {
   alert("DOM이 완성되었습니다."); // 이 얼럿창은 제대로 뜸
 });
@@ -169,33 +153,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
 ### 이벤트 객체
 
-이벤트 객체(event object)
-
-- 이벤트가 발생하면 브라우저는 이벤트 객체를 생성
-- 여기에 이벤트에 관한 상세한 정보를 넣음
-- 핸들러에 인수 형태로 전달
-
-이벤트 객체에서 지원하는 프로퍼티 중 일부
-
-- `event.type`: 이벤트의 타입
-- `event.currentTarget`: 이벤트를 처리하는 요소
-  - 화살표 함수를 사용해 핸들러를 만드는 경우, 다른 곳에 바인딩 하지 않은 경우
-    - `this`가 가리키는 값과 같게 됨
-  - 화살표 함수를 사용했거나, 함수를 다른 곳에 바인딩한 경우
-    - `event.currentTarget`을 사용해 이벤트가 처리되는 요소 정보를 얻을 수 있음
-- `event.clientX/clientY`: 포인터 관련 이벤트에서 커서의 상대 좌표(모니터 기준이 아닌 브라우저 화면 기준)
+- 이벤트가 발생하면 브라우저는 이벤트 객체(event object)를 생성
+- 여기에 이벤트에 관한 상세한 정보를 넣어 핸들러에 인수 형태로 전달
+- 이벤트 객체에서 지원하는 프로퍼티 중 일부
+  - `event.type`: 이벤트의 타입
+  - `event.currentTarget`: 이벤트를 처리하는 요소
+    - 화살표 함수로 핸들러를 만들었거나 다른 곳에 바인딩하지 않으면 `this`가 가리키는 값과 같게 됨
+    - 화살표 함수를 사용했거나, 함수를 다른 곳에 바인딩한 경우, `event.currentTarget`으로 이벤트가 처리되는 요소 정보를 얻음
+  - `event.clientX/clientY`: 포인터 관련 이벤트에서 커서의 상대 좌표 (모니터 기준이 아닌 브라우저 화면 기준)
+- HTML 핸들러 안에서도 이벤트 객체 접근 가능
+  - 브라우저는 속성을 읽고 `function (event) { alert(event.type); }` 같은 핸들러를 생성
 
 ```html
 <input type="button" onclick="alert(event.type)" value="이벤트 타입" />
 ```
 
-- HTML 핸들러 안에서도 이벤트 객체 접근 가능
-- 브라우저는 속성을 읽고 `function (event) { alert(event.type); }` 같은 핸들러를 생성
-
 ### 객체 형태의 핸들러와 handleEvent
 
-`handleEvent` 메서드
-
+- `handleEvent` 메서드
 - `addEventListener`에 객체·클래스를 이벤트 핸들러로 할당
 - 이벤트 발생 시 객체에 구현한 `obj.handleEvent(event)` 메서드 호출
 
@@ -226,10 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 ```
 
-`handleEvent`가 모든 이벤트를 처리할 필요는 없음
-
-- 이벤트 관련 메서드를 `handleEvent`에서 호출해 사용 가능
-
 ```html
 <button id="elem">클릭해 주세요.</button>
 <script>
@@ -251,14 +222,16 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 ```
 
+- `handleEvent`가 모든 이벤트를 처리할 필요는 없음
+- 이벤트 관련 메서드를 `handleEvent`에서 호출해 사용 가능
+
 ## 버블링과 캡처링
 
 ### 버블링
 
 이벤트 버블링(event bubbling)
 
-- 한 요소에 이벤트가 발생하면, 이 요소에 할당된 핸들러가 동작
-- 이어서 부모 요소의 핸들러가 동작
+- 한 요소에 이벤트가 발생하면, 이 요소에 할당된 핸들러가 동작하고 이어서 부모 요소의 핸들러가 동작
 - 가장 최상단의 조상 요소를 만날 때까지 이 과정이 반복되면서, 요소 각각에 할당된 핸들러가 동작
 - 거의 모든 이벤트는 버블링됨
 
@@ -281,21 +254,20 @@ document.addEventListener("DOMContentLoaded", function () {
 - `this`: 현재 요소
   - 현재 실행 중인 핸들러가 할당된 요소를 참조
   - 예: 폼 요소의 핸들러가 동작했기 때문에 폼 요소를 가리킴
-    - 폼 요소를 정확히 클릭했을 때는 `event.target`과 `this`가 같음
+  - 폼 요소를 정확히 클릭했을 때는 `event.target`과 `this`가 같음
 
 ### 버블링 중단하기
 
 이벤트 버블링
 
-- 타깃 이벤트에서 시작
-- `<html>` 요소를 거쳐 `document` 객체를 만날 때까지 각 노드에서 모두 발생
+- 타깃 이벤트에서 시작해 `<html>` 요소를 거쳐 `document` 객체를 만날 때까지 각 노드에서 모두 발생
 - 몇몇 이벤트는 `window` 객체까지 거슬러 올라감
-
-`event.stopPropagation()`
-
-- 이벤트를 완전히 처리하고 난 후 버블링 중단
-- 한 요소의 특정 이벤트를 처리하는 핸들러가 여러개인 경우, 핸들러 중 하나가 버블링을 멈추더라도 나머지 핸들러는 여전히 동작
-- 위쪽으로 일어나는 버블링은 막아주지만, 다른 핸들러들이 동작하는 것은 막지 못함
+- `event.stopPropagation()`: 이벤트를 완전히 처리하고 난 후 버블링 중단
+  - 한 요소의 특정 이벤트를 처리하는 핸들러가 여러개인 경우, 핸들러 중 하나가 버블링을 멈추더라도 나머지 핸들러는 여전히 동작
+  - 위쪽으로 일어나는 버블링은 막아주지만, 다른 핸들러들이 동작하는 것은 막지 못함
+- `event.stopImmediatePropagation()`: 버블링을 멈추고 요소에 할당된 다른 핸들러의 동작도 막음
+  - 요소에 할당된 특정 이벤트를 처리하는 핸들러 모두가 동작하지 않음
+- 꼭 필요한 경우를 제외하고 버블링 막지 않기. 이벤트 버블링을 막아야 하는 경우는 거의 없음
 
 ```html
 <body onclick="alert(`버블링은 여기까지 도달하지 못합니다.`)">
@@ -303,32 +275,21 @@ document.addEventListener("DOMContentLoaded", function () {
 </body>
 ```
 
-`event.stopImmediatePropagation()`
-
-- 버블링을 멈추고 요소에 할당된 다른 핸들러의 동작도 막음
-- 요소에 할당된 특정 이벤트를 처리하는 핸들러 모두가 동작하지 않음
-
-꼭 필요한 경우를 제외하고 버블링 막지 않기
-
-- 이벤트 버블링을 막아야 하는 경우는 거의 없음
-
 ### 캡처링
 
 표준 DOM 이벤트에서 정의한 이벤트 흐름
 
-1. 캡처링 단계
-   - 이벤트가 하위 요소로 전파되는 단계
-2. 타깃 단계
-   - 이벤트가 실제 타깃 요소에 전달되는 단계
+1. 캡처링 단계: 이벤트가 하위 요소로 전파되는 단계
+2. 타깃 단계: 이벤트가 실제 타깃 요소에 전달되는 단계
    - 타깃 단계는 별도로 처리되지는 않음
    - 캡처링과 버블링 단계의 핸들러는 타깃 단계에서 트리거 됨
-3. 버블링 단계
-   - 이벤트가 상위 요소로 전파되는 단계
+3. 버블링 단계: 이벤트가 상위 요소로 전파되는 단계
 
 캡처링(capturing)
 
 - 이 단계를 이용해야 하는 경우는 거의 없음
 - 이벤트를 잡으려면 `addEventListener`의 `capture` 옵션을 `true`로 설정
+  - `false/true`: 핸들러는 버블링/캡처링 단계에서 동작 (디폴트 값 `false`)
 - `on<event>` 프로퍼티, HTML 속성, `addEventListener`로 할당된 핸들러는 캡처링에 대해 전혀 알 수 없음
   - 이 핸들러들은 두 번째 혹은 세 번째 단계의 이벤트 흐름에서만 동작
 
@@ -336,11 +297,6 @@ document.addEventListener("DOMContentLoaded", function () {
 elem.addEventListener(..., {capture: true});
 elem.addEventListener(..., true); // true만 써도 됨
 ```
-
-`capture` 옵션
-
-- `false`: 디폴트 값으로, 핸들러는 버블링 단계에서 동작
-- `true`: 핸들러는 캡처링 단계에서 동작
 
 ```html
 <style>
@@ -365,9 +321,9 @@ elem.addEventListener(..., true); // true만 써도 됨
 ```
 
 - `<p>` 클릭
-- `HTML` -> `BODY` -> `FORM` -> `DIV` (캡처링)
-- `P` (타깃, 두 번 호출(캡처링, 버블링))
-- `DIV` -> `FORM` -> `BODY` -> `HTML` (버블링)
+- `HTML` -> `BODY` -> `FORM` -> `DIV`: 캡처링
+- `P`: 타깃, 두 번 호출(캡처링, 버블링)
+- `DIV` -> `FORM` -> `BODY` -> `HTML`: 버블링
 
 `event.eventPhase`
 
@@ -393,16 +349,12 @@ elem.addEventListener("click", (e) => alert(2));
 
 - 캡처링과 버블링을 활용해 강력한 이벤트 핸들링 패턴인 이벤트 위임 구현 가능
 - 비슷한 방식으로 여러 요소를 다뤄야 할 때 사용
-- 요소의 공통 조상에 이벤트 핸들러를 단 하나만 할당해 여러 요소를 한꺼번에 다룸
-  - 요소마다 핸들러를 할당하지 않아도 됨
+- 요소마다 핸들러를 할당하지 않고 요소의 공통 조상에 이벤트 핸들러를 단 하나만 할당해 여러 요소를 한꺼번에 다룸
 - 공통 조상에 할당한 핸들러에서 `event.target`으로 실제 어디서 이벤트가 발생했는지 알 수 있음
-
-예시
-
-- `<td>` 클릭 시, 그 칸을 강조하기
-- 모든 이벤트를 잡아내는 핸들러를 `<table>` 요소에 할당
-  - 각 `<td>`마다 `onclick` 핸들러를 할당하지 않음
-- `event.target`을 이용해 어떤 요소가 클릭 되었는지 파악
+- 예시
+  - `<td>` 클릭 시, 그 칸을 강조하기
+  - 모든 이벤트를 잡아내는 핸들러를 각 `<td>`가 아닌 `<table>` 요소에만 할당
+  - `event.target`을 이용해 어떤 요소가 클릭 되었는지 파악
 
 ```javascript
 table.onclick = function (event) {
@@ -450,8 +402,7 @@ table.onclick = function (event) {
 
 ### '행동' 패턴
 
-이벤트 위임은 요소에 선언적 방식으로 행동(behavior)을 추가할 때 사용할 수도 있음
-
+- 이벤트 위임은 요소에 선언적 방식으로 행동(behavior)을 추가할 때 사용할 수도 있음
 - 이때는 특별한 속성과 클래스를 사용
 - 행동 패턴은 두 부분으로 구성
   1. 요소의 행동을 설명하는 커스텀 속성을 요소에 추가
@@ -494,8 +445,7 @@ table.onclick = function (event) {
 
 `document` 객체에 핸들러를 할당할 때 `document.onclick` 사용 금지
 
-- 충돌을 일으킬 수 있음
-- 새로운 핸들러가 이전의 핸들러를 덮어쓸 수 있음
+- 새로운 핸들러가 이전의 핸들러를 덮어쓸 수 있어 충돌을 일으킬 수 있음
 - 문서 레벨의 핸들러를 만들 때는 항상 `addEventListener` 사용
 
 ## 브라우저 기본 동작
@@ -508,10 +458,9 @@ table.onclick = function (event) {
 
 ### 브라우저 기본 동작 막기
 
-브라우저 기본 동작을 취소할 수 있는 두 가지 방법
-
-- `event` 객체의 `event.preventDefault()` 메서드 사용
-- 핸들러가 `addEventListener`가 아닌 `on<event>`를 사용해 할당된 경우, `false`를 반환
+- 브라우저 기본 동작을 취소할 수 있는 두 가지 방법
+- `event` 객체의 `preventDefault()` 메서드 사용
+- 핸들러가 HTML 속성 `on<event>`를 사용해 할당된 경우, `false`를 반환하기
   - `on<event>`로 할당된 핸들러에서 `false`를 반환하는 것은 단 하나의 예외 상황
   - 이외의 값들은 반환되어도 무시됨
 
@@ -538,13 +487,11 @@ table.onclick = function (event) {
 
 - `<input>` 필드의 `mousedown` 이벤트는 `focus` 이벤트를 유발
 - `mousedown` 이벤트를 막으면 `focus` 이벤트도 발생하지 않음
-- 첫 번째 `<input>`에 포커스한 상태에서 Tab 키 누르면 두 번째 `<input>`으로 포커스 넘어감
+- 그러나 첫 번째 `<input>`에 포커스한 상태에서 Tab 키 누르면 두 번째 `<input>`으로 포커스 넘어감
 
 ### addEventListener의 'passive' 옵션
 
-`addEventListener`의 `passive: true` 옵션
-
-- 브라우저에게 `preventDefault()`를 호출하지 않겠다고 알림
+- `passive: true`: 브라우저에게 `preventDefault()`를 호출하지 않겠다고 알림
 
 모바일 기기에서의 `passive: true` 옵션
 
@@ -555,21 +502,17 @@ table.onclick = function (event) {
 - 브라우저는 스크롤링을 발생시키는 이벤트를 감지했을 때 먼저 모든 핸들러를 처리
 - 이때 `preventDefault`가 어디에서도 호출되지 않았다고 판단되면 그제서야 스크롤링을 진행
 - 이 과정에서 불필요한 지연이 발생해 화면이 덜덜 떨리는 현상 발생
-
-`passive: true` 옵션
-
-- 핸들러가 스크롤링을 취소하지 않을 것이라는 정보를 브라우저에게 알려주는 역할
-- 이 정보를 바탕으로 브라우저는 화면을 최대한 자연스럽게 스크롤링할 수 있게 하고 이벤트는 적절히 처리됨
-- 몇몇 브라우저에서 `touchstart`와 `touchmove` 이벤트의 `passive`는 기본값이 `true`
-  - Firefox, Chrome 등
+- `passive: true` 옵션
+  - 핸들러가 스크롤링을 취소하지 않을 것이라는 정보를 브라우저에게 알려주는 역할
+  - 이 정보를 바탕으로 브라우저는 화면을 최대한 자연스럽게 스크롤링할 수 있게 하고 이벤트는 적절히 처리됨
+  - 몇몇 브라우저에서 `touchstart`와 `touchmove` 이벤트의 `passive`는 기본값이 `true`
+    - Firefox, Chrome 등
 
 ### event.defaultPrevented
 
-`event.defaultPrevented`
-
 - `true`: 기본 동작을 막음
 - `false`: 막지 않음
-- `event.stopPropagation()` 대신 사용해 이벤트가 적절히 처리되었다고 다른 이벤트에게 알릴 수도 있음
+- `event.stopPropagation()` 대신 사용해 이벤트가 적절히 처리되었다고 다른 이벤트에게 알릴 수 있음
 
 유스 케이스
 
@@ -652,17 +595,14 @@ let event = new Event(type[, options]);
 ```
 
 - `Event` 객체 생성
-- `type`: 이벤트 타입을 나타내는 문자열
-  - 내장 이벤트, 커스텀 이벤트
+- `type`: 이벤트 타입을 나타내는 문자열. 내장 이벤트, 커스텀 이벤트
 - `options`: 두 개의 선택 프로퍼티가 있는 객체
-  - `bubbles: true/false`: `true`인 경우 이벤트가 버블링 됨
-  - `cancelable: true/false`: `true`인 경우 브라우저 기본 동작이 실행되지 않음
-  - 두 프로퍼티는 기본적으로 `false`
+  - `bubbles`: `true`인 경우 이벤트가 버블링 됨 (기본값 `false`)
+  - `cancelable`: `true`인 경우 브라우저 기본 동작이 실행되지 않음 (기본값 `false`)
 
 ### dispatchEvent
 
-`elem.dispatchEvent(event)`
-
+- `elem.dispatchEvent(event)`
 - 이벤트 객체를 생성한 다음에 `dispatchEvent`를 호출해 요소에 있는 이벤트를 반드시 '실행'시켜줘야 함
 - '일을 처리하다' 라는 뜻의 dispatch
 - 이렇게 이벤트를 실행시켜줘야 핸들러가 일반 브라우저 이벤트처럼 이벤트에 반응
@@ -685,11 +625,9 @@ let event = new Event(type[, options]);
 
 커스텀 이벤트 사용 시 주의할 점
 
-- 반드시 `addEventListener`를 이용해 핸들링
-  - `on<event>`는 내장 이벤트에만 해당하는 문법
+- `on<event>`는 내장 이벤트에만 해당하기 때문에 반드시 `addEventListener`를 이용해 핸들링
 - `bubbles:true`를 명시적으로 할당하지 않으면 이벤트가 버블링되지 않음
-- 내장 이벤트와 커스텀 이벤트의 버블링 메커니즘은 동일
-- 커스텀 이벤트에도 캡쳐링, 버블링 단계 존재
+- 커스텀 이벤트에도 캡처링·버블링 단계가 있고 내장 이벤트와 커스텀 이벤트의 버블링 메커니즘은 동일
 
 ```html
 <h1 id="elem">Hello from the script!</h1>
@@ -704,22 +642,17 @@ let event = new Event(type[, options]);
 
 ### MouseEvent, KeyboardEvent 등의 다양한 이벤트
 
-`new Event`로 만들면 안 되고 반드시 관련 내장 클래스를 사용해 만들어야 하는 이벤트들
-
+- `new Event`로 만들면 안 되고 반드시 관련 내장 클래스를 사용해 만들어야 하는 이벤트들
 - 제대로 된 생성자를 사용해야만 해당 이벤트 전용 표준 프로퍼티를 명시할 수 있음
 - `UIEvent`, `FocusEvent`, `MouseEvent`, `WheelEvent`, `KeyboardEvent`, ...
 
 ### 커스텀 이벤트
 
-`new CustomEvent`
-
-- 제대로 된 커스텀 이벤트를 만들기 위해 사용
-- `Event`와 거의 유사하지만 한 가지 차이점 존재
-- `CustomEvent`의 두 번째 인수에는 객체가 들어갈 수 있음
-- 개발자는 이 객체에 `detail`이라는 프로퍼티를 추가해 커스텀 이벤트 관련 정보를 명시하고, 정보를 이벤트에 전달 가능
+- `new CustomEvent`: 커스텀 이벤트를 만들기 위해 사용
+- `Event`와 거의 유사하지만 `CustomEvent`의 두 번째 인수에는 객체가 들어갈 수 있음
+- 이 객체에 `detail`이라는 프로퍼티를 추가해 커스텀 이벤트 관련 정보를 명시하고 이벤트에 전달 가능
 - `detail` 프로퍼티에는 어떤 데이터도 들어갈 수 있음
 - 다른 이벤트 프로퍼티와 충돌을 피하기 위함
-- `new CustomEvent`를 사용하면 코드 자체만으로 커스텀 이벤트라고 설명해줌
 
 ```html
 <h1 id="elem">환영합니다!</h1>
@@ -732,8 +665,6 @@ let event = new Event(type[, options]);
 ```
 
 ### event.preventDefault()
-
-커스텀 이벤트의 기본 동작
 
 - 커스텀 이벤트를 만들고 디스패칭 해주는 코드에 원하는 동작 넣기
 - 이벤트 기본 동작이 취소되면 `elem.dispatchEvent(event)` 호출 시 `false` 반환
@@ -751,7 +682,7 @@ let event = new Event(type[, options]);
 <button onclick="hide()">hide()를 호출해 토끼 숨기기</button>
 <script>
   function hide() {
-    let event = new CustomEvent("hide", { cancelable: true }); // cancelable를 true로 설정하지 않으면 preventDefault가 동작하지 않음
+    let event = new CustomEvent("hide", { cancelable: true }); // cancelable을 true로 설정해야 preventDefault 동작
     if (!rabbit.dispatchEvent(event))
       alert("기본 동작이 핸들러에 의해 취소되었습니다.");
     else rabbit.hidden = true;
@@ -764,14 +695,8 @@ let event = new Event(type[, options]);
 
 ### 이벤트 안 이벤트
 
-이벤트는 대개 큐에서 처리됨
-
-- 이벤트는 순서대로 하나의 이벤트가 처리되면 다음 이벤트가 처리됨
-- 그러나 이벤트 안 `dispatchEvent`처럼 이벤트 안에 다른 이벤트가 있는 경우
-- 위 규칙이 적용되지 않음
-
-이벤트 안 이벤트
-
+- 이벤트는 대개 큐에서 처리됨. 이벤트는 순서대로 하나의 이벤트가 처리되면 다음 이벤트가 처리됨
+- 그러나 이벤트 안 `dispatchEvent`처럼 이벤트 안에 다른 이벤트가 있는 경우 위 규칙이 적용되지 않음
 - 이벤트 안에 있는 이벤트는 즉시 처리됨
 - 새로운 이벤트 핸들러가 호출되고 난 후에 현재 이벤트 핸들링이 재개됨
 
@@ -789,9 +714,8 @@ let event = new Event(type[, options]);
 
 - 중첩 이벤트가 `dispatchEvent`일 때뿐만 아니라 이벤트 핸들러 안에서 다른 이벤트를 트리거하는 메서드를 호출할 때 발생
 - 즉, 이벤트 안 이벤트는 동기적으로 처리됨
-- 중첩 이벤트가 동기적으로 처리되길 원치 않는 경우?
-  - 맨 나중에 `dispatchEvent` 넣기
-  - 중첩 이벤트를 지연시간이 0인 `setTimeout`으로 감싸기
+- 중첩 이벤트가 동기적으로 처리되길 원치 않는 경우,
+- 맨 나중에 `dispatchEvent`를 넣거나 중첩 이벤트를 지연시간이 0인 `setTimeout`으로 감싸기
 
 ## 참고
 

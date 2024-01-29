@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 22 - 이진 데이터와 파일
 date: 2024-01-15 20:36:07 +0900
-last_modified_at: 2024-01-28 09:24:32 +0900
+last_modified_at: 2024-01-29 09:14:07 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [
@@ -97,9 +97,9 @@ new TypedArray();
 
 ```javascript
 // 1
-let arrayBuffer = new ArrayBuffer(5);
-let uint8Array = new Uint8Array(arrayBuffer); // Uint8Array(5) [ 0, 0, 0, 0, 0 ]
-let uint16Array = new Uint16Array(arrayBuffer); // RangeError: byte length of Uint16Array should be a multiple of 2
+let arrayBuffer = new ArrayBuffer(8);
+let uint8Array = new Uint8Array(arrayBuffer); // Uint8Array(8) [ 0, 0, 0, 0, 0, 0, 0, 0 ]
+let uint16Array = new Uint16Array(arrayBuffer); // Uint16Array(4) [0, 0, 0, 0]
 
 // 2
 let uint8Array = new Uint8Array([0, 1, 2, 3]);
@@ -113,12 +113,12 @@ alert(uint8Array[0]); // 1
 alert(uint8Array[1]); // 232 (1000을 복사하려 했지만, 1000을 8비트에 맞출 수 없음)
 
 // 4
-let arr16 = new Uint16Array(4); // 4개 정수에 대한 형식화된 배열 생성 (각 값은 0)
+let uint16Array = new Uint16Array(4); // 4개 정수에 대한 형식화된 배열 생성 (각 값은 0)
 alert(Uint16Array.BYTES_PER_ELEMENT); // 정수당 2바이트
-alert(arr16.byteLength); // 8
+alert(uint16Array.byteLength); // 8
 
 // 5
-let arr32 = new Uint32Array(); // Uint32Array(0) []
+let uint32Array = new Uint32Array(); // Uint32Array(0) []
 ```
 
 `ArrayBuffer`와 `TypedArray`
@@ -131,8 +131,8 @@ let arr32 = new Uint32Array(); // Uint32Array(0) []
 
 ```javascript
 let arr8 = new Uint8Array([0, 1, 2, 3]); // Uint8Array(4) [0, 1, 2, 3]
-let arr16 = new Uint16Array(arr8.buffer); // Uint16Array(4) [0, 1, 2, 3] (동일한 데이터에 대한 다른 뷰)
-let arr16x = new Uint16Array(arr8); // Uint16Array(2) [256, 770]
+let arr16 = new Uint16Array(arr8.buffer); // Uint16Array(4) [256, 770] (동일한 데이터에 대한 다른 뷰)
+let arr16x = new Uint16Array(arr8); // Uint16Array(2) [0, 1, 2, 3]
 // [0, 1] -> [1, 0] -> (0b0000000100000000).toString() === "256"
 // [2, 3] -> [3, 2] -> (0b0000001100000010).toString() === "770"
 ```
@@ -195,13 +195,11 @@ alert(uint8array[1]); // 1
 new DataView(buffer, [byteOffset], [byteLength]);
 ```
 
-- DataView: `ArrayBuffer`에 대한 특별하고 매우 유연한 untyped 뷰
-- 모든 형식의 모든 오프셋의 데이터에 접근 가능
-- typed array의 경우, 생성자는 형식이 무엇인지 지정
-  - 전체 배열은 균일해야 함. i번째 숫자는 `arr[i]`
-- `DataView`로 `.getUint8(i)` 혹은 `.getUint16(i)` 같은 메서드를 이용해 데이터에 접근
+- `ArrayBuffer`에 대한 특별하고 매우 유연한 untyped 뷰. 모든 형식의 모든 오프셋의 데이터에 접근 가능
+- typed array의 경우, 생성자는 형식이 무엇인지 지정. 전체 배열은 균일해야 함. i번째 숫자는 `arr[i]`
+- `DataView`로 `getUint8(i)` 혹은 `getUint16(i)` 같은 메서드를 이용해 데이터에 접근
   - 생성 시간 대신 메서드를 호출할 때 형식을 지정
-- `buffer`: 기본 `ArrayBuffer`. typed array와 다르게 `DataView`는 자체적으로 버퍼를 생성하지 않음. 우리는 그것을 준비해야 함
+- `buffer`: 기본 `ArrayBuffer`. typed array와 다르게 `DataView`는 자체적으로 버퍼를 생성하지 않음
 - `byteOffset`: 뷰의 시작 바이트 위치(기본값은 0)
 - `byteLength`: 뷰의 바이트 길이(기본적으로 `buffer`의 끝까지)
 - `DataView`는 혼합형식 데이터를 동일한 버퍼에 저장할 때 유용
@@ -248,7 +246,7 @@ ArrayBufferView
 
 타입이 지정된 배열 연결하기
 
-주어진 `Uint8Array`의 배열을 하나의 배열로 연결하여 반환하는 함수 `concat(array)`
+- 주어진 `Uint8Array`의 배열을 하나의 배열로 연결하여 반환하는 함수 `concat(array)`
 
 ```javascript
 function concat(arrays) {
@@ -277,9 +275,8 @@ let decoder = new TextDecoder([label], [options]);
 
 - `label`: 기본 인코딩 방식은 `utf-8`. `big5`, `windows-1251` 및 다른 인코딩 방식도 지원
 - `options`: 선택 항목
-  - `fatal`: `true`인 경우, 잘못된 글자(디코딩 불가능한 글자)를 대상으로 예외를 던짐
-    - `false`(기본값)인 경우, 글자를 `\uFFD`로 대체
-  - `ignoreBOM`: `true`인 경우, 사용되지 않는 바이트 순서 표식(Byte Order Mark, BOM)을 무시
+- `fatal`: `false`(기본값)이면 글자를 `\uFFD`로 대체. `true`이면 잘못된 글자(디코딩 불가능한 글자)를 대상으로 예외를 던짐
+- `ignoreBOM`: `true`이면 사용되지 않는 바이트 순서 표식(Byte Order Mark, BOM)을 무시
 
 ```javascript
 let str = decoder.decode([input], [options]);
@@ -287,9 +284,9 @@ let str = decoder.decode([input], [options]);
 
 - `input`: 디코딩할 `BufferSource`를 입력
 - `options`: 선택 항목
-  - `stream`: 많은 양의 데이터를 받아들여 `decoder`를 반복적으로 호출할 때도 디코딩이 반복적으로 실행됨
-    - 이런 경우 멀티 바이트 문자가 많은 데이터로 분할될 수 있음
-    - 이 옵션은 데이터 분할을 방지하기 위해 `TextDecoder`에 'unfinished' 문자를 입력시키고 다음 데이터가 오면 디코딩하도록 지시
+- `stream`: 많은 양의 데이터를 받아들여 `decoder`를 반복적으로 호출할 때도 디코딩이 반복적으로 실행됨
+  - 이런 경우 멀티 바이트 문자가 많은 데이터로 분할될 수 있음
+  - 이 옵션은 데이터 분할을 방지하기 위해 `TextDecoder`에 'unfinished' 문자를 입력시키고 다음 데이터가 오면 디코딩하도록 지시
 - 버퍼의 하위 배열 뷰를 생성해 버퍼의 일부를 디코딩 가능
 
 ```javascript
@@ -343,9 +340,9 @@ let blob = new Blob(blobParts, options);
 
 - `blobParts`: `Blob/BufferSource/String` 값들의 배열
 - `options`: 선택적 객체
-  - `type`: `Blob` 타입. 일반적으로 MIME 타입 (`image/png` 등)
-  - `endings`: `Blob`이 현재 OS 개행문자(`\r\n`, `\n`)에 해당하도록 end-of-line을 변환할지 여부
-    - 기본값은 `transparent`로, 아무것도 하지 않음. `native`는 변환한다는 뜻
+- `type`: `Blob` 타입. 일반적으로 MIME 타입 (`image/png` 등)
+- `endings`: `Blob`이 현재 OS 개행문자(`\r\n`, `\n`)에 해당하도록 end-of-line을 변환할지 여부
+  - 기본값은 `transparent`로, 아무것도 하지 않음. `native`는 변환한다는 뜻
 
 ```javascript
 let blob = new Blob(["<html>…</html>"], { type: "text/html" }); // 문자열로부터 Blob 생성
@@ -369,8 +366,7 @@ blob.slice([byteStart], [byteEnd], [contentType]);
 
 - `Blob`에서 직접적으로 데이터 변경 불가
 - `Blob`의 일부를 분할하고 그것으로부터 새 `Blob` 객체를 만들고, 새 `Blob`에 혼합하는 등의 작업 가능
-- 이 동작은 자바스크립트 문자열과 유사
-- 문자열의 문자를 변경할 수는 없지만 수정된 새 문자열을 만들 수는 있음
+- 이 동작은 자바스크립트 문자열과 유사. 문자열의 문자를 변경할 수는 없지만 수정된 새 문자열을 만들 수는 있음
 
 ### Blob as URL
 
@@ -400,13 +396,9 @@ URL.revokeObjectURL(link.href);
 
 - `Blob`을 가져와 그것을 위한 고유한 URL을 `blob:<origin>/<uuid>` 형식으로 생성
 - `link.href`의 값은 `blob:https://javascript.info/1e67e00e-860d-40a5-89ae-6ab0cbee6273` 같이 보일 것
-
-`URL.createObjectURL`로 생성된 각 URL
-
 - 브라우저는 내부적으로 URL -> `Blob` 매핑을 저장하기에 이런 URL들은 짧지만 `Blob`에 접근할 수 있게 해줌
 - 생성된 URL(및 그에 따른 링크)은 현재 문서가 열려있는 동안에만 유효
-- 그것은 기본적으로 URL을 기대하는 다른 모든 객체의 `Blob`을 `<img>`,`<a>`에서 참조할 수 있음
-- 그런데 부작용이 있음
+- 그것은 기본적으로 URL을 기대하는 다른 모든 객체의 `Blob`을 `<img>`,`<a>`에서 참조할 수 있지만 부작용이 있음
 - `Blob`에 대한 매핑이 있는 동안, `Blob` 자체는 메모리에 남아있고 브라우저는 그것을 해제할 수 없음
 - 문서 unload 시 매핑은 자동적으로 지워지므로 `Blob` 객체는 해제됨
 - 그러나 앱이 오래 지속된다면(long-living) 그런 일은 곧 일어나지 않음
@@ -424,8 +416,7 @@ URL.revokeObjectURL(link.href);
 
 - `URL.createObjectURL`의 대안은 `Blob`을 base64로 인코딩된 문자열로 변환하는 것임
 - base64 인코딩은 바이너리 데이터를 0부터 64까지의 ASCII 코드를 사용하는 매우 안전한 readable(읽기 가능한) 문자열로 나타냄
-- 더 중요한 것은 `data-urls`에서 이 인코딩을 사용할 수 있다는 것
-- 브라우저는 문자열을 디코딩하고 이미지를 표시
+- `data-urls`에서 이 인코딩을 사용할 수 있음. 브라우저는 문자열을 디코딩하고 이미지를 표시
 - `FileReader`: `Blob`을 base64로 변환하기 위해 `FileReader` 내장 객체를 사용
 - 이것은 다양한 형식의 Blob에서 데이터를 읽을 수 있음
 
@@ -451,25 +442,21 @@ reader.onload = function () {
 
 Blob의 URL을 만드는 두 가지 방법
 
-- `Blob`의 URL을 만드는 두 가지 방법 모두 사용할 수 있음
-- 일반적으로 `URL.createObjectURL(blob)`이 더 간단하고 빠름
-- URL.createObjectURL(blob)
+- `URL.createObjectURL(blob)`
   - 메모리에 관심(care)이 있는 경우 이를 취소(revoke)해야 함
   - blob에 직접 엑세스하고 인코딩/디코딩 없음
+  - 일반적으로 더 간단하고 빠른 방법
 - Blob to data url
   - 아무것도 취소할 필요가 없음
   - 큰 `Blob` 객체의 인코딩을 위해 성능 및 메모리 손실
 
 ### Image to blob
 
-이미지, 이미지 부분, 페이지 스크린샷에 대한 `Blob`을 만들 수 있음
-
-어딘가에 업로드하는 것이 편리
-
-이미지 작업은 `<canvas>` 요소를 통해 수행됨
-
-1. `canvas.drawImage`를 사용해 canvas에 이미지(또는 그 일부)를 그림
-2. 완료되면 `Blob`을 생성하는 캔버스 메서드 `.toBlob(callback, format, quality)`를 호출하고 `callback`을 실행
+- 이미지, 이미지 부분, 페이지 스크린샷에 대한 `Blob`을 만들 수 있음
+- 어딘가에 업로드하는 것이 편리
+- 이미지 작업은 `<canvas>` 요소를 통해 수행됨
+  1. `canvas.drawImage`를 사용해 canvas에 이미지(또는 그 일부)를 그림
+  2. 완료되면 `Blob`을 생성하는 캔버스 메서드 `.toBlob(callback, format, quality)`를 호출하고 `callback`을 실행
 
 ```javascript
 // take any image
@@ -517,8 +504,8 @@ let blob = await new Promise((resolve) =>
 
 ### From Blob to ArrayBuffer
 
-`Blob` 생성자를 사용하면 `BufferSource`를 포함한 거의 어떤 것이든 그로부터 blob을 생성할 수 있음
-그러나 낮은 수준(low-level)의 처리를 수행해야 하는 경우, 그것으로부터 `FileReader`를 사용해 가장 낮은 수준의 `ArrayBuffer`를 얻을 수 있음
+- `Blob` 생성자를 사용하면 `BufferSource`를 포함한 거의 어떤 것이든 그로부터 blob을 생성할 수 있음
+- 그러나 낮은 수준(low-level)의 처리를 수행해야 하는 경우, 그것으로부터 `FileReader`를 사용해 가장 낮은 수준의 `ArrayBuffer`를 얻을 수 있음
 
 ```javascript
 // get arrayBuffer from blob
@@ -533,39 +520,33 @@ fileReader.onload = function (event) {
 
 ### Summary
 
-`ArrayBuffer`, `Uint8Array` 혹은 다른 `BufferSource`가 바이너리 데이터인 반면, Blob은 유형이 있는 바이너리 데이터(binary data with type)를 나타냄
-
-따라서 Blob은 브라우저에서 매우 일반적인 업로드/다운로드 작업에 편리
-
-`XMLHttpRequest`, `fetch` 등과 같은 웹 요청을 수행하는 메서드들은 기본적으로 Blob을 사용할 수 있고 물론 다른 바이너리 유형에도 동작
+- `ArrayBuffer`, `Uint8Array` 혹은 다른 `BufferSource`가 바이너리 데이터인 반면,
+- Blob은 유형이 있는 바이너리 데이터(binary data with type)를 나타냄
+- 따라서 Blob은 브라우저에서 매우 일반적인 업로드/다운로드 작업에 편리
+- `XMLHttpRequest`, `fetch` 등과 같은 웹 요청을 수행하는 메서드들은 기본적으로 Blob을 사용할 수 있고 물론 다른 바이너리 유형에도 동작
 
 ## File and FileReader
 
-`File` 객체는 `Blob`에서 상속되며 파일 시스템 관련 기능으로 확장됨
-
-얻는 방법에는 2가지가 있음
-
-`Blob`과 유사한 생성자가 있음
+`File` 객체
 
 ```javascript
 new File(fileParts, fileName, [options]);
 ```
 
-- `fileParts`: Blob/BufferSource/String 값의 배열
+- `Blob`에서 상속되며 파일 시스템 관련 기능으로 확장됨. 얻는 방법에는 2가지가 있음
+- `fileParts`: `Blob/BufferSource/String` 값의 배열
 - `fileName`: 파일 이름 문자열
 - `options`: 선택적 객체
-  - `lastModified`: 마지막 수정의 타임스탬프(정수 날짜)
+- `lastModified`: 마지막 수정의 타임스탬프(정수 날짜)
 
-`<input type="file">`이나 드래그 앤 드롭이나 다른 브라우저 인터페이스에서 파일을 얻는 경우가 더 많음
+`<input type="file">`, 드래그 앤 드롭, 다른 브라우저 인터페이스 등
 
+- 이런 식으로 파일을 얻는 경우가 더 많음
 - 이 경우 파일은 OS에서 이 정보를 가져옴
-
-`File`이 `Blob`에서 상속되므로 `File` 객체는 같은 프로퍼티를 갖고 추가로,
-
+- `File`이 `Blob`에서 상속되므로 `File` 객체는 같은 프로퍼티를 갖고 추가로,
 - `name`: 파일 이름
 - `lastModified`: 마지막 수정의 타임스탬프
-
-이것이 우리가 `<input type="file">`로부터 `File` 객체를 얻을 수 있는 방법임
+- 이것이 우리가 `<input type="file">`로부터 `File` 객체를 얻을 수 있는 방법
 
 ```html
 <input type="file" onchange="showFile(this)" />
@@ -582,8 +563,6 @@ new File(fileParts, fileName, [options]);
 
 ### FileReader
 
-`FileReader`
-
 - `Blob` 객체(따라서 `File` 또한)에서 데이터를 읽는 유일한 목적을 가진 객체
 - 디스크에서 읽는 데 시간이 걸릴 수 있으므로 이벤트를 사용하여 데이터를 전달
 
@@ -597,15 +576,16 @@ let reader = new FileReader(); // 인수 없음
 - `readAsDataURL(blob)`: 바이너리 데이터를 읽고 이를 base64 데이터 URL로 인코딩
 - `abort()`: 작업을 취소
 
-`read*` 메서드의 선택은 어떤 형식을 선호하는지, 데이터를 어떻게 사용할지에 따라 달라짐
+`read*` 메서드
 
+- `read*` 메서드의 선택은 어떤 형식을 선호하는지, 데이터를 어떻게 사용할지에 따라 달라짐
 - `readAsArrayBuffer`: 바이너리 파일의 경우 낮은 수준의 바이너리 작업을 수행
   - 슬라이싱과 같은 상위 수준 작업인 경우 `File`은 `Blob`에서 상속되므로 읽지 않고도 직접 호출 가능
 - `readAsText`: 텍스트 파일의 경우, 문자열을 받고 싶을 때
 - `readAsDataURL`: `src`에 있는 이 데이터를 `img` 또는 다른 태그에 사용하고 싶을 때
   - 그것을 위해 파일을 읽는 대안이 있음(`URL.createObjectURL(file)`)
 
-읽기가 진행됨에 따라 이벤트가 발생함
+읽기가 진행됨에 따라 이벤트 발생
 
 - `loadstart`: 로딩이 시작됨
 - `progress`: 읽는 동안 발생
@@ -613,13 +593,12 @@ let reader = new FileReader(); // 인수 없음
 - `abort`: `abort()` 호출됨
 - `error`: 에러가 발생함
 - `loadend`: 성공 또는 실패로 읽기가 끝남
+- 가장 널리 사용되는 이벤트는 `load`와 `error`
 
 읽기가 끝나면 다음과 같이 결과에 엑세스할 수 있음
 
 - `reader.result`: 성공한 경우의 결과
 - `reader.error`: 실패한 경우의 에러
-
-가장 널리 사용되는 이벤트는 `load`와 `error`
 
 ```html
 <input type="file" onchange="readFile(this)" />
@@ -656,15 +635,11 @@ blob에 대한 `FileReader`
 
 ### Summary
 
-하지만 많은 경우에는 파일 내용을 읽을 필요가 없음
-
-blob에서와 마찬가지로 `URL.createObjectURL(file)`로 짧은 URL을 생성하고 `<a>`나 `<img>`에 할당할 수 있음
-
-이런 방식으로 파일을 다운로드하거나 이미지, 캔버스 등의 일부로 표시할 수 있음
-
-네트워크를 통해 `File`을 전송하려는 경우 다음과 같이 간단함
-
-`XMLHttpRequest`나 `fetch` 같은 네트워크 API는 기본적으로 `File` 객체를 받아들임
+- 하지만 많은 경우에는 파일 내용을 읽을 필요가 없음
+- blob에서와 마찬가지로 `URL.createObjectURL(file)`로 짧은 URL을 생성하고 `<a>`나 `<img>`에 할당할 수 있음
+- 이런 방식으로 파일을 다운로드하거나 이미지, 캔버스 등의 일부로 표시할 수 있음
+- 네트워크를 통해 `File`을 전송하려는 경우 다음과 같이 간단함
+- `XMLHttpRequest`나 `fetch` 같은 네트워크 API는 기본적으로 `File` 객체를 받아들임
 
 ## 참고
 

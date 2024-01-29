@@ -1,77 +1,69 @@
 ---
 title: 모던 JavaScript 튜토리얼 23 - 네트워크 요청 1
 date: 2024-01-16 20:04:41 +0900
-last_modified_at: 2024-01-27 13:45:12 +0900
+last_modified_at: 2024-01-29 15:51:00 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags: [javascript]
+tags:
+  [
+    javascript,
+    fetch,
+    ajax,
+    response,
+    request,
+    get,
+    post,
+    formdata,
+    download-progress,
+    abort
+  ]
 ---
 
 fetch, FormData 객체, Fetch: Download progress, Fetch: Abort
 
 ## fetch
 
-자바스크립트를 사용하면 필요할 때 서버에 네트워크 요청을 보내고 새로운 정보를 받아오는 일을 할 수 있음
+네트워크 요청
 
-네트워크 요청은 다음과 같은 경우에 이뤄짐
-
-- 주문 전송
-- 사용자 정보 읽기
-- 서버에서 최신 변경분 가져오기
-- 등등
-
-그런데 이 모든 것들은 페이지 새로고침 없이도 가능
+- 자바스크립트를 사용하면 필요할 때 서버에 네트워크 요청을 보내고 새로운 정보를 받아오는 일을 할 수 있음
+- 네트워크 요청은 주문 전송, 사용자 정보 읽기, 서버에서 최신 변경분 가져오기 등 같은 경우에 이뤄짐
+- 그런데 이 모든 것들은 페이지 새로고침 없이도 가능
 
 AJAX
 
-- Asynchronous JavaScript And XML
-- 비동기적 JavaScript와 XML
+- `Asynchronous JavaScript And XML`: 비동기적 JavaScript와 XML
 - 서버에서 추가 정보를 비동기적으로 가져올 수 있게 해주는 포괄적인 기술을 나타내는 용어
-- 만들어진 지 오래 됨
-  - AJAX에 XML이 포함된 이유
-
-AJAX 이외에 서버에 네트워크 요청을 보내고 정보를 받아올 수 있는 방법은 다양함
-
-그 중 하나가 fetch
+- 만들어진 지 오래 됨 (AJAX에 XML이 포함된 이유)
+- AJAX 이외에 서버에 네트워크 요청을 보내고 정보를 받아올 수 있는 방법은 다양함. 그 중 하나가 fetch
 
 `fetch`
-
-- 모던하고 다재다능한 메서드
-- 대부분의 모던 브라우저가 지원
 
 ```javascript
 let promise = fetch(url, [options]);
 ```
 
+- 모던하고 다재다능한 메서드. 대부분의 모던 브라우저가 지원
 - `url`: 접근하고자 하는 URL
 - `options`: 선택 매개변수. method나 header 등을 지정 가능
   - 아무것도 넘기지 않으면 요청은 `GET` 메서드로 진행되어 `url`로부터 컨텐츠가 다운로드 됨
 - `fetch()`를 호출하면 브라우저는 네트워크 요청을 보내고 프라미스가 반환됨
 - 반환되는 프라미스는 `fetch()`를 호출하는 코드에서 사용됨
 
-응답은 대개 두 단계를 거쳐 진행됨
+응답 첫 번째 단계
 
+- 응답은 대개 두 단계를 거쳐 진행됨
 - 먼저, 서버에서 응답 헤더를 받자마자 `fetch` 호출 시 반환받은 `promise`가 내장 클래스 Response의 인스턴스와 함께 이행 상태가 됨
 - 이 단계는 아직 본문(body)이 도착하기 전이지만, 개발자는 응답 헤더를 보고 요청이 성공적으로 처리되었는지 아닌지를 확인할 수 있음
 - 네트워크 문제나 존재하지 않는 사이트에 접속하려는 경우 같이 HTTP 요청을 보낼 수 없는 상태에서는 프라미스는 거부 상태가 됨
+- HTTP 상태는 응답 프로퍼티를 사용해 확인 가능
+  - `status`: HTTP 상태 코드
+  - `ok`: 불린 값. HTTP 상태 코드가 200과 299 사이인 경우 `true`
 
-HTTP 상태는 응답 프로퍼티를 사용해 확인 가능
+응답 두 번째 단계
 
-- `status`: HTTP 상태 코드
-- `ok`: 불린 값. HTTP 상태 코드가 200과 299 사이인 경우 `true`
-
-```javascript
-let response = await fetch(url);
-if (response.ok) {
-  let json = await response.json();
-} else {
-  alert(`HTTP-Error: ${response.status}`);
-}
-```
-
-두 번째 단계에서는 추가 메서드를 호출해 응답 본문을 받음
-
-`response`에는 프라미스를 기반으로 하는 다양한 메서드가 있어 이 메서드들로 다양한 형태의 응답 본문 처리 가능
-
+- 두 번째 단계에서는 추가 메서드를 호출해 응답 본문을 받음
+- `response`에는 프라미스를 기반으로 하는 다양한 메서드가 있어 이 메서드들로 다양한 형태의 응답 본문 처리 가능
+- 본문을 읽을 때 사용되는 메서드는 딱 하나만 사용 가능
+- `response.text()`를 사용해 응답을 얻었다면 본문의 컨텐츠는 모두 처리된 상태이기 때문에 `response.json()`은 동작하지 않음
 - `response.text()`: 응답을 읽고 텍스트를 반환
 - `response.json()`: 응답을 JSON 형태로 파싱
 - `response.formData()`: 응답을 `formData` 객체 형태로 반환
@@ -83,27 +75,24 @@ if (response.ok) {
 let url =
   "https://api.github.com/repos/javascript-tutorial/ko.javascript.info/commits";
 let response = await fetch(url);
-let commits = await response.json(); // 응답 본문을 읽고 JSON 형태로 파싱
-alert(commits[0].author.login);
-```
+if (response.ok) {
+  let commits = await response.json();
+  alert(commits[0].author.login);
+}
 
-```javascript
-fetch(
-  "https://api.github.com/repos/javascript-tutorial/en.javascript.info/commits"
-)
+fetch(url)
   .then((response) => response.json())
   .then((commits) => alert(commits[0].author.login));
+
+let response2 = await fetch(url);
+if (response2.ok) {
+  let text = await response2.text();
+  alert(`${text.slice(0, 80)}...`);
+}
 ```
 
 ```javascript
-let response = await fetch(
-  "https://api.github.com/repos/javascript-tutorial/en.javascript.info/commits"
-);
-let text = await response.text(); // 응답 본문을 텍스트 형태로 읽기
-alert(text.slice(0, 80) + "...");
-```
-
-```javascript
+// fetch 명세서 우측 상단에 있는 로고(바이너리 데이터) 가져오기
 let response = await fetch("/article/fetch/logo-fetch.svg");
 let blob = response.blob(); // 응답을 Blob 객체 형태로 다운로드
 let img = document.createElement("img"); // 다운로드받은 Blob을 담을 <img>
@@ -116,23 +105,9 @@ setTimeout(() => {
 }, 3000); // 3초 후 이미지 숨김
 ```
 
-- fetch 명세서 우측 상단에 있는 로고(바이너리 데이터) 가져오기
-
-본문을 읽을 때 사용되는 메서드는 딱 하나만 사용 가능
-
-- `response.text()`를 사용해 응답을 얻었다면 본문의 컨텐츠는 모두 처리된 상태이기 때문에 `response.json()`은 동작하지 않음
-
-```javascript
-let text = await response.text(); // 응답 본문이 소비됨
-let parsed = await response.json(); // 실패
-```
-
 ### 응답 헤더
 
-응답 헤더
-
-- `response.headers`에 맵과 유사한 형태로 저장됨
-- 맵은 아니지만 맵과 유사한 메서드를 지원
+- `response.headers`에 맵과 유사한 형태로 저장되고 맵과 유사한 메서드를 지원
 - 이 메서드들로 헤더 일부만 추출하거나 헤더 전체 순회 가능
 
 ```javascript
@@ -145,10 +120,11 @@ for (let [key, value] of response.headers) alert(`${key} = ${value}`); // 헤더
 
 ### 요청 헤더
 
-요청 헤더
-
 - `headers` 옵션을 사용해 `fetch`에 요청 헤더를 설정할 수 있음
 - `headers`에는 아래와 같이 다양한 헤더 정보가 담긴 객체를 넘기게 됨
+- `headers`를 사용해 설정할 수 없는 헤더도 있음
+- 이런 제약은 HTTP를 목적에 맞고 안전하게 사용할 수 있도록 하려고 만들어짐
+- 금지 목록에 있는 헤더는 브라우저만 배타적으로 설정·관리할 수 있음
 
 ```javascript
 let response = fetch(protectedUrl, {
@@ -156,7 +132,7 @@ let response = fetch(protectedUrl, {
 });
 ```
 
-`headers`를 사용해 설정할 수 없는 헤더도 있음
+`headers`를 사용해 설정할 수 없는 헤더
 
 - `Accept-Charset`, `Accept-Encoding`
 - `Access-Control-Request-Headers`
@@ -179,22 +155,18 @@ let response = fetch(protectedUrl, {
 - `Proxy-*`
 - `Sec-*`
 
-이런 제약은 HTTP를 목적에 맞고 안전하게 사용할 수 있도록 하려고 만들어짐
-
-금지 목록에 있는 헤더는 브라우저만 배타적으로 설정·관리할 수 있음
-
 ### POST 요청
 
-`GET` 이외의 요청을 보내려면 추가 옵션을 사용해야 함
-
+- `GET` 이외의 요청을 보내려면 추가 옵션을 사용해야 함
 - `method`: HTTP 메서드
 - `body`: 요청 본문으로 다음 항목 중 하나여야 함
   - 문자열(JSON 문자열 등)
   - `FormData` 객체: `form/multipart` 형태로 데이터를 전송하기 위해 쓰임
   - `Blob`이나 `BufferSource`: 바이너리 데이터 전송을 위해 쓰임
   - URLSearchParams: 데이터를 `x-www-form-urlencoded` 형태로 보내기 위해 쓰임(요즘에는 잘 사용하지 않음)
-
-대부분은 JSON을 요청 본문에 실어 보냄
+- 대부분은 JSON을 요청 본문에 실어 보냄
+- 본문이 문자열이면, `Content-Type` 헤더가 `text/plain;charset=UTF-8`로 기본 설정됨
+- `Blob`이나 `BufferSource` 객체를 사용하면 `fetch`로 바이너리 데이터(이미지 등)를 전송할 수 있음
 
 ```javascript
 let user = { name: "John", surname: "Smith" };
@@ -206,14 +178,6 @@ let response = await fetch("/article/fetch/post/user", {
 let result = await response.json();
 alert(result.message); // User saved.
 ```
-
-- JSON을 전송하기 때문에 `headers`의 `Content-Type`을 `application/json`으로 설정
-
-본문이 문자열이면, `Content-Type` 헤더가 `text/plain;charset=UTF-8`로 기본 설정됨
-
-이미지 전송하기
-
-- `Blob`이나 `BufferSource` 객체를 사용하면 `fetch`로 바이너리 데이터를 전송할 수 있음
 
 ```html
 <body style="margin:0">
@@ -243,31 +207,6 @@ alert(result.message); // User saved.
     }
   </script>
 </body>
-```
-
-```javascript
-function submit() {
-  canvasElem.toBlob(function (blob) {
-    fetch("/article/fetch/post/image", { method: "POST", body: blob })
-      .then((response) => response.json())
-      .then((result) => alert(JSON.stringify(result, null, 2)));
-  }, "image/png");
-}
-```
-
-### 요약
-
-일반적인 `fetch` 요청은 두 개의 `await` 호출로 구성됨
-
-```javascript
-let response = await fetch(url, options); // 응답 헤더와 함께 이행됨
-let result = await response.json(); // json 본문을 읽음
-```
-
-```javascript
-fetch(url, options)
-  .then((response) => response.json())
-  .then((result) => { ... });
 ```
 
 ### 예제
@@ -300,17 +239,14 @@ async function getUsers(names) {
 
 ## FormData 객체
 
-파일 여부나 추가 필드 여부 등과 상관 없이 통용되는 HTML 폼 전송 방법
-
 `FormData`
-
-- 폼을 쉽게 보내도록 도와주는 객체
-- HTML 폼 데이터를 나타냄
 
 ```javascript
 let formData = new FormData([form]);
 ```
 
+- 파일 여부나 추가 필드 여부 등과 상관 없이 통용되는 HTML 폼 전송 방법
+- 폼을 쉽게 보내도록 도와주는 객체. HTML 폼 데이터를 나타냄
 - HTML에 `form` 요소가 있는 경우, 위 코드를 작성하면 해당 폼 요소의 필드 전체가 자동 반영됨
 - `fetch` 등의 네트워크 메서드가 `FormData` 객체를 바디로 받는다는 것은 `FormData`의 특징
 - 이때 브라우저가 보내는 HTTP 메시지는 인코딩되고 `Content-Type` 속성은 `multipart/form-data`로 지정된 후 전송됨
@@ -339,20 +275,18 @@ let formData = new FormData([form]);
 
 ### FormData 메서드
 
-`FormData`에 속하는 필드는 아래와 같은 메서드로 수정 가능
-
+- `FormData`에 속하는 필드는 아래와 같은 메서드로 수정 가능
 - `formData.append(name, value)`: `name`과 `value`를 가진 폼 필드를 추가
 - `formData.append(name, blob, fileName)`: `<input type="file">` 형태의 필드를 추가
   - `fileName`은 필드 이름이 아니고 사용자가 해당 이름을 가진 파일을 폼에 추가한 것처럼 설정해줌
 - `formData.delete(name)`: `name`에 해당하는 필드를 삭제
 - `formData.get(name)`: `name`에 해당하는 필드의 값을 가져옴
 - `formData.has(name)`: `name`에 해당하는 필드가 있으면 `true`, 없으면 `false` 반환
+- 폼은 이름(`name`)이 같은 필드 여러 개를 허용하기 때문에 `append` 메서드를 여러 번 호출해 이름이 같은 필드를 계속 추가해도 문제가 없음
+- `append` 메서드 이외에 필드 추가 시 사용할 수 있는 메서드로 `set`도 있음
 
-폼은 이름(`name`)이 같은 필드 여러 개를 허용하기 때문에 `append` 메서드를 여러 번 호출해 이름이 같은 필드를 계속 추가해도 문제가 없음
+`set`이 `append` 메서드와 다른 점
 
-`append` 메서드 이외에 필드 추가 시 사용할 수 있는 메서드로 `set`도 있음
-
-- `set`이 `append` 메서드와 다른 점
 - `set`은 `name`과 동일한 이름을 가진 필드를 제거하고 새로운 필드를 추가
 - `set` 메서드를 사용하면 `name`을 가진 필드가 단 한 개만 있게끔 보장할 수 있음
 - 이외의 다른 기능은 `append`와 동일
@@ -370,9 +304,8 @@ for (let [name, value] of formData) alert(`${name} = ${value}`);
 
 ### 파일이 있는 폼 전송하기
 
-폼을 전송할 때 HTTP 메시지의 `Content-Type` 속성은 항상 `multipart/form-data`이고 메시지는 인코딩되어 전송됨
-
-파일이 있는 폼도 당연히 이 규칙을 따르기 때문에 `<input type="file">`로 지정한 필드 역시 일반 폼을 전송할 때와 유사하게 전송됨
+- 폼을 전송할 때 HTTP 메시지의 `Content-Type` 속성은 항상 `multipart/form-data`이고 메시지는 인코딩되어 전송됨
+- 파일이 있는 폼도 당연히 이 규칙을 따르기 때문에 `<input type="file">`로 지정한 필드 역시 일반 폼을 전송할 때와 유사하게 전송됨
 
 ```html
 <form id="formElem">
@@ -395,13 +328,11 @@ for (let [name, value] of formData) alert(`${name} = ${value}`);
 
 ### Blob 데이터가 있는 폼 전송하기
 
-이미지 같은 동적으로 생성된 바이너리 파일은 `Blob` 객체를 통해 쉽게 전송
-
-`Blob` 객체는 `fetch` 메서드의 `body` 매개변수에 바로 넘길 수 있음
-
-그런데 실제 코딩을 하다 보면 이미지를 별도로 넘겨주는 것보다 폼에 필드를 추가하고 여기에 이미지 이름 등의 메타데이터를 실어 넘겨주는 게 좀 더 편리함
-
-서버 입장에서도 원시 바이너리 데이터를 받는 것보다 multipart-encoded 폼을 받는 게 좀 더 적합
+- 이미지 같은 동적으로 생성된 바이너리 파일은 `Blob` 객체를 통해 쉽게 전송
+- `Blob` 객체는 `fetch` 메서드의 `body` 매개변수에 바로 넘길 수 있음
+- 그런데 실제 코딩을 하다 보면 이미지를 별도로 넘겨주는 것보다,
+- 폼에 필드를 추가하고 여기에 이미지 이름 등의 메타데이터를 실어 넘겨주는 게 좀 더 편리함
+- 서버 입장에서도 원시 바이너리 데이터를 받는 것보다 multipart-encoded 폼을 받는 게 좀 더 적합
 
 ```html
 <body style="margin:0">
@@ -436,51 +367,41 @@ for (let [name, value] of formData) alert(`${name} = ${value}`);
 </body>
 ```
 
-- `(*)`: 폼에 `<input type="file" name="image">` 태그가 있고, 사용자 기기의 파일 시스템에서 파일명이 `"image.png"`인 `imageBlob` 데이터를 추가한 것과 동일한 효과
+- `(*)`: 폼에 `<input type="file" name="image">` 태그가 있고,
+- 사용자 기기의 파일 시스템에서 파일명이 `"image.png"`인 `imageBlob` 데이터를 추가한 것과 동일한 효과
 - 요청을 받은 서버는 일반 폼과 동일하게 폼 데이터와 파일을 읽고 처리
 
 ## Fetch: Download progress
 
-`fetch` 메서드는 다운로드 진행 상황을 추적할 수 있게 해줌
+`fetch` 메서드
 
-- 현재 `fetch`에게 업로드 진행 상황을 추적할 수 있는 방법은 없음
-- 이를 위해서는 `XMLHttpRequest`를 사용
+- 다운로드 진행 상황을 추적할 수 있게 해줌
+- 현재 `fetch`에게 업로드 진행 상황을 추적할 수 있는 방법은 없음. 이를 위해서는 `XMLHttpRequest`를 사용
 
-다운로드 진행 상황을 추적하기 위해 `response.body` 프로퍼티를 사용할 수 있음
+`response.body`
 
-`response.body`는 `ReadableStream`임
-
+- 다운로드 진행 상황을 추적하기 위해 `response.body` 프로퍼티를 사용할 수 있음
+- `response.body`는 `ReadableStream`
 - body를 chunk 단위로 제공하는 특별한 객체
-
-`response.text()`, `response.json()` 등 기타 메서드들과 다르게, `response.body`는 읽기 과정을 완전히 통제하고, 우리는 어느 순간에 얼마나 소비되는지를 셀 수 있음
+- `response.text()`, `response.json()` 등 기타 메서드들과 다르게,
+- `response.body`는 읽기 과정을 완전히 통제하고, 우리는 어느 순간에 얼마나 소비되는지를 셀 수 있음
 
 ```javascript
-// instead of response.json() and other methods
 const reader = response.body.getReader();
-// infinite loop while the body is downloading
 while (true) {
-  // done is true for the last chunk
-  // value is Uint8Array of the chunk bytes
   const { done, value } = await reader.read();
   if (done) break;
   console.log(`Received ${value.length} bytes`);
 }
 ```
 
-- `response.body`에서 응답을 읽는 코드의 스케치
 - `await reader.read()` 호출의 결과는 두 가지 프로퍼티를 가진 객체
   - `done`: 읽기가 완료되면 `true`, 그렇지 않으면 `false`
   - `value`: 형식화된 바이트 배열(typed array of bytes) `Uint8Array`
-
-Streams API는 또한 `for await..of` 루프를 사용한 `ReadableStream`을 통한 비동기 반복을 설명
-
-하지만 아직 널리 지원되지 않기 때문에 `while` 루프를 사용
-
-우리는 로딩이 완료될 때까지 루프에서 응답 청크(chunk)를 받음
-
-- `done`이 `true`가 될 때까지
-
-진행 상황을 기록하려면 받은 모든 조각(fragment) `value`의 길이를 counter에 추가하기만 하면 됨
+- Streams API는 또한 `for await..of` 루프를 사용한 `ReadableStream`을 통한 비동기 반복을 설명
+- 하지만 아직 널리 지원되지 않기 때문에 `while` 루프를 사용
+- 우리는 로딩이 완료될 때까지 루프에서 응답 청크(chunk)를 받음 (`done`이 `true`가 될 때까지)
+- 진행 상황을 기록하려면 받은 모든 조각(fragment) `value`의 길이를 counter에 추가하기만 하면 됨
 
 응답을 받고 콘솔에 진행 상황을 기록하는 작업
 
@@ -522,47 +443,30 @@ alert(commits[0].author.login);
 ```
 
 1. 평소대로 `fetch`를 수행하지만 `response.json()`을 호출하는 대신 스트림 리더 `response.body.getReader()`를 얻음
-   - 동일한 응답을 읽기 위해 두 메서드 모두 사용할 수는 없음(둘 중 하나만 사용)
 2. 읽기 전에 `Content-Length` 헤더에서 전체 응답 길이를 파악할 수 있음
    - 교차 출처 요청(cross-origin request)에는 없을 수 있으며, 기술적으로 서버는 이를 설정할 필요가 없음. 하지만 대개 제자리에 있음
 3. 완료될 때까지 `await reader.read()` 호출
    - 우리는 `chunks` 배열에 response chunks를 수집
    - 응답이 소비된 후에는 `response.json()`이나 다른 방법을 사용하여 '다시 읽을'(re-read) 수 없기 때문에 중요
-     - 시도할 수는 있으나 에러가 발생함
 4. 마지막에는 `Uint8Array` 바이트 chunks의 배열 `chunks`를 가짐
-   - 하나의 결과로 결합해야 함
-   - 이들을 연결하는 메서드가 없으므로 이를 수행하는 몇 가지 코드가 있음
+   - 하나의 결과로 결합해야 하는데 이들을 연결하는 메서드가 없으므로 이를 수행하는 몇 가지 코드가 있음
    - 결합된 길이를 가진 동일한 유형의 배열 `chunksAll = new Uint8Array(receivedLength)`를 생성
    - 그러고 나서 `.set(chunk, position)` 메서드를 사용해 `chunk`를 하나씩 복사
 5. `chunksAll`에 결과를 얻음. 문자열이 아닌 바이트 배열
-
-문자열을 생성하려면 이러한 바이트를 해석해야 함
-
-내장 `TextDecoder`가 그 역할을 함
-
-필요하다면 `JSON.parse`
-
-문자열 대신 바이너리 컨텐츠가 필요하다면 훨씬 더 간단함
-
-4단계와 5단계를 모든 청크에서 `Blob` 하나를 생성하는 코드로 바꾸면 됨
+   - 문자열을 생성하려면 이러한 바이트를 해석해야 함
 
 ```javascript
-let blob = new Blob(chunks);
+let blob = new Blob(chunks); // 문자열 대신 바이너리 컨텐츠가 필요한 경우
 ```
-
-마지막에는 결과(문자열 또는 blob 등 편한 대로)를 얻을 수 있으며 프로세스 진행 상황을 추적할 수 있음
-
-업로드 진행 상황은 불가
 
 ## Fetch: Abort
 
-`fetch`는 프라미스를 반환
+진행중인 `fetch`를 취소할 수 있는 방법
 
-자바스크립트에는 일반적으로 프라미스를 중단(abort)한다는 개념이 없음
-
-어떻게 진행 중인 `fetch`를 취소할 수 있을까
-
-예를 들어 우리 사이트의 사용자가 `fetch`가 더 이상 필요하지 않다고 나타내는 경우
+- `fetch`는 프라미스를 반환
+- 자바스크립트에는 일반적으로 프라미스를 중단(abort)한다는 개념이 없음
+- 어떻게 진행 중인 `fetch`를 취소할 수 있을까
+- 예를 들어 우리 사이트의 사용자가 `fetch`가 더 이상 필요하지 않다고 나타내는 경우
 
 `AbortController`
 
@@ -579,15 +483,13 @@ let controller = new AbortController();
 - 단일 메서드 `abort()`를 가짐
 - 이벤트 리스너를 설정할 수 있는 단일 프로퍼티 `signal`을 가짐
 
-`abort()`가 호출되면
+`abort()` 호출 시
 
 - `controller.signal`은 `"abort"` 이벤트를 내보냄
 - `controller.signal.aborted` 프로퍼티가 `true`가 됨
-
-일반적으로 이 과정에는 두 당사자(parties)가 있음
-
-- 취소 가능한 작업을 수행하는 하나. `controller.signal`에 리스너를 설정
-- 취소하는 하나. 필요하면 `controller.abort()`를 호출
+- 일반적으로 이 과정에는 두 당사자(parties)가 있음
+  - 취소 가능한 작업을 수행하는 하나. `controller.signal`에 리스너를 설정
+  - 취소하는 하나. 필요하면 `controller.abort()`를 호출
 
 ```javascript
 let controller = new AbortController();
@@ -611,28 +513,18 @@ alert(signal.aborted); // true
 
 ### Using with fetch
 
-`fetch`를 취소하려면 `AbortController`의 `signal` 프로퍼티를 `fetch`의 옵션으로 전달
+- `fetch`를 취소하려면 `AbortController`의 `signal` 프로퍼티를 `fetch`의 옵션으로 전달
 
 ```javascript
 let controller = new AbortController();
 fetch(url, { signal: controller.signal });
 ```
 
-`fetch` 메서드는 `AbortController`와 작업하는 방법을 알고 있음
-
-`signal`에서 `abort` 이벤트를 수신
-
-중단하려면 `controller.abort()`를 호출
-
-```javascript
-controller.abort();
-```
-
-끝났습니다. `fetch`는 `signal`에서 이벤트를 가져오고 요청을 중단
-
-fetch가 중단되면 `AbortError` 에러와 함께 거부되므로 처리해야 함
-
-1초 후에 중단되는 `fetch` 예
+- `fetch` 메서드는 `AbortController`와 작업하는 방법을 알고 있음
+- `signal`에서 `abort` 이벤트를 수신
+- 중단하려면 `controller.abort()`를 호출
+- `fetch`는 `signal`에서 이벤트를 가져오고 요청을 중단
+- fetch가 중단되면 `AbortError` 에러와 함께 거부되므로 처리해야 함
 
 ```javascript
 // 1초 후 중단
@@ -650,9 +542,8 @@ try {
 
 ### AbortController is scalable
 
-`AbortController`는 확장 가능하므로 한번에 여러 fetch를 취소할 수 있음
-
-병렬로 많은 `urls`를 fetch하고 단일 컨트롤러로 모두 중단하는 예
+- `AbortController`는 확장 가능하므로 한번에 여러 fetch를 취소할 수 있음
+- 아래 코드는 병렬로 많은 `urls`를 fetch하고 단일 컨트롤러로 모두 중단하는 예
 
 ```javascript
 let urls = [...]; // a list of urls to fetch in parallel
@@ -662,9 +553,8 @@ let results = await Promise.all(fetchJobs);
 // controller.abort()가 어디에서든 호출되면 모든 fetch를 중단함
 ```
 
-`fetch`와 다른 자체 비동기 작업이 있는 경우, 이것들을 단일 `AbortController`로 중단하는 데 사용할 수 있음
-
-우리 작업에서 해당 `abort` 이벤트를 듣기만 하면 됨
+- `fetch`와 다른 자체 비동기 작업이 있는 경우, 이것들을 단일 `AbortController`로 중단하는 데 사용할 수 있음
+- 우리 작업에서 해당 `abort` 이벤트를 듣기만 하면 됨
 
 ```javascript
 let urls = [...];

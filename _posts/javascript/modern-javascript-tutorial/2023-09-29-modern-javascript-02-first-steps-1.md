@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 02 - 자바스크립트 기본 1
 date: 2023-09-29 12:58:37 +0900
-last_modified_at: 2024-01-17 12:59:05 +0900
+last_modified_at: 2024-03-30 09:47:19 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, script, statement, semicolon, comment, use-strict]
 ---
@@ -64,13 +64,14 @@ Hello, world!, 코드 구조, 엄격 모드
 - 스크립트가 아주 간단할 때만 HTML 안에 직접 작성하기
 
 ```html
+<!-- 절대 경로 -->
 <script src="/path/to/script.js"></script>
-
+<!-- 상대 경로 -->
 <script src="/js/script1.js"></script>
 <script src="/js/script2.js"></script>
-
+<!-- URL 전체 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.js"></script>
-
+<!-- src 속성이 있어 태그 내부의 코드 무시 -->
 <script src="file.js">
   alert(1); // 무시됨
 </script>
@@ -79,10 +80,9 @@ Hello, world!, 코드 구조, 엄격 모드
 스크립트를 별도의 파일에 작성하기
 
 - 브라우저가 스크립트를 다운받아 캐시에 저장하기 때문에 성능 향상
-- 여러 페이지에서 동일한 스크립트를 사용하는 경우,
-- 브라우저는 페이지가 바뀔 때마다 스크립트를 새로 다운받지 않고 캐시로부터 스크립트를 가져와 사용
-- 스크립트 파일을 한 번만 다운받으면 됨
-- 트래픽 절약, 웹 페이지 속도 향상
+- 여러 페이지에서 동일한 스크립트를 사용하는 경우
+  - 브라우저는 페이지가 바뀔 때마다 스크립트를 새로 다운받지 않고 캐시로부터 스크립트를 가져와 사용
+- 스크립트 파일을 한 번만 다운받으면 되어 트래픽 절약, 웹 페이지 속도 향상
 
 ## 코드 구조
 
@@ -118,7 +118,7 @@ Hello, world!, 코드 구조, 엄격 모드
 ECMAScript(ES5)
 
 - 새로운 기능이 추가되고 기존 기능 중 일부가 변경됨
-- 변경사항 대부분은 ES5의 기본 모드에선 활성화되지 않도록 설계됨
+- 변경사항 대부분은 ES5의 기본 모드에서는 활성화되지 않도록 설계됨
 - 대신 `"use strict"` 지시자로 엄격 모드(strict mode)를 활성화했을 때만 이 변경사항 적용
 
 ### use strict

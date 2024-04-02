@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 1
 date: 2023-10-02 12:01:57 +0900
-last_modified_at: 2024-01-17 14:36:13 +0900
+last_modified_at: 2024-04-02 07:03:11 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [javascript, object, property, in, for-in, garbage-collection, method, this]

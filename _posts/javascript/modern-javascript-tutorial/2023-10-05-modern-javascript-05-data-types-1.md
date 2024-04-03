@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 1
 date: 2023-10-05 20:23:45 +0900
-last_modified_at: 2024-01-17 16:31:14 +0900
+last_modified_at: 2024-04-03 16:15:29 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, primitive, number, string]
 ---
@@ -462,6 +462,8 @@ if (~str.indexOf("Widget")) alert("찾았다");
 - `str.replace(searchValue, replaceValue)`
   - `searchValue`: 문자열 또는 정규표현식
   - `replaceValue`: 문자열 또는 콜백 함수
+- `str.replaceAll()`
+  - 모두 대체
 - `str.padStart(targetLength [, padString])`
   - `targetLength`: 전체 문자열 길이 지정
   - `padString`: 현재 문자열의 길이가 `targetLength`보다 짧다면 이것으로 채움

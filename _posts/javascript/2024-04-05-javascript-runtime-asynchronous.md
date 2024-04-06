@@ -1,7 +1,7 @@
 ---
 title: JavaScript 런타임의 비동기 제어
 date: 2024-04-05 15:25:07 +0900
-last_modified_at: 2024-04-05 15:25:07 +0900
+last_modified_at: 2024-04-06 14:28:23 +0900
 categories: [JavaScript]
 tags:
   [
@@ -132,3 +132,5 @@ fetch("https://website.com/api/posts"); // 데이터를 반환할 때까지 호�
 > [⭐️🎀 JavaScript Visualized: Promises & Async/Await](https://dev.to/lydiahallie/javascript-visualized-promises-async-await-5gke)
 
 > [Difference between microtask and macrotask queue in the event loop](https://dev.to/jeetvora331/difference-between-microtask-and-macrotask-queue-in-the-event-loop-4i4i)
+
+> [Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)

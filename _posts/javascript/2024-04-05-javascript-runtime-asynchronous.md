@@ -1,7 +1,7 @@
 ---
 title: JavaScript 런타임의 비동기 제어
 date: 2024-04-05 15:25:07 +0900
-last_modified_at: 2024-04-06 14:28:23 +0900
+last_modified_at: 2024-04-07 15:19:18 +0900
 categories: [JavaScript]
 tags:
   [

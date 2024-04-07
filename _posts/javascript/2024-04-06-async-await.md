@@ -1,7 +1,7 @@
 ---
 title: JavaScript에서의 비동기 실행 순서 정복하기
 date: 2024-04-06 14:34:35 +0900
-last_modified_at: 2024-04-06 14:34:35 +0900
+last_modified_at: 2024-04-07 15:22:56 +0900
 categories: [JavaScript]
 tags:
   [

@@ -2,8 +2,8 @@
 title: JavaScript로 2차원 배열 생성하기
 date: 2024-04-07 11:13:42 +0900
 last_modified_at: 2024-04-08 09:41:57 +0900
-categories: [Algorithm]
-tags: [algorithm, javascript, array]
+categories: [JavaScript]
+tags: [javascript, array]
 ---
 
 JavaScript는 2차원 배열을 어떻게 생성할 수 있을까요?

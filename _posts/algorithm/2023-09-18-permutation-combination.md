@@ -1,8 +1,8 @@
 ---
 title: 순열과 조합 Python으로 알아보기
 date: 2023-09-18 22:51:24 +0900
-last_modified_at: 2023-09-18 22:51:24 +0900
-categories: [Algotirhm]
+last_modified_at: 2024-04-08 16:00:37 +0900
+categories: [Algorithm]
 tags: [algorithm, permutation, combination, python]
 ---
 

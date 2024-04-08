@@ -1,12 +1,12 @@
 ---
 title: React의 Side Effect와 useEffect에 대해 알아보기
 date: 2024-04-02 14:42:17 +0900
-last_modified_at: 2024-04-02 14:42:17 +0900
+last_modified_at: 2024-04-07 15:06:32 +0900
 categories: [React]
 tags: [react, side-effect, pure-function, useeffect]
 ---
 
-React, Side Effect, Pure Function, useEffect
+React, Side Effect, Pure Function, useEffect 이들의 관계
 
 ## React의 Side Effect와 useEffect에 대해 알아보기
 
@@ -48,7 +48,7 @@ useEffect(() => {}, []);
 
 - `setup`: effect의 로직이 포함된 함수. 선택적으로 cleanup 함수를 반환
   - `async` 함수는 안 됨
-- `dependencies': `setup` 코드 내부에서 참조되는 모든 반응 값들의 배열
+- `dependencies`: `setup` 코드 내부에서 참조되는 모든 반응 값들의 배열
   - 빈 배열은 컴포넌트가 렌더링 되었을 때 단 한 번만 실행
   - 배열을 아예 주지 않는다면 매 렌더링마다 실행
   - `useEffect`에서 `state`를 업데이트 한다면, React가 컴포넌트를 다시 렌더링하기 때문에 무한 루프에 빠짐

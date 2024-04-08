@@ -1,12 +1,12 @@
 ---
 title: React의 useState에 대해 자세히 알아보기
 date: 2024-04-03 17:23:45 +0900
-last_modified_at: 2024-04-03 17:23:45 +0900
+last_modified_at: 2024-04-07 15:11:45 +0900
 categories: [React]
 tags: [react, usestate, state, hook]
 ---
 
-React, useState, state, hook
+React, useState, state, hook 탐구하기
 
 ## React의 useState에 대해 자세히 알아보기
 

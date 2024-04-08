@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 07 - 객체 프로퍼티 설정
 date: 2023-11-01 21:26:07 +0900
-last_modified_at: 2024-01-19 09:23:18 +0900
+last_modified_at: 2024-04-08 12:00:07 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, property, flag, descriptor, accessor, getter, setter]
 ---

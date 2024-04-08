@@ -1,8 +1,8 @@
 ---
 title: Disjoint Sets 자료구조와 Union Find 알고리즘
 date: 2023-08-31 20:24:18 +0900
-last_modified_at: 2023-08-31 20:24:18 +0900
-categories: [Algotirhm]
+last_modified_at: 2024-04-08 16:00:37 +0900
+categories: [Algorithm]
 tags: [algorithm, union-find, disjoint-sets, python]
 ---
 

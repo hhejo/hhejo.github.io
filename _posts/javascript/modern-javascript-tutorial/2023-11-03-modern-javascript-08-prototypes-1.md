@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 08 - 프로토타입과 프로토타입 상속 1
 date: 2023-11-03 06:05:33 +0900
-last_modified_at: 2024-01-19 21:43:31 +0900
+last_modified_at: 2024-04-09 08:55:13 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, prototype, proto, inheritance, constructor]
 ---

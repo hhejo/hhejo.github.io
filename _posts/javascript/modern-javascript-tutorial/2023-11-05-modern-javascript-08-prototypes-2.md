@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 08 - 프로토타입과 프로토타입 상속 2
 date: 2023-11-05 11:54:16 +0900
-last_modified_at: 2024-01-19 09:38:17 +0900
+last_modified_at: 2024-04-09 13:11:01 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, prototype, proto, inheritance, method-borrowing]
 ---
@@ -149,9 +149,10 @@ alert("A".repeat(3)); // AAA
 - 한 객체의 메서드를 다른 객체로 복사할 때 이 기법을 사용
 - 여러 객체에서 필요한 기능을 가져와 섞는 것을 가능하게 해 유연한 개발 가능
 - 내장 메서드 `join`의 내부 알고리즘
-  - 제대로 된 인덱스와 `length` 프로퍼티가 있는지만 확인함. 호출 대상이 진짜 배열인지는 상관 없음
+  - 제대로 된 인덱스와 `length` 프로퍼티가 있는지만 확인함
+  - 호출 대상이 진짜 배열인지는 상관 없음
 - 다수의 내장 메서드가 이런 식으로 동작
-- `obj.__proto__`를 `Array.prototype`으로 설정해 상속받아 `obj`에서 모든 `Array` 메서드를 사용할 수 있음
+- `obj.__proto__`를 `Array.prototype`으로 설정해 상속받아 `obj`에서 모든 `Array` 메서드를 사용 가능
 - 그런데 자바스크립트는 단일 상속만 허용하기 때문에 `obj`가 다른 객체를 상속받고 있으면 사용 불가
 
 ```javascript

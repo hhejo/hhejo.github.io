@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 09 - 클래스 1
 date: 2023-11-07 20:11:03 +0900
-last_modified_at: 2024-01-19 12:16:55 +0900
+last_modified_at: 2024-04-10 14:50:28 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [

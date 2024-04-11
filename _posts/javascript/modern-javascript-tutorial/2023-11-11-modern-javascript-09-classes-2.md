@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 09 - 클래스 2
 date: 2023-11-11 09:22:46 +0900
-last_modified_at: 2024-01-19 13:28:09 +0900
+last_modified_at: 2024-04-10 15:01:32 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, static, protected, private]
 ---

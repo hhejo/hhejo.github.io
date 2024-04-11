@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 10 - 에러 핸들링
 date: 2023-11-23 08:11:35 +0900
-last_modified_at: 2024-01-19 19:10:32 +0900
+last_modified_at: 2024-04-11 09:38:02 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, try-catch, error, throw, finally, custom-error]
 ---

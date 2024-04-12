@@ -8,7 +8,7 @@ tags: [javascript, ecmascript]
 
 ECMAScript란 정확히 무엇일까요?
 
-##
+## ECMAScript란? ES 버전별 특징도 알아보기
 
 ### Ecma International
 

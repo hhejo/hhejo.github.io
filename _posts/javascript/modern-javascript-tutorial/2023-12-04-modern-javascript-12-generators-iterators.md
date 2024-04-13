@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 12 - 제너레이터와 비동기 이터레이션
 date: 2023-12-04 08:07:03 +0900
-last_modified_at: 2024-01-21 12:19:19 +0900
+last_modified_at: 2024-04-13 13:44:58 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, generator, iterator, iterable, async]
 ---

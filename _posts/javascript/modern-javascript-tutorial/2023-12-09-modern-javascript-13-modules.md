@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 13 - 모듈
 date: 2023-12-09 16:42:46 +0900
-last_modified_at: 2024-01-21 13:30:29 +0900
+last_modified_at: 2024-04-13 14:16:15 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, module, import, export]
 ---

@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 15 - 문서 2
 date: 2024-01-05 09:34:27 +0900
-last_modified_at: 2024-01-23 09:37:18 +0900
+last_modified_at: 2024-04-14 15:29:50 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, node, attribute, property, dataset, style, class]
 ---

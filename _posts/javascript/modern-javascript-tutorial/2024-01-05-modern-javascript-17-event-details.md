@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 17 - UI 이벤트
 date: 2024-01-05 21:12:15 +0900
-last_modified_at: 2024-01-24 07:17:48 +0900
+last_modified_at: 2024-04-16 08:43:11 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, mouse, drag-and-drop, pointer, keyboard, scroll]
 ---

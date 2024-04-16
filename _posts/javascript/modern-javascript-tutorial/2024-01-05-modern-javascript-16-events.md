@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 16 - 이벤트
 date: 2024-01-05 16:33:33 +0900
-last_modified_at: 2024-01-23 18:16:51 +0900
+last_modified_at: 2024-04-15 17:08:36 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [

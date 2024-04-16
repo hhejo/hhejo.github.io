@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 18 - 폼과 폼 조작
 date: 2024-01-05 22:10:47 +0900
-last_modified_at: 2024-01-24 07:41:36 +0900
+last_modified_at: 2024-04-16 09:04:44 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, form, focus, blur, change, input, cut, copy, paste, submit]
 ---

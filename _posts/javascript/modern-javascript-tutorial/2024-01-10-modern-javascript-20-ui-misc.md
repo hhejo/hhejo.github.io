@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 20 - 기타 1
 date: 2024-01-10 13:44:25 +0900
-last_modified_at: 2024-01-24 09:42:04 +0900
+last_modified_at: 2024-04-17 09:07:37 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, mutation-observer, selection, range]
 ---

@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 23 - 네트워크 요청 1
 date: 2024-01-16 20:04:41 +0900
-last_modified_at: 2024-01-29 15:51:00 +0900
+last_modified_at: 2024-04-19 08:29:47 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [

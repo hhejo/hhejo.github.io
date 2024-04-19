@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 23 - 네트워크 요청 3
 date: 2024-01-19 08:25:17 +0900
-last_modified_at: 2024-01-30 06:52:13 +0900
+last_modified_at: 2024-04-20 07:23:25 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, fetch, url]
 ---

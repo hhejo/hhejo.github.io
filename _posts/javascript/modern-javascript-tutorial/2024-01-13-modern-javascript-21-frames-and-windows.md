@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 21 - 프레임과 윈도우
 date: 2024-01-13 08:22:16 +0900
-last_modified_at: 2024-01-24 10:22:36 +0900
+last_modified_at: 2024-04-18 19:21:05 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [javascript, popup, cross-window, iframe, same-origin-policy, clickjacking]

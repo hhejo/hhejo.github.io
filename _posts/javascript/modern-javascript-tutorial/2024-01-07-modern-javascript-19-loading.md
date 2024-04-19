@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 19 - 문서와 리소스 로딩
 date: 2024-01-07 08:15:11 +0900
-last_modified_at: 2024-01-24 08:06:17 +0900
+last_modified_at: 2024-04-17 08:50:12 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [

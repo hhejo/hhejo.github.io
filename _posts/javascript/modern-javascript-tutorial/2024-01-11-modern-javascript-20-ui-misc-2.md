@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 20 - 기타 2
 date: 2024-01-11 09:07:43 +0900
-last_modified_at: 2024-01-24 09:57:30 +0900
+last_modified_at: 2024-04-18 16:37:18 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, event-loop, macrotask, microtask]
 ---

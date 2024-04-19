@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 22 - 이진 데이터와 파일
 date: 2024-01-15 20:36:07 +0900
-last_modified_at: 2024-01-29 09:14:07 +0900
+last_modified_at: 2024-04-19 08:02:02 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [

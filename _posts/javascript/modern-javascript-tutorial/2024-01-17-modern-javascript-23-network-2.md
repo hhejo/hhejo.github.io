@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 23 - 네트워크 요청 2
 date: 2024-01-17 08:25:17 +0900
-last_modified_at: 2024-01-29 18:29:26 +0900
+last_modified_at: 2024-04-20 07:01:09 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, cors, safe-request, unsafe-request, preflight, credential]
 ---

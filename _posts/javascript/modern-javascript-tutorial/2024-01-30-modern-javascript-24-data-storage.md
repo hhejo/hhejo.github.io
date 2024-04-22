@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 24 - 브라우저에 데이터 저장하기 1
 date: 2024-01-30 11:37:09 +0900
-last_modified_at: 2024-01-31 08:43:55 +0900
+last_modified_at: 2024-04-22 11:32:17 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, cookie, localstorage, sessionstorage]
 ---

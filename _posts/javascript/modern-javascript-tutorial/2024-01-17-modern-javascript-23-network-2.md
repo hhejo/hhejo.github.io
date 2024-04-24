@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 23 - 네트워크 요청 2
 date: 2024-01-17 08:25:17 +0900
-last_modified_at: 2024-04-20 07:01:09 +0900
+last_modified_at: 2024-04-24 12:34:04 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, cors, safe-request, unsafe-request, preflight, credential]
 ---
@@ -10,9 +10,11 @@ CORS
 
 ## CORS
 
-`fetch`로 요청을 보내게 될 사이트가 현재 접속 사이트와 다르다면 요청이 실패할 수 있음
+`fetch` 요청 실패
 
-- 요청이 왜 실패하는지 알기 위해서는 도메인·프로토콜·포트 세 가지에 의해 결정되는 오리진(origin)이라는 핵심 개념을 알아야 함
+- `fetch`로 요청을 보내게 될 사이트가 현재 접속 사이트와 다르다면 요청이 실패할 수 있음
+- 요청이 왜 실패하는지 알기 위해서는 오리진(origin)이라는 핵심 개념을 알아야 함
+- 오리진: 도메인·프로토콜·포트 세 가지에 의해 결정됨
 
 ```javascript
 try {
@@ -22,31 +24,32 @@ try {
 }
 ```
 
-Cross-Origin Request(크로스 오리진 요청, 교차 출처 요청)
+Cross-Origin Request
 
+- 크로스 오리진 요청, 교차 출처 요청
 - 도메인이나 서브도메인, 프로토콜, 포트가 다른 곳에 요청을 보내는 것
-- 크로스 오리진 요청을 보내려면 리모트 오리진에서 전송받은 특별한 헤더가 필요
-- 이러한 정책을 CORS(Cross-Origin Resource Sharing, 크로스 오리진 리소스 공유)라고 부름
+- 크로스 오리진 요청을 보내려면, 리모트 오리진에서 전송받은 특별한 헤더가 필요
+- 이러한 정책을 CORS라고 부름
+  - Cross-Origin Resource Sharing, 크로스 오리진 리소스 공유
 
 ### 왜 CORS가 필요한가에 대한 짧은 역사
 
-- CORS는 악의를 가진 해커로부터 인터넷을 보호하기 위해 만들어짐
-- 어떤 사건 때문에 CORS에 만들어졌는지 짧은 역사를 통해 살펴보자..
+CORS는 악의를 가진 해커로부터 인터넷을 보호하기 위해 만들어짐
+
 - 과거 수 년 동안, 한 사이트의 스크립트에서 다른 사이트에 있는 컨텐츠에 접근할 수 없다는 제약이 있었음
 - 이러한 간단하지만 강력한 규칙은 인터넷 보안을 위한 근간
 - 보안 규칙 덕분에 해커가 만든 웹 사이트 `hacker.com`에서 `gmail.com`에 있는 메일 박스에 접근할 수 없던 것
 - 사람들은 이런 제약 덕분에 안전하게 인터넷을 사용할 수 있었음
-- 그런데 이 당시의 자바스크립트는 네트워크 요청을 보낼 수 있을 만한 메서드를 지원하지 않았음
+
+그런데 이 당시의 자바스크립트는 네트워크 요청을 보낼 수 있을 만한 메서드를 지원하지 않았음
+
 - 당시 자바스크립트는 웹 페이지를 꾸미기 위한 토이 랭귀지 수준
-- 하지만 많은 웹 개발자들이 강력한 기능을 원하기 시작하면서,
-- 위와 같은 제약을 피해 다른 웹 사이트에 요청을 보내기 위한 트릭들을 만들기 시작함
+- 하지만 많은 웹 개발자들이 강력한 기능을 원하기 시작하면서 위와 같은 제약을 피해 다른 웹 사이트에 요청을 보내기 위한 트릭들을 만들기 시작함
 
-폼 사용하기
+`<form>` 사용하기
 
-- 트릭 중 하나로 `<form>`이 사용되곤 했음
-- 개발자들은 `<form>` 안에 `<iframe>`을 넣어 `<form>`을 전송해 현재 사이트에 남아있으면서 네트워크 요청을 전송
-- 이 당시에는 네트워크 관련 메서드가 없었지만,
-- 폼은 어디든 데이터를 보낼 수 있다는 특징을 이용해 폼으로 다른 사이트에 GET, POST 요청을 보냈었음
+- 트릭 중 하나로, 개발자들은 `<form>` 안에 `<iframe>`을 넣어 `<form>`을 전송해 현재 사이트에 남아있으면서 네트워크 요청을 전송
+- 이 당시에는 네트워크 관련 메서드가 없었지만 폼은 어디든 데이터를 보낼 수 있다는 특징을 이용해 폼으로 다른 사이트에 GET, POST 요청을 보냈었음
 - 하지만 다른 사이트에서 `<iframe>`에 있는 컨텐츠를 읽는 것은 금지되었기 때문에 응답을 읽는 것은 불가능했음
 - 개발자들은 iframe과 페이지 양쪽에 특별한 스크립트를 심어 이런 제약 역시 피할 수 있는 트릭을 만들었음
 - 이렇게 iframe을 사용한 트릭은 오리진이 다른 사이트 간에도 양방향 통신이 가능하도록 했음
@@ -60,8 +63,7 @@ Cross-Origin Request(크로스 오리진 요청, 교차 출처 요청)
 
 스크립트 사용하기
 
-- `script` 태그를 사용하는 것 역시 제약을 피하기 위한 트릭이었음
-- `script` 태그의 `src` 속성값에는 도메인 제약이 없기 때문에 이 특징을 사용하면 어디서든 스크립트를 실행할 수 있음
+- 제약을 피하기 위한 또 다른 트릭으로, `script` 태그의 `src` 속성값에는 도메인 제약이 없기 때문에 이 특징을 사용하면 어디서든 스크립트를 실행할 수 있음
 - `script` 태그를 이용해 `<script src="http://another.com/...">` 형태로 `another.com`에 데이터를 요청하게 되면,
 - JSONP(JSON with Padding)라 불리는 프로토콜을 사용해 데이터를 가져오게 됨
 - 이런 꼼수를 쓰면 보안 규칙을 어기지 않으면서도 양방향으로 데이터를 전달할 수 있음. 양쪽에서 동의한 상황이라면 해킹도 아님
@@ -96,18 +98,18 @@ gotWeather({ temperature: 25, humidity: 78 });
 크로스 오리진 요청은 크게 두 가지 종류로 구분됨
 
 - 안전한 요청(safe request)
-  - 그 외의 요청 대비 만들기 쉬움
   - 안전한 메서드, 안전한 헤더를 만족하는 요청
+  - 그 외의 요청 대비 만들기 쉬움
 - 그 외의 요청(안전한 요청이 아닌 요청)
 
 안전한 요청은 다음과 같은 두 가지 조건 모두를 충족하는 말 그대로 안전한 요청
 
-- 안전한 메서드(safe method): GET, POST, HEAD를 사용한 요청
+- 안전한 메서드(safe method): `GET`, `POST`, `HEAD`를 사용한 요청
 - 안전한 헤더(safe header): 다음 목록에 속하는 헤더
   - `Accept`
   - `Accept-Language`
   - `Content-Language`
-  - 값이 `application/x-www-form-urlencoded`, `multipart/form-data`, `text/plain`인 `Content-Type`
+  - `Content-Type`: 값이 `application/x-www-form-urlencoded`, `multipart/form-data`, `text/plain`
 - 두 조건을 모두 충족하지 않는 요청은 안전하지 않은(unsafe) 요청으로 취급됨
   - `PUT` 메서드
   - 헤더에 `API-Key`가 명시된 요청 등
@@ -260,10 +262,10 @@ let response = await fetch("https://site.com/service.json", {
 });
 ```
 
-- 안전하지 않은 요청으로 분류되는 이유 세 가지 존재
-- `PATCH` 메서드 사용
-- `Content-Type`이 `application/x-www-form-urlencoded`나 `multipart/form-data`, `text/plain`이 아님
-- 비표준 헤더 `API-Key`를 사용
+0. 안전하지 않은 요청으로 분류되는 이유 세 가지 존재
+1. `PATCH` 메서드 사용
+2. `Content-Type`이 `application/x-www-form-urlencoded`나 `multipart/form-data`, `text/plain`이 아님
+3. 비표준 헤더 `API-Key`를 사용
 
 1단계: preflight 요청
 
@@ -302,15 +304,14 @@ Access-Control-Max-Age: 86400
 - 이렇게 서버에서 preflight 응답이 오면 브라우저는 `Access-Control-Allow-Method`에 `PATCH`가 있는 것을 확인하고,
 - 이어서 `Access-Control-Allow-Headers`에 `Content-Type`과 `API-Key`가 있는 것을 확인함
 - 둘 다 있는 것을 확인했기 때문에 이제 브라우저는 본 요청을 서버에 보냄
-- 참고로 `Access-Control-Max-Age` 헤더가 응답으로 오면 preflight 허용 여부가 헤더와 함께 캐싱되기 때문에
-- 브라우저는 헤더 값에 명시한 초동안 preflight 요청을 보내지 않음
+- 참고로 `Access-Control-Max-Age` 헤더가 응답으로 오면 preflight 허용 여부가 헤더와 함께 캐싱되기 때문에 브라우저는 헤더 값에 명시한 초동안 preflight 요청을 보내지 않음
 - 위 예시처럼 응답이 온 경우에는 하루동안 preflight 요청을 전송하지 않고 바로 본 요청이 전송됨
 
 3단계: 실제 요청
 
 - preflight 요청이 성공적으로 이뤄진 후에야 브라우저는 본 요청을 보냄
 - 지금부터의 프로세스는 안전한 요청이 이뤄질 때의 절차와 동일함
-- 본 요청은 크로스 오리진 요청이기 때문에 `Origin` 헤더가 붇음
+- 본 요청은 크로스 오리진 요청이기 때문에 `Origin` 헤더가 붙음
 
 ```
 PATCH /service.json

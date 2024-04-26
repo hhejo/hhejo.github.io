@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 19 - 문서와 리소스 로딩
 date: 2024-01-07 08:15:11 +0900
-last_modified_at: 2024-04-17 08:50:12 +0900
+last_modified_at: 2024-04-26 12:33:07 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [
@@ -24,14 +24,23 @@ DOMContentLoaded, load, beforeunload, unload 이벤트, defer, async 스크립�
 
 HTML 문서의 생명주기에는 3가지 주요 이벤트가 관여
 
-- `DOMContentLoaded`: 브라우저가 HTML을 읽고 DOM 트리를 완성하는 즉시 발생
-  - 기타 자원(이미지 파일(img 태그), 스타일시트 등)은 기다리지 않음
-  - DOM이 준비된 것을 확인 후, 원하는 DOM 노드를 찾아 핸들러를 등록해 인터페이스를 초기화 할 때 사용
-- `load`: HTML로 만든 DOM 트리가 완성되었을 뿐만 아니라 외부 자원(이미지, 스타일시트 등)도 불러오는 것이 끝났을 때 발생
-  - 외부 자원이 로드되고 스타일이 적용된 상태이기 때문에 화면의 요소의 실제 크기 확인 가능. 이미지 사이즈 확인 등에 사용
-- `beforeunload/unload`: 사용자가 페이지를 떠날 때 발생
-  - `beforeunload`: 사용자가 사이트를 떠나려 할 때, 변경되지 않은 사항들을 저장했는지 확인시켜줄 때 사용
-  - `unload`: 사용자가 진짜 떠나기 전, 사용자 분석 정보를 담은 통계 자료를 전송하고자 할 때 사용
+`DOMContentLoaded`
+
+- 브라우저가 HTML을 읽고 DOM 트리를 완성하는 즉시 발생
+- 기타 자원(이미지 파일(img 태그), 스타일시트 등)은 기다리지 않음
+- DOM이 준비된 것을 확인 후, 원하는 DOM 노드를 찾아 핸들러를 등록해 인터페이스를 초기화 할 때 사용
+
+`load`
+
+- HTML로 만든 DOM 트리가 완성되었을 뿐만 아니라 외부 자원(이미지, 스타일시트 등)도 불러오는 것이 끝났을 때 발생
+- 외부 자원이 로드되고 스타일이 적용된 상태이기 때문에 화면의 요소의 실제 크기 확인 가능
+- 이미지 사이즈 확인 등에 사용
+
+`beforeunload/unload`
+
+- 사용자가 페이지를 떠날 때 발생
+- `beforeunload`: 사용자가 사이트를 떠나려 할 때, 변경되지 않은 사항들을 저장했는지 확인시켜줄 때 사용
+- `unload`: 사용자가 진짜 떠나기 전, 사용자 분석 정보를 담은 통계 자료를 전송하고자 할 때 사용
 
 ### DOMContentLoaded
 
@@ -39,7 +48,7 @@ HTML 문서의 생명주기에는 3가지 주요 이벤트가 관여
 document.addEventListener("DOMContentLoaded", ready);
 ```
 
-- `DOMContentLoaded`: `document` 객체에서 발생하는 이벤트
+- `document` 객체에서 발생하는 이벤트
 - 문서가 로드되었을 때 실행되기 때문에 모든 요소에 접근 가능
 - DOM 트리가 완성되면 발생하는 이벤트라고 생각할 수 있지만 몇 가지 특이사항 존재
 - `document.onDOMContentLoaded`는 동작하지 않음
@@ -50,13 +59,19 @@ DOMContentLoaded와 scripts
 - 스크립트 실행이 끝난 후에야 나머지 HTML 문서를 처리
 - `<script>`에 있는 스크립트가 DOM 조작 관련 로직을 담고 있을 수 있기 때문에 만들어진 방지책
 - `DOMContentLoaded` 이벤트 역시 `<script>` 안의 스크립트가 처리된 후 발생
-- DOMContentLoaded를 막지 않는 두 가지 예외상황 스크립트
-- `async` 속성 스크립트, `document.createElement('script')`로 동적으로 생성되고 웹 페이지에 추가된 스크립트
+
+DOMContentLoaded를 막지 않는 두 가지 예외상황 스크립트
+
+- `async` 속성 스크립트
+- `document.createElement('script')`로 동적으로 생성되고 웹 페이지에 추가된 스크립트
 
 DOMContentLoaded와 styles
 
 - 외부 스타일 시트는 DOM에 영향을 주지 않기 때문에 `DOMContentLoaded`는 외부 스타일시트가 로드되기를 기다리지 않음
-- 스크립트가 스타일시트를 불러오는 태그 바로 다음에 위치하면, 스타일시트가 로드되기 전까지 실행되지 않음 (한 가지 예외)
+
+스타일 관련 한 가지 예외
+
+- 스크립트가 스타일시트를 불러오는 태그 바로 다음에 위치하면, 스타일시트가 로드되기 전까지 실행되지 않음
 - 스크립트에서 스타일에 영향을 받는 요소의 프로퍼티를 사용할 가능성이 있기 때문에 만들어진 예외
 
 DOMContentLoaded와 브라우저 내장 자동완성
@@ -105,7 +120,7 @@ window.addEventListener("load", function (event) {});
 window.onload = function (event) {};
 ```
 
-- `window.onload`: `window` 객체의 `load` 이벤트
+- `window` 객체의 `load` 이벤트
 - 이미지, 스타일 등의 리소스들이 모두 로드되었을 때 실행
 - 모든 자원이 로드되는 것을 기다리기에는 시간이 오래 걸릴 수 있어 잘 사용되지 않는 이벤트
 
@@ -113,7 +128,7 @@ window.onload = function (event) {};
 <script>
   window.onload = function () {
     alert("페이지 전체가 로드되었습니다.");
-    alert(`이미지 사이즈: ${img.offsetWidth}x${img.offsetHeight}`); // 이미지가 제대로 불러와 진 후에 얼럿창 실행
+    alert(`이미지 사이즈: ${img.offsetWidth}x${img.offsetHeight}`); // 이미지가 제대로 불러진 후에 얼럿창 실행
   };
 </script>
 <img id="img" src="https://en.js.cx/clipart/train.gif?speed=1&cache=0" />
@@ -126,7 +141,7 @@ window.addEventListener("unload", function (event) {});
 window.onunload = function (event) {};
 ```
 
-- `window.onunload`: `window` 객체의 `unload` 이벤트
+- `window` 객체의 `unload` 이벤트
 - 사용자가 페이지를 떠날 때, 즉 문서를 완전히 닫을 때 실행
 - 팝업창 닫기 등의 딜레이가 없는 작업 수행 가능
 - 분석 정보를 보내는 것은 예외사항에 속함
@@ -162,7 +177,7 @@ window.addEventListener("beforeunload", function (event) {});
 window.onbeforeunload = function (event) {};
 ```
 
-- `window.onbeforeunload`: `window` 객체의 `beforeunload` 이벤트
+- `window` 객체의 `beforeunload` 이벤트
 - 사용자가 현재 페이지를 떠나 다른 페이지로 이동하려 할 때, 창을 닫으려 할 때
 - `beforeunload` 핸들러에서 추가 확인 요청 가능
 - `beforeunload` 이벤트를 취소하려 하면, 브라우저는 사용자에게 확인을 요청
@@ -184,18 +199,24 @@ window.onbeforeunload = function () {
 
 ### readyState
 
-- `document.readyState` 프로퍼티: 현재 로딩 상태를 알려줌
+- 현재 로딩 상태를 알려주는 `document.readyState` 프로퍼티
 - 문서가 완전히 로드된 후 `DOMContentLoaded` 핸들러를 설정한다면 아마도 절대로 실행되지 않음
 - 그런데 가끔은 문서가 로드되었는지 아닌지를 판단할 수 없는 경우가 있음
 - DOM이 완전히 구성된 후에 특정 함수를 실행해야 할 때는 DOM 트리 완성 여부를 알 수 없어 난감
 - 이럴 때 현재 로딩 상태를 알려주는 `document.readyState` 프로퍼티 사용 가능
-- `document.readyState` 프로퍼티의 세 종류 값
-  - `"loading"`: 문서를 불러오는 중일 때
-  - `"interactive"`: 문서가 완전히 불러와졌을 때
-  - `"complete"`: 문서를 비롯한 이미지 등의 리소스들도 모두 불러와졌을 때
+
+`document.readyState` 프로퍼티의 세 종류 값
+
+- `"loading"`: 문서를 불러오는 중일 때
+- `"interactive"`: 문서가 완전히 불러와졌을 때
+- `"complete"`: 문서를 비롯한 이미지 등의 리소스들도 모두 불러와졌을 때
 - `document.readyState`의 값을 확인하고 상황에 맞게 핸들러를 설정하거나 코드를 실행하면 됨
-- `readystatechange`: 상태가 변경되었을 때 실행되는 이벤트. 문서 로딩 상태 파악 가능
-  - 아주 오래 전부터 있었던 이벤트로 요즘에는 잘 사용하지 않음
+
+`readystatechange`
+
+- 상태가 변경되었을 때 실행되는 이벤트
+- 문서 로딩 상태 파악 가능
+- 아주 오래 전부터 있었던 이벤트로 요즘에는 잘 사용하지 않음
 
 ```javascript
 function work() {}
@@ -412,24 +433,36 @@ loadScript("/article/script-async-defer/small.js");
 
 ## Resource loading: onload and onerror
 
-- `onload`: 성공적인 로드 시 발생하는 이벤트
-- `onerror`: 에러가 생길 시 발생하는 이벤트
-- 브라우저를 사용하면 scripts, iframes, pictures 등 외부 리소스의 로딩 추적 가능
+`onload`
+
+- 성공적인 로드 시 발생하는 이벤트
+
+`onerror`
+
+- 에러가 생길 시 발생하는 이벤트
+
+브라우저를 사용하면 scripts, iframes, pictures 등 외부 리소스의 로딩 추적 가능
 
 ### Loading a script
 
 - 서드 파티 스크립트는 아래와 같이 동적으로 로드
 - 해당 스크립트 내에 선언된 함수를 실행하려면 스크립트가 로드될 때까지 기다리고 그 후에 호출 가능
-- `script.onload`
-  - `load` 이벤트가 주요 도우미. 스크립트가 로드되고 실행된 후에 트리거 됨
-  - `onload` 안에서 스크립트 변수를 사용하고 함수를 실행할 수 있음
-- `script.onerror`
-  - `error` 이벤트로 스크립트 로딩 중 발생하는 에러 추적 가능
-  - HTTP 오류 세부 정보를 얻을 수 없고 로딩이 실패했다는 것만 알 수 있음
-- `onload`, `onerror`
-  - 로드 자체만 추적. 스크립트 처리 및 실행 중에 발생할 수 있는 에러는 이벤트의 범위 밖
-  - 스크립트가 성공적으로 로드되면 프로그래밍 에러가 있어도 `onload` 트리거
-  - 스크립트 에러를 추적하려면 전역 핸들러 `window.onerror` 사용
+
+`script.onload`
+
+- `load` 이벤트가 주요 도우미. 스크립트가 로드되고 실행된 후에 트리거 됨
+- `onload` 안에서 스크립트 변수를 사용하고 함수를 실행할 수 있음
+
+`script.onerror`
+
+- `error` 이벤트로 스크립트 로딩 중 발생하는 에러 추적 가능
+- HTTP 오류 세부 정보를 얻을 수 없고 로딩이 실패했다는 것만 알 수 있음
+
+`onload`, `onerror`
+
+- 로드 자체만 추적. 스크립트 처리 및 실행 중에 발생할 수 있는 에러는 이벤트의 범위 밖
+- 스크립트가 성공적으로 로드되면 프로그래밍 에러가 있어도 `onload` 트리거
+- 스크립트 에러를 추적하려면 전역 핸들러 `window.onerror` 사용
 
 ```javascript
 let script = document.createElement("script");
@@ -451,11 +484,23 @@ script.onerror = function () {
 
 ### Other resources
 
-- `load`, `error` 이벤트: 기본적으로 외부 `src`가 있는 모든 리소스에 대해 다른 리소스에서도 작동
-- 대부분의 리소스는 문서에 추가되면 로드되기 시작하지만 예외가 있음
-- `<img>`: 문서에 추가되지 않고 `src`를 받기만 해도 로드 시작
-- `<iframe>`: 역사적인 이유로, 로드 성공·에러 상황 둘 다 iframe 로드가 끝나면 `iframe.onload` 이벤트 트리거
-- `readystatechange` 이벤트: 리소스에도 동작하지만 `load/error` 이벤트가 더 간단하기 때문에 거의 사용되지 않음
+`load`, `error` 이벤트
+
+- 기본적으로 외부 `src`가 있는 모든 리소스에 대해 다른 리소스에서도 작동
+
+대부분의 리소스는 문서에 추가되면 로드되기 시작하지만 예외가 있음
+
+`<img>`
+
+- 문서에 추가되지 않고 `src`를 받기만 해도 로드 시작
+
+`<iframe>`
+
+- 역사적인 이유로, 로드 성공·에러 상황 둘 다 iframe 로드가 끝나면 `iframe.onload` 이벤트 트리거
+
+`readystatechange` 이벤트
+
+- 리소스에도 동작하지만 `load/error` 이벤트가 더 간단하기 때문에 거의 사용되지 않음
 
 ```javascript
 let img = document.createElement("img");
@@ -481,7 +526,7 @@ img.onerror = function () {
 다른 도메인에서의 스크립트 내부 에러
 
 - 세부사항은 브라우저에 따라 다를 수 있지만 아이디어는 동일
-- 에러 스택 traces를 포함해 스트립트 내부에 대한 모든 정보는 숨겨짐. 정확히는 다른 도메인에서 왔기 때문
+- 에러 스택 traces를 포함해 스크립트 내부에 대한 모든 정보는 숨겨짐. 정확히는 다른 도메인에서 왔기 때문
 
 에러 세부정보가 필요한 이유
 
@@ -555,7 +600,7 @@ Script error.
 ```
 
 - `crossorigin` 속성이 없었기 때문에 크로스-오리진 엑세스가 금지됐었음
-- `"anonymous`: 쿠키 전송 안 함. 서버 측 1개 헤더 필요
+- `"anonymous"`: 쿠키 전송 안 함. 서버 측 1개 헤더 필요
 - `"use-credentials"`: 쿠키도 전송. 서버 측 헤더 2개 필요
 - 서버가 `Access-Control-Allow-Origin` 헤더를 제공한다고 가정하면,
 - `crossorigin="anonymous"`로 전체 에러 보고서를 받을 수 있음

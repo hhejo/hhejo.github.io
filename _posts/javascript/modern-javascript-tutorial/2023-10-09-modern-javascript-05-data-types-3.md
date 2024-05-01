@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 3
 date: 2023-10-09 08:23:28 +0900
-last_modified_at: 2024-04-04 09:23:43 +0900
+last_modified_at: 2024-05-01 11:33:21 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, map, set, weakmap, weakset, object]
 ---

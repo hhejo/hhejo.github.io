@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 04 - 객체 기본 2
 date: 2023-10-03 20:13:24 +0900
-last_modified_at: 2024-04-02 07:20:09 +0900
+last_modified_at: 2024-04-30 07:28:16 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [

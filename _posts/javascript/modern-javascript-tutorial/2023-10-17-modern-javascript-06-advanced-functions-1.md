@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 06 - 함수 심화학습 1
 date: 2023-10-17 14:30:02 +0900
-last_modified_at: 2024-04-06 10:02:37 +0900
+last_modified_at: 2024-05-02 15:30:41 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, recursion, linked-list, rest-parameters, spread-syntax]
 ---

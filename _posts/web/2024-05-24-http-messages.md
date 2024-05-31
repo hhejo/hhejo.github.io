@@ -3,7 +3,7 @@ title: HTTP 메시지
 date: 2024-05-24 09:28:34 +0900
 last_modified_at: 2024-05-31 07:12:09 +0900
 categories: [Web]
-tags: [web]
+tags: [web, http, message]
 ---
 
 HTTP 메시지에 대해 알아보겠습니다.

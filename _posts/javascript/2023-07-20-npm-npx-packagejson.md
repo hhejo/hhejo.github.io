@@ -1,7 +1,7 @@
 ---
 title: npm과 npx 그리고 package.json
 date: 2023-07-20 00:00:00 +0900
-last_modified_at: 2023-07-20 00:00:00 +0900
+last_modified_at: 2024-07-09 21:21:30 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, npm, npx, packagejson]
 ---

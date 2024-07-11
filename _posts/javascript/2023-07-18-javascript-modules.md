@@ -1,7 +1,7 @@
 ---
 title: JavaScript의 모듈 시스템 - AMD, CommonJS, UMD, ESM
 date: 2023-07-18 00:00:00 +0900
-last_modified_at: 2023-07-20 00:00:00 +0900
+last_modified_at: 2024-07-09 20:46:53 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, commonjs, esmodules, amd, requrejs, umd]
 ---

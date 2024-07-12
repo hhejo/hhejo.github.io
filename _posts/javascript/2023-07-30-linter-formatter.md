@@ -1,7 +1,7 @@
 ---
 title: Linter와 Formatter
 date: 2023-07-30 00:00:00 +0900
-last_modified_at: 2023-07-30 00:00:00 +0900
+last_modified_at: 2024-07-12 19:55:26 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, linter, eslint, formatter, prettier]
 ---

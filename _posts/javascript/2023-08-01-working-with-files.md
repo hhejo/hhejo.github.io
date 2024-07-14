@@ -1,7 +1,7 @@
 ---
 title: fs 내장 모듈을 사용해 Node.js에서 파일 다루기
 date: 2023-08-01 00:00:00 +0900
-last_modified_at: 2023-08-02 00:00:00 +0900
+last_modified_at: 2024-07-14 20:29:18 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, fs]
 ---

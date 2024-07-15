@@ -1,7 +1,7 @@
 ---
 title: Node.js를 이용한 웹 서버 예제
 date: 2023-07-17 00:00:00 +0900
-last_modified_at: 2024-07-09 20:23:18 +0900
+last_modified_at: 2024-07-15 13:09:00 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, http, fs]
 img_path: /assets/img/posts/2023/07/230717

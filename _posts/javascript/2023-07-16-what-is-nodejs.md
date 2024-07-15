@@ -1,14 +1,14 @@
 ---
 title: Node.js란?
 date: 2023-07-16 00:00:00 +0900
-last_modified_at: 2024-07-09 20:15:01 +0900
+last_modified_at: 2024-07-15 09:45:29 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs]
 ---
 
 Node.js란 무엇일까요?
 
-### Q
+### Question
 
 - Node.js란?
 - Node.js의 작동 방식

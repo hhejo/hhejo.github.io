@@ -1,14 +1,14 @@
 ---
 title: JavaScript의 모듈 시스템 - AMD, CommonJS, UMD, ESM
 date: 2023-07-18 00:00:00 +0900
-last_modified_at: 2024-07-09 20:46:53 +0900
+last_modified_at: 2024-07-16 19:31:06 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, commonjs, esmodules, amd, requrejs, umd]
 ---
 
 JavaScript의 모듈 시스템에 대해 알아보겠습니다.
 
-### Q
+### Question
 
 - 모듈은 무엇이며 장점은 무엇인가?
 - 과거의 자바스크립트 모듈에 대해 설명하라

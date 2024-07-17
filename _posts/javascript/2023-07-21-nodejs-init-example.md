@@ -1,7 +1,7 @@
 ---
 title: nodemon과 Babel로 Node.js 프로젝트 초기 세팅
 date: 2023-07-21 00:00:00 +0900
-last_modified_at: 2024-07-10 20:47:08 +0900
+last_modified_at: 2024-07-17 21:30:43 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, nodemon, babel]
 ---

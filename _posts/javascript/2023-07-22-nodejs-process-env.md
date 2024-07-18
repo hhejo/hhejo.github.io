@@ -1,7 +1,7 @@
 ---
 title: Node.js의 환경변수 관리
 date: 2023-07-22 00:00:00 +0900
-last_modified_at: 2024-07-10 21:02:12 +0900
+last_modified_at: 2024-07-18 21:28:39 +0900
 categories: [JavaScript]
 tags: [javascript, nodejs, process, env, dotenv]
 ---

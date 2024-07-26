@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 01 - 소개
 date: 2023-09-28 09:53:07 +0900
-last_modified_at: 2024-05-06 20:11:17 +0900
+last_modified_at: 2024-07-26 19:07:09 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags:
   [

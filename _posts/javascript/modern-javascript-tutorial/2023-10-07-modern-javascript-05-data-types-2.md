@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 2
 date: 2023-10-07 08:19:33 +0900
-last_modified_at: 2024-05-04 19:57:20 +0900
+last_modified_at: 2024-07-30 16:17:02 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, array, iterable, array-like]
 ---

@@ -1,7 +1,7 @@
 ---
 title: 모던 JavaScript 튜토리얼 05 - 자료구조와 자료형 1
 date: 2023-10-05 20:23:45 +0900
-last_modified_at: 2024-05-11 14:10:30 +0900
+last_modified_at: 2024-07-30 15:56:40 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
 tags: [javascript, primitive, number, string]
 ---

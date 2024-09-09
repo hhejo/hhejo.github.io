@@ -1,5 +1,5 @@
 ---
-title: 모던 JavaScript 튜토리얼 01 - 소개
+title: 모던 JavaScript 튜토리얼 01 - 소개 - 리뷰
 date: 2024-09-09 15:36:19 +0900
 last_modified_at: 2024-09-09 15:36:19 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]

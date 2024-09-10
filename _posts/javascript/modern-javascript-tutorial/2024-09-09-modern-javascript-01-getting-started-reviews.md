@@ -3,17 +3,7 @@ title: 모던 JavaScript 튜토리얼 01 - 소개 - 리뷰
 date: 2024-09-09 15:36:19 +0900
 last_modified_at: 2024-09-09 15:36:19 +0900
 categories: [JavaScript, Modern-JavaScript-Tutorial]
-tags:
-  [
-    javascript,
-    script,
-    engine,
-    browser,
-    specification,
-    reference,
-    manual,
-    console
-  ]
+tags: [javascript]
 ---
 
 자바스크립트란?, 매뉴얼과 명세서, 코드 에디터, 개발자 콘솔
@@ -67,6 +57,6 @@ tags:
 
 ## Safari
 
-# 참고
+## 참고
 
 > [소개](https://ko.javascript.info/getting-started)

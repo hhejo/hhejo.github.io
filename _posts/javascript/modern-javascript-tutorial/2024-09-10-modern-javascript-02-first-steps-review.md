@@ -319,4 +319,4 @@ Hello, world!, 코드 구조, 엄격 모드, 변수와 상수, 자료형, alert,
 
 # 참고
 
-> [소개](https://ko.javascript.info/first-steps)
+> [자바스크립트 기본](https://ko.javascript.info/first-steps)

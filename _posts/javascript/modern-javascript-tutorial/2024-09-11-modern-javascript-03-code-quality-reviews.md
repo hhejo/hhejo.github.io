@@ -100,4 +100,4 @@ Chrome으로 디버깅하기, 코딩 스타일, 주석, 닌자 코드, 테스트
 
 # 참고
 
-> [소개](https://ko.javascript.info/code-quality)
+> [코드 품질](https://ko.javascript.info/code-quality)

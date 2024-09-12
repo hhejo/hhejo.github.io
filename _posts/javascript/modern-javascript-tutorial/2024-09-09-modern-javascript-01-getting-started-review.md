@@ -57,6 +57,6 @@ tags: [javascript]
 
 ## Safari
 
-## 참고
+# 참고
 
 > [소개](https://ko.javascript.info/getting-started)

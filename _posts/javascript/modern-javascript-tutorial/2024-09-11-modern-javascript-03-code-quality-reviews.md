@@ -98,6 +98,6 @@ Chrome으로 디버깅하기, 코딩 스타일, 주석, 닌자 코드, 테스트
 
 ## 튜토리얼에서 예시 실행하기
 
-## 참고
+# 참고
 
 > [소개](https://ko.javascript.info/code-quality)

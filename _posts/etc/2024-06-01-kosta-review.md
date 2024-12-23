@@ -1,7 +1,7 @@
 ---
 title: KOSTA 리뷰
-date: 2024-06-01 17:03:11 +0900
-last_modified_at: 2024-06-01 17:03:11 +0900
+date: 2024-12-22 17:03:11 +0900
+last_modified_at: 2024-12-22 17:03:11 +0900
 categories: [etc]
 tags: [etc]
 ---

@@ -3,7 +3,7 @@ title: KOSTA에서 주최하는 교육과정 리뷰
 date: 2024-12-22 17:03:11 +0900
 last_modified_at: 2024-12-22 17:03:11 +0900
 categories: [etc]
-tags: [etc]
+tags: [etc, kosta]
 ---
 
 KOSTA의 JavaScript 풀스택 교육과정에 대해 알아보기

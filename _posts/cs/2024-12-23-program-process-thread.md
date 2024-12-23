@@ -2,8 +2,8 @@
 title: 프로그램, 프로세스와 스레드
 date: 2024-12-23 10:56:06 +0900
 last_modified_at: 2024-12-23 10:56:06 +0900
-categories: [Computer-Science]
-tags: [computer-science, program, process, thread]
+categories: [CS]
+tags: [cs, program, process, thread]
 ---
 
 프로그램, 프로세스와 스레드에 대해 알아보고 어떤 공통점과 차이점이 있는지 정리

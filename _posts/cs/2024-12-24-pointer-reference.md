@@ -27,8 +27,6 @@ tags: [cs, pointer, reference]
 - 선언 시 반드시 초기화해야 하며 초기화 후 다른 변수 참조 불가
 - `NULL` 값을 가질 수 없음
 
-##
-
 ## 출처
 
 > [C++ 참조자(Reference), 포인터와 차이점, 사용법](https://bullie.tistory.com/23)

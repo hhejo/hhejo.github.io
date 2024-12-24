@@ -66,12 +66,14 @@ Task와 Async/Await의 동작 과정
 1. `async` 메서드 호출
    - 호출 즉시 실행되지 않고 `Task` 객체를 반환
 2. `await` 키워드 사용
-   - 비동기 작업이 완료될 때까지 기다렸다가 결과를 반환
+   - 비동기 작업이 완료될 때까지 기다렸다가 결과 반환
 3. 컨텍스트 전환
    - UI 스레드가 아닌 별도의 스레드에서 작업을 수행
    - 작업이 완료되면 다시 원래의 스레드로 복귀
 
 ## 출처
+
+> [TPL(작업 병렬 라이브러리)](https://learn.microsoft.com/ko-kr/dotnet/standard/parallel-programming/task-parallel-library-tpl)
 
 > [Task 클래스](https://learn.microsoft.com/ko-kr/dotnet/api/system.threading.tasks.task?view=net-8.0)
 

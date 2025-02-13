@@ -1,7 +1,7 @@
 ---
 title: KOSTA에서 주최하는 교육과정 후기
 date: 2024-12-22 17:03:11 +0900
-last_modified_at: 2025-02-13 22:49:37 +0900
+last_modified_at: 2025-02-14 06:09:11 +0900
 categories: [etc]
 tags: [etc, kosta, review]
 ---

@@ -1,7 +1,7 @@
 ---
 title: JavaScript 문자열 자르기 메서드
 date: 2024-06-08 09:03:16 +0900
-last_modified_at: 2024-06-09 11:45:04 +0900
+last_modified_at: 2025-03-09 05:58:22 +0900
 categories: [JavaScript]
 tags: [javascript]
 ---
